@@ -18,7 +18,7 @@ Thanks for your interest in contributing.
 - Keep `SKILL.md` focused. Move long lists and templates into `references/` and say when to read them.
 - Add the skill to the table in `README.md`.
 
-Run `python scripts/validate_skills.py` before opening a pull request.
+Run `python scripts/validate_skills.py` before opening a pull request. CI runs the same check.
 
 ## Style
 

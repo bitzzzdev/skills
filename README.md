@@ -43,7 +43,7 @@ skill-name/
   scripts/          optional, helpers the skill can run
 ```
 
-The `name` in the frontmatter must match the folder name. You can check this locally:
+The `name` in the frontmatter must match the folder name. A GitHub Action checks this on every push and pull request. You can run the same check locally:
 
 ```bash
 pip install pyyaml
