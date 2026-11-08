@@ -13,6 +13,7 @@ A collection of agent skills for Claude Code, OpenCode and Claude.ai. Each skill
 | [`human-writing`](human-writing) | Keeps written output sounding like a person. Bans em dashes and emoji, cuts common AI phrasing, and covers code comments, commit messages, READMEs and UI copy. Includes a scanner script. |
 | [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files and common effects. |
 | [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom and mapping guidance. |
+| [`production-ready`](production-ready) | Takes a project to a production finish. Creates or updates the changelog, README and docs, and drafts terms, privacy and project rules from what the code really does. Ends with a refresh pass through the other skills. Includes an audit script. |
 | [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL sites with scroll-driven motion, smooth scrolling and cinematic transitions. |
 
 ## Installation
