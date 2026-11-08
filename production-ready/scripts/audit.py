@@ -2,10 +2,11 @@
 """Production-readiness audit for a project folder.
 
 usage: audit.py [PROJECT_ROOT] [--skills-dir DIR] [--type TYPE] [--strict]
+                [--personal] [--no-indexing]
 
 Guesses the project type, reports MISSING, STALE and OK items for the
 changelog, docs, legal and community files, then lists which skills to USE
-and which to SKIP for that type.
+and which to SKIP for that type and indexing requirements.
 Exit status is 0 unless --strict is given and something is MISSING or STALE.
 """
 import argparse
@@ -70,6 +71,54 @@ def manifest_version(root):
     return None, None
 
 
+def check_personal_or_private(root):
+    """Return True if package manifest or project markers indicate private/personal project."""
+    pj = os.path.join(root, "package.json")
+    if os.path.isfile(pj):
+        try:
+            data = json.loads(read(pj))
+            if data.get("private") is True:
+                return True
+        except ValueError:
+            pass
+    pyproj = os.path.join(root, "pyproject.toml")
+    if os.path.isfile(pyproj):
+        text = read(pyproj).lower()
+        if 'classifiers = ["private' in text or "private = true" in text:
+            return True
+    return False
+
+
+def get_skill_homes(root, skills_dir=None):
+    """Return list of existing directories where skills may be installed."""
+    homes = [skills_dir] if skills_dir else []
+    homes += [
+        os.path.join(root, ".gemini", "skills"),
+        os.path.expanduser("~/.gemini/antigravity-cli/skills"),
+        os.path.expanduser("~/.gemini/antigravity-cli/builtin/skills"),
+        os.path.expanduser("~/.gemini/skills"),
+        os.path.join(root, ".agents", "skills"),
+        os.path.expanduser("~/.agents/skills"),
+        os.path.join(root, ".claude", "skills"),
+        os.path.expanduser("~/.claude/skills"),
+        os.path.join(root, "skills"),
+        os.path.join(root, "..", "skills"),
+        root
+    ]
+    seen = set()
+    valid = []
+    for h in homes:
+        if h and h not in seen and os.path.isdir(h):
+            seen.add(h)
+            valid.append(h)
+    return valid
+
+
+def is_skill_installed(name, root, skills_dir=None):
+    homes = get_skill_homes(root, skills_dir)
+    return any(os.path.isdir(os.path.join(h, name)) for h in homes)
+
+
 TYPES = ("website", "mobile-native", "desktop", "game-mod", "shaderpack", "library-cli", "bot", "api")
 
 
@@ -119,44 +168,70 @@ SPECIFIC = {
 }
 
 
-def report_skills(types, root, skills_dir):
+def report_skills(types, root, skills_dir, is_personal=False, no_indexing=False):
     use = ["debug-and-fix (build, tests, lint)", "error-docs-lookup (warnings and deprecations)",
            "human-writing (scan docs)", "context-rich-commits (commit)"]
     skip = []
+
+    # Check 3D / WebGL for website
+    has_three = False
+    pj = os.path.join(root, "package.json")
+    if os.path.isfile(pj):
+        has_three = '"three"' in read(pj).lower()
+
     if "website" in types:
-        use.append("SEO and performance check (references/seo.md)")
+        if is_personal or no_indexing:
+            skip.append("google-seo-skill (personal/internal project or no indexing needed; avoid ranking optimization, verify noindex or robots disallow)")
+            skip.append("SEO and search ranking (references/seo.md; personal/internal project, ensure noindex is configured)")
+        else:
+            if is_skill_installed("google-seo-skill", root, skills_dir):
+                use.append("google-seo-skill (official Google SEO & AI search audit)")
+            else:
+                use.append("SEO and performance check (references/seo.md)")
         use.append("accessibility pass")
+        if has_three:
+            if is_skill_installed("threejs-awwwards-site", root, skills_dir):
+                use.append("threejs-awwwards-site (Three.js/WebGL scene checks)")
+            else:
+                skip.append("threejs-awwwards-site not installed, skip")
+        else:
+            skip.append("threejs-awwwards-site (no Three.js/WebGL detected)")
     else:
         kinds = "/".join(t for t in types)
         listing = {"mobile-native": "store listing text", "desktop": "landing page only if one exists",
                    "game-mod": "mod page text", "shaderpack": "mod page text", "bot": "bot listing text",
                    "api": "docs site only", "library-cli": "registry description"}
         alt = ", ".join(sorted({listing[t] for t in types if t in listing}))
+        skip.append("google-seo-skill (%s has no public search-ranked pages, write %s instead)" % (kinds, alt or "a clear description"))
         skip.append("SEO and Core Web Vitals (%s has no search-ranked pages), write %s instead" % (kinds, alt or "a clear description"))
+        skip.append("threejs-awwwards-site (not a website)")
+
     if "mobile-native" in types or "desktop" in types:
         use.append("accessibility pass")
+
     for t in types:
         if t in SPECIFIC:
             name, why = SPECIFIC[t]
-            home = [skills_dir] if skills_dir else []
-            home += [os.path.join(root, ".claude", "skills"), os.path.expanduser("~/.claude/skills"), os.path.join(root, "..", "skills")]
-            if any(h and os.path.isdir(os.path.join(h, name)) for h in home):
+            if is_skill_installed(name, root, skills_dir):
                 use.append("%s (%s)" % (name, why))
             else:
                 skip.append("%s not installed, skip" % name)
+
     others = {"android-app-dev": "mobile-native", "minecraft-fabric-mod": "game-mod", "iris-shaderpack-dev": "shaderpack"}
     for name, t in others.items():
         if t not in types:
             skip.append("%s (project is not %s)" % (name, t))
-    if "website" not in types:
-        skip.append("threejs-awwwards-site (not a website)")
+
     legal = "terms and privacy needed if the project has users or collects data"
-    if types and all(t in ("shaderpack", "library-cli", "game-mod") for t in types):
+    if is_personal:
+        legal = "personal project: terms and privacy optional unless external users onboarded"
+    elif types and all(t in ("shaderpack", "library-cli", "game-mod") for t in types):
         legal = "terms and privacy usually not needed, license and contributing are"
+
     return use, skip, legal
 
 
-def check_files(root):
+def check_files(root, is_personal=False):
     wanted = [
         ("README", {"readme"}, "required"),
         ("LICENSE", {"license", "licence", "copying"}, "required"),
@@ -164,8 +239,8 @@ def check_files(root):
         ("CONTRIBUTING", {"contributing"}, "recommended"),
         ("CODE_OF_CONDUCT", {"code_of_conduct"}, "recommended"),
         ("SECURITY", {"security"}, "recommended"),
-        ("TERMS", {"terms", "terms_of_service", "tos", "terms_and_conditions"}, "if the project has users"),
-        ("PRIVACY", {"privacy", "privacy_policy"}, "if the project has users"),
+        ("TERMS", {"terms", "terms_of_service", "tos", "terms_and_conditions"}, "if the project has users" if not is_personal else "optional for personal projects"),
+        ("PRIVACY", {"privacy", "privacy_policy"}, "if the project has users" if not is_personal else "optional for personal projects"),
     ]
     found = {}
     for label, stems, need in wanted:
@@ -175,7 +250,10 @@ def check_files(root):
         if hit:
             add("OK", label, hit)
         else:
-            add("MISSING", label, need)
+            if is_personal and label in ("TERMS", "PRIVACY"):
+                add("INFO", label, "omitted for personal project")
+            else:
+                add("MISSING", label, need)
     if os.path.isfile(os.path.join(root, ".env.example")) or os.path.isfile(os.path.join(root, ".env.sample")):
         add("OK", ".env.example")
     elif any(re.search(r"\.env", n) for n in os.listdir(root)):
@@ -259,9 +337,7 @@ def check_readme(root, name):
 
 
 def scan_writing(root, files, skills_dir):
-    homes = [skills_dir] if skills_dir else []
-    homes += [os.path.join(root, ".claude", "skills"), os.path.expanduser("~/.claude/skills"),
-              os.path.join(root, "..", "skills"), root]
+    homes = get_skill_homes(root, skills_dir)
     scanner = None
     for h in homes:
         p = os.path.join(h, "human-writing", "scripts", "scan.py")
@@ -287,6 +363,8 @@ def main():
     ap.add_argument("root", nargs="?", default=".")
     ap.add_argument("--skills-dir")
     ap.add_argument("--type", help="override detected type, comma separated: " + ", ".join(TYPES))
+    ap.add_argument("--personal", action="store_true", help="mark project as personal/internal (avoids public SEO/terms)")
+    ap.add_argument("--no-indexing", action="store_true", help="project should avoid search indexing")
     ap.add_argument("--strict", action="store_true")
     a = ap.parse_args()
     root = os.path.abspath(a.root)
@@ -294,13 +372,18 @@ def main():
         print("not a directory: " + root, file=sys.stderr)
         return 2
 
+    is_personal = a.personal or check_personal_or_private(root)
+    no_indexing = a.no_indexing or is_personal
+
     types = [t.strip() for t in a.type.split(",")] if a.type else detect_types(root)
     unknown = [t for t in types if t not in TYPES]
     if unknown:
         print("unknown type: " + ", ".join(unknown), file=sys.stderr)
         return 2
     print("Project type: " + ", ".join(types))
-    found = check_files(root)
+    if is_personal or no_indexing:
+        print("Project scope: personal / internal (search indexing avoided)")
+    found = check_files(root, is_personal=is_personal)
     if found.get("CHANGELOG"):
         check_changelog(root, found["CHANGELOG"])
     if found.get("README"):
@@ -314,7 +397,7 @@ def main():
             for _, label, detail in rows:
                 print("  %-26s %s" % (label, detail))
     bad = sum(1 for r in results if r[0] in ("MISSING", "STALE"))
-    use, skip, legal = report_skills(types, root, a.skills_dir)
+    use, skip, legal = report_skills(types, root, a.skills_dir, is_personal=is_personal, no_indexing=no_indexing)
     print("\n== USE ==")
     for u in dict.fromkeys(use):
         print("  " + u)

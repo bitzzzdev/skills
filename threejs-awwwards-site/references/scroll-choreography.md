@@ -19,7 +19,7 @@ const lenis = new Lenis({
   smoothWheel: true,
 });
 
-// Keep GSAP's ticker and Lenis in sync — critical, don't run two separate rAF loops.
+// Keep GSAP's ticker and Lenis in sync: critical, don't run two separate rAF loops.
 lenis.on('scroll', ScrollTrigger.update);
 
 gsap.ticker.add((time) => {
@@ -35,9 +35,9 @@ visible judder between the 3D scene and DOM animation.
 
 ## 2. Driving a Three.js camera/object from scroll progress
 
-Use ScrollTrigger to get a 0–1 progress value across a scroll distance, then apply it to Three.js
+Use ScrollTrigger to get a 0-1 progress value across a scroll distance, then apply it to Three.js
 objects inside the render loop (don't mutate Three.js objects directly inside the ScrollTrigger
-callback if you can avoid extra reflows — store a progress value and read it in the render loop):
+callback if you can avoid extra reflows: store a progress value and read it in the render loop):
 
 ```js
 let scrollProgress = { value: 0 };
@@ -46,7 +46,7 @@ ScrollTrigger.create({
   trigger: '#scroll-container',
   start: 'top top',
   end: 'bottom bottom',
-  scrub: 1, // smooths ScrollTrigger's response to scroll input; tune 0.5–2
+  scrub: 1, // smooths ScrollTrigger's response to scroll input; tune 0.5-2
   onUpdate: (self) => {
     scrollProgress.value = self.progress;
   },
@@ -65,8 +65,7 @@ animate();
 ```
 
 For more complex camera paths, define a `THREE.CatmullRomCurve3` through a series of waypoints
-and use `curve.getPointAt(scrollProgress.value)` rather than hand-writing per-axis easing —
-much easier to art-direct and adjust waypoints later.
+and use `curve.getPointAt(scrollProgress.value)` rather than hand-writing per-axis easing: much easier to art-direct and adjust waypoints later.
 
 ## 3. Chapter-based reveal pattern (matches the reference site's "Chapter 1 / Chapter 2..." structure)
 
@@ -103,14 +102,14 @@ ScrollTrigger.create({
 ## 4. Section-to-section full-bleed transitions (video/image swap, matches reference site's video links)
 
 A common pattern: hovering or scrolling into a nav item cross-fades a full-viewport background
-video/image tied to that section, before navigating. Keep this snappy — cross-fade opacity over
+video/image tied to that section, before navigating. Keep this snappy: cross-fade opacity over
 ~300-500ms, preload the video's poster frame or first frame so the swap doesn't flash blank.
 
 ## General cautions
 
 - `scrub: true` (boolean) ties animation exactly to scroll with no smoothing lag; `scrub: <number>`
-  (e.g. `scrub: 1`) adds a smoothing delay in seconds — most award-sites use a small numeric scrub
-  value (0.5–1.5) for a slightly trailing, weighty feel rather than instant 1:1 tracking.
+  (e.g. `scrub: 1`) adds a smoothing delay in seconds: most award-sites use a small numeric scrub
+  value (0.5-1.5) for a slightly trailing, weighty feel rather than instant 1:1 tracking.
 - Always call `ScrollTrigger.refresh()` after dynamically loaded content (images, fonts, GLTF
   models) finishes loading and changes document height, or trigger positions will be wrong.
 - Kill/revert ScrollTrigger instances and GSAP timelines on component unmount or page

@@ -1,7 +1,6 @@
 # Gradle setup templates
 
-All version placeholders (`<PLACEHOLDER>`) must be filled from research done in SKILL.md Step 1
-— never from memorized numbers, since these move frequently and have compatibility constraints
+All version placeholders (`<PLACEHOLDER>`) must be filled from research done in SKILL.md Step 1: never from memorized numbers, since these move frequently and have compatibility constraints
 between each other.
 
 ## gradle/libs.versions.toml (version catalog)
@@ -37,7 +36,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-# Compose compiler is a Kotlin-versioned Gradle plugin since Kotlin 2.0 — do NOT use the
+# Compose compiler is a Kotlin-versioned Gradle plugin since Kotlin 2.0: do NOT use the
 # older composeOptions { kotlinCompilerExtensionVersion = "..." } pattern for Kotlin 2.0+.
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version = "<KSP_VERSION_MATCHING_KOTLIN>" }
@@ -45,7 +44,7 @@ hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hi
 ```
 
 Note on KSP: its version string is tied to the exact Kotlin version (format like
-`<kotlin_version>-<ksp_version>`) — search `ksp version <kotlin_version>` to find the matching
+`<kotlin_version>-<ksp_version>`): search `ksp version <kotlin_version>` to find the matching
 release rather than guessing, since a mismatched KSP/Kotlin pairing fails immediately at sync.
 
 ## Project-level build.gradle.kts
@@ -135,10 +134,10 @@ dependencies {
 ## Notes
 
 - Prefer `platform(libs.androidx.compose.bom)` (the Compose BOM) over pinning each
-  `androidx.compose.*` artifact's version individually — the BOM guarantees mutually compatible
+  `androidx.compose.*` artifact's version individually: the BOM guarantees mutually compatible
   versions across all Compose libraries.
 - `minSdk`/`targetSdk`/`compileSdk` should reflect what was found in Step 1's research, not
-  memorized numbers — Play Store's minimum targetSdk requirement changes roughly yearly.
+  memorized numbers: Play Store's minimum targetSdk requirement changes roughly yearly.
 - Java 17 is the current common baseline for `sourceCompatibility`/`jvmTarget`, but confirm
   against the AGP version's documented supported JDK range if unsure, since this has shifted
   across AGP releases too.

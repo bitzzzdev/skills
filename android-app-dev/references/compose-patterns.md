@@ -28,7 +28,7 @@ fun HomeScreen(
 ```
 
 Always pass a stable `key` to `items()` in lazy lists when items can be reordered/inserted/
-removed — without it, Compose may misattribute item state/animations across recompositions.
+removed: without it, Compose may misattribute item state/animations across recompositions.
 
 ## State hoisting
 
@@ -74,7 +74,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
 ```
 
 For type-safe navigation (avoiding hand-built string routes), check current Navigation Compose
-docs for the `@Serializable` route object pattern — this has become the recommended approach in
+docs for the `@Serializable` route object pattern: this has become the recommended approach in
 recent Navigation Compose versions, replacing hand-written string route templates; verify the
 exact current API since it's evolved across releases.
 
@@ -103,7 +103,7 @@ fun AppTheme(
 }
 ```
 
-Gate `dynamicColor` behind an SDK version check — dynamic color APIs require API 31+ (Android
+Gate `dynamicColor` behind an SDK version check: dynamic color APIs require API 31+ (Android
 12).
 
 ## Previews
@@ -119,7 +119,7 @@ private fun HomeScreenPreview() {
 ```
 
 Write previews against the stateless "Content" composable (see `architecture-guide.md`), not the
-stateful wrapper that requires a real ViewModel — keeps previews fast and dependency-free.
+stateful wrapper that requires a real ViewModel: keeps previews fast and dependency-free.
 Add `@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)` alongside a light-mode preview to check
 dark theme, and consider a landscape/large-screen preview for anything where layout adapts.
 
@@ -128,8 +128,7 @@ dark theme, and consider a landscape/large-screen preview for anything where lay
 - `Column`/`Row` + `Arrangement.spacedBy(Xdp)` for consistent gaps instead of manual `Spacer`s
   between every item.
 - `Modifier.weight()` inside `Row`/`Column` for proportional sizing between siblings.
-- `BoxWithConstraints` or `Modifier.windowInsetsPadding` for edge-to-edge / adaptive layouts —
-  check current guidance on edge-to-edge display (enabled by default in recent Android versions)
+- `BoxWithConstraints` or `Modifier.windowInsetsPadding` for edge-to-edge / adaptive layouts: check current guidance on edge-to-edge display (enabled by default in recent Android versions)
   since insets handling has shifted across API levels.
 - For adaptive layouts across phone/tablet/foldable, check
   `androidx.compose.material3.adaptive` (Material 3 Adaptive library) rather than hand-rolling
@@ -139,11 +138,11 @@ dark theme, and consider a landscape/large-screen preview for anything where lay
 
 Use the correct Compose side-effect API for the situation rather than reaching for `LaunchedEffect`
 for everything:
-- `LaunchedEffect(key)` — run a suspend function tied to a composable's lifecycle, re-launched
+- `LaunchedEffect(key)`: run a suspend function tied to a composable's lifecycle, re-launched
   when `key` changes (e.g. triggering a one-time load when a screen's ID argument changes).
-- `DisposableEffect(key)` — for side effects needing explicit cleanup (registering/unregistering
+- `DisposableEffect(key)`: for side effects needing explicit cleanup (registering/unregistering
   a listener).
-- `rememberCoroutineScope()` — to launch coroutines from event callbacks (e.g. a button's
+- `rememberCoroutineScope()`: to launch coroutines from event callbacks (e.g. a button's
   `onClick`) rather than from composition itself.
-- Avoid triggering side effects directly in a composable's body (outside these APIs) — that runs
+- Avoid triggering side effects directly in a composable's body (outside these APIs): that runs
   on every recomposition, not just meaningful state changes.

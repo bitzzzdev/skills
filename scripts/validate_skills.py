@@ -3,8 +3,10 @@
 
 A skill folder is any top-level directory that contains SKILL.md. Each one
 needs YAML frontmatter with a name that matches the folder and a description.
+Also verifies frontmatter formatting and checks for disallowed em dashes and emoji.
 """
 
+import re
 import sys
 from pathlib import Path
 
@@ -13,6 +15,13 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 errors = []
 count = 0
+
+EMOJI = re.compile(
+    "[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B50\u2B55\u2B1B\u2B1C"
+    "\u231A\u231B\u23E9-\u23FA\u2934\u2935\u3030\u303D\u3297\u3299"
+    "\uFE0F\u200D]"
+)
+DASHES = re.compile("[\u2014\u2013\u2015]")
 
 for skill_md in sorted(ROOT.glob("*/SKILL.md")):
     folder = skill_md.parent.name
@@ -34,6 +43,12 @@ for skill_md in sorted(ROOT.glob("*/SKILL.md")):
         errors.append(f"{folder}: name is {meta.get('name')!r}, expected {folder!r}")
     if not str(meta.get("description", "")).strip():
         errors.append(f"{folder}: missing description")
+
+    # Check for em dashes or emoji in SKILL.md
+    if DASHES.search(text):
+        errors.append(f"{folder}: SKILL.md contains em or en dashes (violates human-writing rules)")
+    if EMOJI.search(text):
+        errors.append(f"{folder}: SKILL.md contains emoji (violates human-writing rules)")
 
 if count == 0:
     errors.append("no skills found")

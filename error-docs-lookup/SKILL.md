@@ -26,7 +26,7 @@ Search by default. The only exception is a trivial syntax slip where the error n
   - `"<exact error message core>" <library> <version>`
   - `<library> <version> <error code> fix`
   - `<library> migration guide <old version> to <new version>` (when the error appeared right after an upgrade)
-- Use whichever web search and page-fetch tools the host provides (for example WebSearch/WebFetch in Claude Code, websearch/webfetch in OpenCode). Per-ecosystem search tips are in `references/ecosystems.md`; read the relevant section when the toolchain matches.
+- Use whichever web search and page-fetch tools the host provides (for example search_web in Antigravity and Gemini CLI, WebSearch/WebFetch in Claude Code, websearch/webfetch in OpenCode, or Developer Knowledge MCP tools). Per-ecosystem search tips are in `references/ecosystems.md`; read the relevant section when the toolchain matches.
 
 ### 4. Pick and read sources, don't just skim snippets
 Prefer, in this order:

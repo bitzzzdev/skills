@@ -1,9 +1,10 @@
 # Choosing which skills to run
 
-Run a skill only when it fits the project. A skill that does not apply wastes time, adds noise to the docs and can do harm (SEO tags in a native app are clutter). Decide from the project type, then say in the report which skills you used and which you skipped and why.
+Run a skill only when it fits the project. A skill that does not apply wastes time, adds noise to docs, and can do harm (SEO tags in a native app are clutter; SEO ranking optimization on a private internal tool leaks private routes). Decide from the project type and privacy requirements, then report which skills were used and which were skipped and why.
 
-## Detect the project type
-`scripts/audit.py` guesses it and prints USE and SKIP lines. Confirm by looking at the files. If it guesses wrong, pass `--type`.
+## Detect the project type and visibility
+
+`scripts/audit.py` guesses the project type and checks whether the repository is private or personal, then prints USE and SKIP recommendations. Confirm by inspecting project files. If it guesses incorrectly, pass `--type`, `--personal`, or `--no-indexing`.
 
 | Type | Signs |
 |---|---|
@@ -16,32 +17,48 @@ Run a skill only when it fits the project. A skill that does not apply wastes ti
 | bot | discord.js, discord.py, Telegraf, Slack Bolt |
 | api | Express, Fastify, FastAPI, Flask, Rails or Go server without public pages |
 
-A project can be two types. A Tauri app with a marketing site is desktop plus website. Apply the website rules to the site only.
+A project can be multiple types: a Tauri app with a marketing site is desktop plus website. Apply website rules only to the marketing site.
 
-## Matrix
+## Privacy and indexing status
 
-| Skill or task | website | mobile-native | desktop | game-mod | shaderpack | library-cli | bot | api |
-|---|---|---|---|---|---|---|---|---|
-| changelog | yes | yes | yes | yes | yes | yes | yes | yes |
-| README and docs | yes | yes | yes | yes | yes | yes | yes | yes, plus API reference |
-| terms and privacy | yes if users | yes, stores require a privacy URL | yes if it collects data | rarely | no | no | yes | yes if public |
-| license, contributing, security | yes | yes if open source | yes if open source | yes | yes | yes | yes | yes |
-| SEO (`references/seo.md`) | yes | no, use store listing text instead | landing page only | no, use the mod page text | no | docs site only | no | docs site only |
-| accessibility pass | yes | yes | yes | no | no | no | no | no |
-| performance budget (Core Web Vitals) | yes | no, use startup time and size | no | no | no | no | no | no |
-| debug-and-fix | yes | yes | yes | yes | yes | yes | yes | yes |
-| error-docs-lookup | yes | yes | yes | yes | yes | yes | yes | yes |
-| human-writing | yes | yes | yes | yes | yes | yes | yes | yes |
-| context-rich-commits | yes | yes | yes | yes | yes | yes | yes | yes |
-| project-specific skill (see below) | threejs-awwwards-site if 3D | android-app-dev for Android | none | minecraft-fabric-mod | iris-shaderpack-dev | none | none | none |
+Before evaluating SEO or ranking skills, determine if the site should be public or private:
+- **Public website needing search ranking**: Apply `google-seo-skill` (or `references/seo.md`) to maximize search visibility and meet Google Search Central standards.
+- **Personal project, private repo, internal dashboard, staging site, or no indexing needed**: Explicitly avoid `google-seo-skill`. Do not optimize for search ranking. Instead, verify that search engines cannot index the site: ensure `<meta name="robots" content="noindex, nofollow">` or `X-Robots-Tag: noindex, nofollow` headers and robots disallow rules are present.
 
-## Project-specific skills
-Use the one skill built for the project when the type matches and it is installed: `android-app-dev`, `minecraft-fabric-mod`, `iris-shaderpack-dev`, `threejs-awwwards-site`. Use them for fixes and checks during the release, not to add features.
+## Skill orchestration matrix
 
-## What replaces SEO outside the web
-- Mobile and desktop apps: store listing title, short and long description, keywords field, screenshots with captions, release notes. Write them in the docs folder so they are versioned.
-- Mods and shaderpacks: the Modrinth or CurseForge page text, tags, supported versions, install steps.
-- Libraries: package registry description, keywords and links.
+| Skill or task | website (public) | website (personal/internal) | mobile-native | desktop | game-mod | shaderpack | library-cli | bot | api |
+|---|---|---|---|---|---|---|---|---|---|
+| changelog | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| README and docs | yes | yes | yes | yes | yes | yes | yes | yes | yes, plus API reference |
+| terms and privacy | yes if users | no | yes, stores require privacy URL | yes if data collected | rarely | no | no | yes | yes if public |
+| license, contributing, security | yes | yes if open source | yes if open source | yes if open source | yes | yes | yes | yes | yes |
+| google-seo-skill | yes | no, enforce noindex | no, store listing copy | landing page only | no, mod page copy | no | docs site only | no | docs site only |
+| accessibility pass | yes | yes | yes | yes | no | no | no | no | no |
+| performance budget | yes | optional | startup time and memory | startup time | no | framerate budget | no | latency | latency / throughput |
+| debug-and-fix | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| error-docs-lookup | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| human-writing | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| context-rich-commits | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| project-specific skill | threejs-awwwards-site if 3D | threejs-awwwards-site if 3D | android-app-dev for Android | none | minecraft-fabric-mod | iris-shaderpack-dev | none | none | cloud skills if deployed |
+
+## Skill orchestration guidelines
+
+When productionizing a project, orchestrate all relevant skills in sequence:
+- **debug-and-fix**: Verify tests, build, and linters. Fix any breakages at their root cause.
+- **error-docs-lookup**: When encountering deprecations, toolchain issues, or version upgrades, look up official documentation before making changes.
+- **google-seo-skill**: Invoke for public web projects needing search ranking and AI Overviews visibility. Avoid for personal/internal tools or projects with no indexing needed.
+- **human-writing**: Run `human-writing/scripts/scan.py` on all changed files and prose. Ensure zero hard hits and natural tone.
+- **context-rich-commits**: Record all updates with structured commits and a final project checkpoint commit.
+- **Domain skills (`android-app-dev`, `minecraft-fabric-mod`, `iris-shaderpack-dev`, `threejs-awwwards-site`)**: Use for domain-specific checks and CI verification.
+
+## What replaces SEO outside public web projects
+
+- Mobile and desktop apps: store listing title, short and long description, keywords, screenshots with captions, release notes in the docs folder.
+- Personal or internal web projects: verification of `noindex` directives and authenticated access controls.
+- Mods and shaderpacks: Modrinth or CurseForge page text, tags, supported versions, install steps.
+- Libraries: package registry description, keywords, and repository links.
 
 ## Missing skills
-If a skill the type calls for is not installed, do its job from the matching reference file and note it in the report. If no reference exists, skip it and say so. Never pretend to have run a skill you did not run.
+
+If a skill the project calls for is not installed in the environment, perform its checks from the matching reference file (`references/seo.md`, `references/docs.md`, `references/legal-and-rules.md`) and note this in the final report. Never claim to have run a skill that was not executed.

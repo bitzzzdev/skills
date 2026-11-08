@@ -28,7 +28,7 @@ option.FOG_DENSITY.min=0.0
 option.FOG_DENSITY.max=5.0
 ```
 
-(Exact slider syntax has some version-to-version variance — verify against ShaderDoc /
+(Exact slider syntax has some version-to-version variance: verify against ShaderDoc /
 Iris-Example-Shaderpack if sliders aren't behaving as expected, rather than guessing at key names.)
 
 ## Organizing options into screens/pages
@@ -64,17 +64,17 @@ colortex0.format=RGBA16F
 Custom render targets for extra composite passes, buffer clearing behavior
 (`clear.colortex1=false` to persist a buffer across frames, useful for temporal effects like
 simple TAA or auto-exposure accumulation), and render stage inclusion/exclusion
-(`program.gbuffers_water=composite1` style tags in some versions) also exist — always check
+(`program.gbuffers_water=composite1` style tags in some versions) also exist: always check
 ShaderDoc for the exact current key names before inventing one, since properties keys are
-easy to get subtly wrong (they fail silently — a mistyped key is just ignored rather than
+easy to get subtly wrong (they fail silently: a mistyped key is just ignored rather than
 causing an error).
 
 ## General cautions
 
-- Unrecognized/mistyped keys are typically ignored silently rather than erroring — if an
+- Unrecognized/mistyped keys are typically ignored silently rather than erroring: if an
   option doesn't seem to take effect, double check exact spelling/casing against
   ShaderDoc/Iris-Example-Shaderpack rather than assuming the GLSL side is at fault.
-- Keep `shaders.properties` in sync with actual `#define`s in your GLSL — an option exposed
+- Keep `shaders.properties` in sync with actual `#define`s in your GLSL: an option exposed
   in properties but not referenced anywhere in shader code does nothing (harmless but
   confusing to the user), and a `#define` used in code but not exposed in properties can't be
   toggled from the in-game GUI.

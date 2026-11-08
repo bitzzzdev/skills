@@ -1,6 +1,6 @@
 # Common effect skeletons
 
-These are illustrative starting points to adapt to the user's actual pack — not drop-in
+These are illustrative starting points to adapt to the user's actual pack: not drop-in
 finished code. Always adjust uniform/varying names to match the rest of their pack, and
 verify any uniform you're unsure about against ShaderDoc before relying on it.
 
@@ -43,7 +43,7 @@ void main() {
 ```
 
 Corresponding minimal `composite.vsh` just needs to pass through a fullscreen-triangle UV as
-`texCoord` — check `Iris-Example-Shaderpack` for the exact fullscreen-pass vertex shader
+`texCoord`: check `Iris-Example-Shaderpack` for the exact fullscreen-pass vertex shader
 convention if unsure.
 
 ## 2. Waving foliage (gbuffers_terrain_cutout.vsh sketch)
@@ -55,13 +55,13 @@ uniform float frameTimeCounter;
 
 // Iris/OptiFine expose a "mc_Entity" style attribute or block-id-based tagging in some
 // versions to identify plant blocks for waving; the exact mechanism (attribute name,
-// mod_control-style constants) varies — verify against ShaderDoc before relying on a
+// mod_control-style constants) varies: verify against ShaderDoc before relying on a
 // specific attribute name here.
 
 void main() {
     vec4 position = gl_Vertex; // or the modern `in vec3 vaPosition` equivalent
 
-    // Sketch only — real waving logic keys off vertex Y-position within the block and a
+    // Sketch only: real waving logic keys off vertex Y-position within the block and a
     // per-block "is this a wavable plant" flag, then offsets X/Z with a sine wave:
     // float wave = sin(frameTimeCounter * speed + position.x + position.z) * amplitude;
     // position.x += wave * topVertexMask;
@@ -98,7 +98,7 @@ fragColor = vec4(sceneColor + bloom * bloomStrength, 1.0);
 ```
 
 A real bloom implementation needs an actual blur pass (gaussian or box blur across several
-composite passes/downsamples) — this sketch only shows the extract/combine structure.
+composite passes/downsamples): this sketch only shows the extract/combine structure.
 
 ## 5. Simple shadow sampling (used in a gbuffers or composite program, after implementing shadow.vsh/.fsh)
 
@@ -125,5 +125,5 @@ Real packs usually add PCF (percentage-closer filtering) by sampling a small ker
 
 Every skeleton above uses illustrative uniform/attribute names and simplified logic. Before
 finalizing code for the user, confirm any uniform, attribute, or program name you're not
-fully certain of against ShaderDoc — especially if the user's Iris/Minecraft version is
+fully certain of against ShaderDoc: especially if the user's Iris/Minecraft version is
 recent or if they mention something not covered in these reference files.

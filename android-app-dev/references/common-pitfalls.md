@@ -4,14 +4,14 @@ Check this list before telling the user the app/feature is done.
 
 1. **Legacy Compose compiler config on Kotlin 2.0+.** Writing
    `composeOptions { kotlinCompilerExtensionVersion = "..." }` for a project on Kotlin 2.0 or
-   later is the old pattern — since Kotlin 2.0, the Compose compiler is a Kotlin-versioned Gradle
+   later is the old pattern: since Kotlin 2.0, the Compose compiler is a Kotlin-versioned Gradle
    plugin (`org.jetbrains.kotlin.plugin.compose`) applied per-module, configured via a
    `composeCompiler { }` block. Mixing the two conventions, or using the legacy one on a modern
    Kotlin version, causes build configuration errors or silently-wrong compiler versions.
 
 2. **Mismatched KSP/Kotlin version pairing.** KSP's version string is tied to the exact Kotlin
    version it was built against (format like `<kotlin_version>-<ksp_build>`). Pinning an
-   unrelated KSP version against a different Kotlin version fails at sync time — always search
+   unrelated KSP version against a different Kotlin version fails at sync time: always search
    for the exact matching KSP release for the Kotlin version in use.
 
 3. **Pinning individual Compose library versions instead of using the BOM.** Manually version-
@@ -22,7 +22,7 @@ Check this list before telling the user the app/feature is done.
 4. **Missing or incorrectly scoped permissions.** Runtime-dangerous permissions (camera,
    location, storage, notifications on API 33+, etc.) need both a `<uses-permission>` manifest
    entry AND a runtime permission request via `ActivityResultContracts.RequestPermission` (or
-   `RequestMultiplePermissions`) in Compose/Activity code — a manifest entry alone doesn't grant
+   `RequestMultiplePermissions`) in Compose/Activity code: a manifest entry alone doesn't grant
    the permission on API 23+. Also check for permissions that were split or renamed across API
    levels (e.g. granular media permissions introduced in API 33) if targeting a wide SDK range.
 
@@ -42,7 +42,7 @@ Check this list before telling the user the app/feature is done.
 
 7. **Room migration mistakes.** Bumping a `@Database` version number without providing a
    `Migration` (or without allowing destructive migration deliberately via
-   `fallbackToDestructiveMigration()` — acceptable only for early development, not for a real app
+   `fallbackToDestructiveMigration()`: acceptable only for early development, not for a real app
    with existing user data) causes crashes on upgrade for existing installs. Always write an
    explicit `Migration` for schema changes once the app has real users, and enable Room's schema
    export (`exportSchema = true` + a schema location) to keep migration history verifiable.
@@ -51,13 +51,13 @@ Check this list before telling the user the app/feature is done.
    without appropriate `proguard-rules.pro` keep-rules can strip classes referenced only via
    reflection (common with some serialization libraries, Room, Retrofit/Moshi/Gson model classes).
    If a release build crashes with `ClassNotFoundException` or similar only in the minified
-   release variant (not debug), check for missing keep rules for the library involved — most
+   release variant (not debug), check for missing keep rules for the library involved: most
    libraries publish their own recommended consumer ProGuard rules, but double-check if using
    reflection-heavy code directly.
 
 9. **Edge-to-edge / window insets handling.** Recent Android versions increasingly enable
    edge-to-edge display by default, meaning content can be drawn under system bars unless insets
-   are explicitly handled (`Modifier.windowInsetsPadding`, `enableEdgeToEdge()`, etc.) — verify
+   are explicitly handled (`Modifier.windowInsetsPadding`, `enableEdgeToEdge()`, etc.): verify
    current guidance for the target SDK, since default behavior and the recommended insets APIs
    have changed across recent Android/Compose versions.
 

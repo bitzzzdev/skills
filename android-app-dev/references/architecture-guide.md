@@ -9,14 +9,14 @@ decision this file doesn't clearly cover, since official guidance evolves.
 ```
 UI layer (Compose screens + ViewModels)
    ↓ calls
-Domain layer (optional — use cases/interactors, for apps complex enough to need business
+Domain layer (optional: use cases/interactors, for apps complex enough to need business
    logic shared across multiple ViewModels; skip for simple apps)
    ↓ calls
 Data layer (repositories, wrapping local DB / network / datastore sources)
 ```
 
 For a simple app (a handful of screens, no complex shared business logic), UI layer calling
-directly into a data layer's repositories is fine — don't force an unnecessary domain/use-case
+directly into a data layer's repositories is fine: don't force an unnecessary domain/use-case
 layer onto a small app just because it's "the proper architecture." Introduce the domain layer
 when business logic needs to be shared/reused across multiple ViewModels or is complex enough to
 deserve isolated testing.
@@ -62,8 +62,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     )
 }
 
-// Keep the actual UI in a separate stateless composable taking plain data + lambdas —
-// makes it trivially previewable and testable without a real ViewModel/DI graph.
+// Keep the actual UI in a separate stateless composable taking plain data + lambdas: // makes it trivially previewable and testable without a real ViewModel/DI graph.
 @Composable
 private fun ProfileContent(
     uiState: ProfileUiState,
@@ -75,13 +74,13 @@ private fun ProfileContent(
 
 Key conventions:
 - One `UiState` data class per screen, exposed as `StateFlow`, collected with
-  `collectAsStateWithLifecycle()` (lifecycle-aware — prefer this over plain `collectAsState()`
+  `collectAsStateWithLifecycle()` (lifecycle-aware: prefer this over plain `collectAsState()`
   in Compose to avoid collecting while the UI isn't visible).
 - Split each screen composable into a "stateful" wrapper that pulls in the ViewModel, and a
-  "stateless" content composable taking plain parameters — makes `@Preview` composables trivial
+  "stateless" content composable taking plain parameters: makes `@Preview` composables trivial
   to write without needing a fake ViewModel/DI setup.
 - Events flow up (lambdas passed down, called on user interaction), state flows down (UiState
-  passed down from ViewModel to composables) — don't let composables call back into the
+  passed down from ViewModel to composables): don't let composables call back into the
   ViewModel by holding a reference to it directly if it can be avoided; pass specific lambdas
   instead, for easier previewing/testing.
 
@@ -99,41 +98,41 @@ class UserRepository(
 }
 ```
 
-Repositories are the single source of truth abstraction the UI/domain layer depends on — UI code
+Repositories are the single source of truth abstraction the UI/domain layer depends on: UI code
 should not talk to Room DAOs or Retrofit services directly.
 
 ## Dependency injection: Hilt vs. Koin vs. manual
 
-- **Hilt** — Google's recommended DI framework for Android, built on Dagger, compile-time
+- **Hilt**: Google's recommended DI framework for Android, built on Dagger, compile-time
   validated. Good default for most real apps, especially if the user wants the
   "standard"/officially-recommended approach. Requires annotation processing (KSP) and a bit more
   boilerplate/setup than Koin.
-- **Koin** — a popular lighter-weight, runtime DI framework, pure Kotlin, no code generation.
+- **Koin**: a popular lighter-weight, runtime DI framework, pure Kotlin, no code generation.
   Good choice if the user wants less build-time complexity or is building something small, or
   explicitly prefers it.
-- **Manual DI** (a simple container class passing dependencies through constructors) — perfectly
+- **Manual DI** (a simple container class passing dependencies through constructors): perfectly
   reasonable for small apps/prototypes; don't force Hilt's setup overhead onto a throwaway/small
   project unless the user wants it.
 
 Ask or infer from project scale which fits, rather than always defaulting to Hilt for every
-request — for a quick single-screen prototype, manual DI or no DI framework at all is often the
+request: for a quick single-screen prototype, manual DI or no DI framework at all is often the
 right call.
 
 ## Navigation
 
 Use **Navigation Compose** (`androidx.navigation:navigation-compose`) for multi-screen Compose
-apps — the current standard approach, replacing older Fragment-based Navigation for pure-Compose
+apps: the current standard approach, replacing older Fragment-based Navigation for pure-Compose
 apps. See `compose-patterns.md` for a navigation graph example.
 
 ## Testing layers
 
-- **ViewModel tests** — test `uiState` emissions given fake/mocked repositories, using
+- **ViewModel tests**: test `uiState` emissions given fake/mocked repositories, using
   `kotlinx-coroutines-test` for coroutine scheduling control.
-- **Repository tests** — test against fake DAOs/API services, not real Room/network, for speed.
-- **Compose UI tests** — use `createComposeRule()` and semantics-based matchers
+- **Repository tests**: test against fake DAOs/API services, not real Room/network, for speed.
+- **Compose UI tests**: use `createComposeRule()` and semantics-based matchers
   (`onNodeWithText`, `onNodeWithContentDescription`) rather than testing implementation
   internals.
 
 Only scaffold tests if the user asks for them or the task's scope clearly warrants it (e.g. a
-production-quality deliverable) — don't pad every quick prototype request with a full test suite
+production-quality deliverable): don't pad every quick prototype request with a full test suite
 unasked.

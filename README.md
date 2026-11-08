@@ -1,37 +1,55 @@
 # skills
 
-A collection of agent skills for Claude Code, OpenCode and Claude.ai. Each skill is a folder with a `SKILL.md` and optional reference files that load only when the agent needs them.
+A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode, and Claude.ai. Each skill is a self-contained folder with a `SKILL.md` and reference files that load only when the agent needs them.
 
 ## Skills
 
 | Skill | What it does |
 |---|---|
-| [`android-app-dev`](android-app-dev) | Builds, edits and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup and GitHub Actions builds. |
-| [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions and gotchas, and checkpoint commits snapshot the whole codebase so anyone joining later can read the log and get up to speed. Includes a linter and a history reader. |
-| [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end to end. Reproduces the error, searches the files the trace points at, checks the full log for other errors, reads the official docs for the installed version, fixes the root cause and verifies. Includes a script that pulls file locations out of a stack trace. |
-| [`error-docs-lookup`](error-docs-lookup) | Makes the agent read current official docs, changelogs and GitHub issues before fixing a build, type, lint, install or runtime error, instead of guessing from memory. |
-| [`human-writing`](human-writing) | Keeps written output sounding like a person. Bans em dashes and emoji, cuts common AI phrasing, and covers code comments, commit messages, READMEs and UI copy. Includes a scanner script. |
-| [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files and common effects. |
-| [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom and mapping guidance. |
-| [`production-ready`](production-ready) | Takes a project to a production finish. Creates or updates the changelog, README and docs, and drafts terms, privacy and project rules from what the code really does. Ends with a refresh pass through the other skills. Includes an audit script. |
-| [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL sites with scroll-driven motion, smooth scrolling and cinematic transitions. |
+| [`android-app-dev`](android-app-dev) | Builds, edits, and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup, and GitHub Actions CI builds. |
+| [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions, and gotchas; checkpoint commits snapshot the repository state. Includes a commit linter and history reader. |
+| [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end-to-end. Reproduces the error, searches affected files, checks full logs, reads official documentation, fixes root causes, and verifies. Includes error context extraction scripts. |
+| [`error-docs-lookup`](error-docs-lookup) | Directs the agent to read current official documentation, changelogs, and GitHub issues before fixing build, type, lint, install, or runtime errors instead of guessing from memory. |
+| [`google-seo-skill`](google-seo-skill) | Applies official Google SEO and generative AI search (AEO/GEO) guidance when writing, reviewing, or auditing web pages. Used for public web projects needing search ranking; avoided for personal or internal projects where indexing is not needed. |
+| [`human-writing`](human-writing) | Keeps written output sounding human. Bans em dashes and emoji, eliminates stock AI phrasing, and covers code comments, commit messages, READMEs, and UI copy. Includes a scanner script. |
+| [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files, and common shader effects. |
+| [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom, mapping guidance, and CI workflows. |
+| [`production-ready`](production-ready) | Takes a project to a production release. Directs the agent to orchestrate all other relevant skills in its toolkit, audits the repository, generates changelogs and docs, drafts legal files, and conducts a multi-skill refresh pass. Includes an audit script. |
+| [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL websites with scroll-driven motion, smooth scrolling, and cinematic transitions. |
+
+## Skill Orchestration
+
+The skills work together as an interconnected toolkit:
+- When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
+- For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
+- When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 
 ## Installation
+
+**Antigravity and Gemini CLI**
+
+Copy the skill folder into your personal skills directory:
+
+```bash
+git clone https://github.com/bitzzdev/skills.git
+cp -r skills/google-seo-skill ~/.gemini/antigravity-cli/skills/
+```
+
+For project-specific skills, place them in `.gemini/skills/` within your project root.
 
 **Claude Code**
 
 Copy the skill folder into your personal skills directory, or into a project:
 
 ```bash
-git clone https://github.com/bitzzdev/skills.git
-cp -r skills/human-writing ~/.claude/skills/
+cp -r skills/google-seo-skill ~/.claude/skills/
 ```
 
 For a single project, use `.claude/skills/` inside that project instead.
 
 **OpenCode**
 
-Copy the skill folder into your OpenCode skills directory. See the OpenCode docs for the current location.
+Copy the skill folder into your OpenCode skills directory (such as `~/.config/opencode/skills/`).
 
 **Claude.ai**
 

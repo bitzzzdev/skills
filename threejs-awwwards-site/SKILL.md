@@ -12,13 +12,13 @@ WebGL/Three.js hero scenes, buttery smooth-scroll (usually virtual/inertial scro
 scroll-position-driven 3D and text animation ("chapters" that reveal as you scroll), full-bleed
 video/image transitions between sections, custom cursor and hover micro-interactions, and a
 strong loading sequence (preloader) before anything is shown. The defining trait isn't any
-single library — it's the **choreography**: scroll position drives a single continuous timeline
+single library: it's the **choreography**: scroll position drives a single continuous timeline
 that controls camera movement, 3D object transforms, text reveals, and section transitions
 together, rather than each section animating independently.
 
 This skill is about building that choreography correctly and performantly. For the actual visual
 identity (palette, type, layout personality, copywriting) use the `frontend-design` skill's
-process first or alongside this one — a technically perfect scroll rig with generic/templated
+process first or alongside this one: a technically perfect scroll rig with generic/templated
 visual design will still look generic. Read `frontend-design`'s SKILL.md for that pass; this
 skill assumes a design direction exists or is being developed in parallel.
 
@@ -27,20 +27,20 @@ skill assumes a design direction exists or is being developed in parallel.
 Whenever a build fails, the console/network shows an error, a library behaves unexpectedly, or a
 bug shows up in code (fresh or existing), **do not fix it from memory or by guessing** what is
 "probably" wrong. Fast-moving libraries like Three.js, GSAP, Lenis, and Vite change APIs,
-deprecate methods, and ship breaking changes faster than training data can stay current — a
+deprecate methods, and ship breaking changes faster than training data can stay current: a
 confident-sounding guess is exactly what produces a second, silent failure.
 
 When an error/bug appears:
-1. **Get the exact error text** — the full message, stack trace, or console output, not a
+1. **Get the exact error text**: the full message, stack trace, or console output, not a
    paraphrase. Ask the user for the precise error if it is missing or ambiguous.
-2. **Search first** — run a web search or fetch official docs using the exact error string and
+2. **Search first**: run a web search or fetch official docs using the exact error string and
    the library/version involved. Prefer official docs (Three.js docs, GSAP docs, Lenis GitHub,
    Vite docs) and the library's changelog/release notes.
 3. **Apply a fix only after confirming the cause against documentation.** If you cannot find
    authoritative docs or confirm the correct behavior, say so and mark the fix as unverified
    rather than presenting a guess as a solution.
 
-## Step 1 — Clarify scope before building
+## Step 1: Clarify scope before building
 
 Figure out, asking if genuinely ambiguous rather than assuming:
 - **New site vs. redesign of existing content.** If redesigning, what content/copy/assets
@@ -52,55 +52,55 @@ Figure out, asking if genuinely ambiguous rather than assuming:
   knowledge in spirit, though this is WebGL/GLSL for browsers, not Minecraft).
 - **Delivery target**: a single-file HTML/JS artifact/prototype for quick iteration, or a real
   project (Vite/npm project with proper build tooling) meant to be deployed? Default to a real
-  Vite-based project scaffold for anything beyond a single quick prototype — production
+  Vite-based project scaffold for anything beyond a single quick prototype: production
   award-sites are never single HTML files, and asset loading (GLTF, textures, video) benefits
   from real bundling.
 - **Performance target**: does it need to work well on mobile/low-end GPUs? Award-site demos are
-  often desktop-first and gracefully degrade elsewhere — confirm expectations rather than
+  often desktop-first and gracefully degrade elsewhere: confirm expectations rather than
   assuming full parity is required, since that changes how aggressive to be with post-processing.
 
-## Step 2 — Core stack
+## Step 2: Core stack
 
 Standard, current stack for this genre (verify exact latest versions via npm/web search if the
-user cares about pinning specific versions — don't assume version numbers from memory for fast
+user cares about pinning specific versions: don't assume version numbers from memory for fast
 moving libraries like Three.js, which ships frequent releases):
 
-- **Three.js** — the 3D/WebGL layer itself.
-- **GSAP + ScrollTrigger** — the industry-standard choice for binding scroll position to
+- **Three.js**: the 3D/WebGL layer itself.
+- **GSAP + ScrollTrigger**: the industry-standard choice for binding scroll position to
   animation timelines; also good for non-3D DOM animation (text reveals, transitions).
-- **Lenis** (by Studio Freight / Darkroom Engineering) — the current standard smooth-scroll
+- **Lenis** (by Studio Freight / Darkroom Engineering): the current standard smooth-scroll
   library that replaced older approaches; provides inertial virtual scrolling and integrates
   cleanly with ScrollTrigger via `lenis.on('scroll', ScrollTrigger.update)`.
-- **A bundler** — Vite is the standard default for a from-scratch Three.js project; use it
-  unless the user has an existing framework (Next.js, Nuxt, SvelteKit, Astro — the fetched
+- **A bundler**: Vite is the standard default for a from-scratch Three.js project; use it
+  unless the user has an existing framework (Next.js, Nuxt, SvelteKit, Astro: the fetched
   reference site is actually built on Astro, worth matching if the user wants that stack).
 - **React Three Fiber (`@react-three/fiber`) + drei**, optionally, if the user's stack is React
-  and they want declarative Three.js — otherwise use vanilla Three.js, which is more common and
+  and they want declarative Three.js: otherwise use vanilla Three.js, which is more common and
   more flexible for this specific award-site genre.
 
 Read `references/scroll-choreography.md` for the core pattern binding scroll position to a
-Three.js scene and to GSAP timelines — this is the single most important technical piece to get
+Three.js scene and to GSAP timelines: this is the single most important technical piece to get
 right, and the piece most likely to be built sloppily (e.g. driving the 3D scene straight off
 native `window.scrollY` instead of through Lenis, causing jank).
 
-## Step 3 — Scene and asset setup
+## Step 3: Scene and asset setup
 
 Read `references/threejs-scene-setup.md` for a standard renderer/camera/scene bootstrap,
 resize handling, and a note on `requestAnimationFrame` vs Three.js's built-in render loop helpers.
 
 Read `references/asset-pipeline.md` for guidance on 3D model formats (glTF/GLB is the standard,
 compressed with Draco or Meshopt for large scenes), texture compression, and lazy/progressive
-loading — asset loading strategy directly determines whether the preloader experience feels
+loading: asset loading strategy directly determines whether the preloader experience feels
 intentional or just slow.
 
-## Step 4 — Motion & interaction layer
+## Step 4: Motion & interaction layer
 
 Read `references/motion-patterns.md` for concrete recipes: scroll-triggered chapter reveals,
 camera dolly/pan tied to scroll progress, parallax layering, custom cursor, magnetic
 hover-buttons, and page-load intro sequences (the "preloader then reveal" pattern nearly every
 site in this genre uses).
 
-## Step 5 — Performance and accessibility floor
+## Step 5: Performance and accessibility floor
 
 Read `references/performance-and-fallbacks.md` before considering the build finished. Sites in
 this genre are notorious for skipping: a graceful fallback for browsers/devices without solid
@@ -109,27 +109,27 @@ and keeping frame budget sane (avoid rendering at full resolution + heavy post-p
 every frame without a pixel-ratio cap). Treat these as required, not optional polish, the same
 way `frontend-design` treats a responsive/accessible floor as required for visual design.
 
-## Step 6 — Deliverable
+## Step 6: Deliverable
 
 For a full project, scaffold real files (Vite project structure: `index.html`, `src/main.js` or
-similar, `src/scene/`, `package.json`) rather than a single giant script — this is a "long,
+similar, `src/scene/`, `package.json`) rather than a single giant script: this is a "long,
 multi-file build" case per the general file-creation guidance, so plan the file structure first,
 then build incrementally, and mention the user can run `npm install && npm run dev` to preview
 locally. For a quick prototype/exploration, a self-contained HTML artifact importing Three.js
-from a CDN (e.g. `https://cdn.jsdelivr.net/npm/three@<version>/build/three.module.js` — confirm
+from a CDN (e.g. `https://cdn.jsdelivr.net/npm/three@<version>/build/three.module.js`: confirm
 the actual latest version rather than guessing) is fine, and can be shown live if the environment
 supports rendering HTML artifacts.
 
 ## When redesigning based on a specific reference site
 
 If the user points to a specific site (like the otsuka-air.jp example) as inspiration:
-- Fetch it and look at its actual structure/copy/section flow before designing — don't assume
+- Fetch it and look at its actual structure/copy/section flow before designing: don't assume
   what it contains from the name alone.
 - Identify the underlying *pattern* (chapter-based scroll narrative, video-per-section reveal,
   interview/testimonial carousel, etc.) rather than copying its literal content, layout, brand
-  colors, or copy verbatim — the goal is "a site in this genre for the user's own subject," not a
+  colors, or copy verbatim: the goal is "a site in this genre for the user's own subject," not a
   clone. Apply `frontend-design`'s principle of grounding the design in the user's actual
   subject matter, not the reference site's.
 - Never reproduce a reference site's copy text, and don't recreate distinctive proprietary visual
-  assets (their exact photography, logos, or brand marks) — build original content structured the
+  assets (their exact photography, logos, or brand marks): build original content structured the
   same way.

@@ -17,10 +17,9 @@ function playIntroSequence() {
 }
 ```
 
-Splitting heading text into per-word or per-character spans for staggered reveals is common —
-either hand-wrap words in `<span>` tags at build time, or use a splitting utility. Keep this
+Splitting heading text into per-word or per-character spans for staggered reveals is common: either hand-wrap words in `<span>` tags at build time, or use a splitting utility. Keep this
 simple: over-fragmenting text (per-character on long paragraphs) hurts readability and
-accessibility (screen readers) if not handled carefully — prefer per-word or per-line splitting
+accessibility (screen readers) if not handled carefully: prefer per-word or per-line splitting
 for body text, per-character only for short display headlines where the effect is the point.
 
 ## 2. Custom cursor
@@ -116,10 +115,10 @@ gsap.utils.toArray('.chapter').forEach((chapter, i) => {
 
 ## General taste notes
 
-- Stagger and easing choices carry as much of the "premium" feel as the visuals do — favor
+- Stagger and easing choices carry as much of the "premium" feel as the visuals do: favor
   `power3`/`power4` out-easing for reveals (fast start, gentle settle) over linear or basic
   ease-in-out, and use `elastic`/`back` easing sparingly, only for small playful UI elements
   (buttons, cursor), not large layout transitions where it reads as bouncy/cheap.
-- Respect `prefers-reduced-motion` (see `performance-and-fallbacks.md`) — disable parallax,
+- Respect `prefers-reduced-motion` (see `performance-and-fallbacks.md`): disable parallax,
   cursor-follow, and large scroll-driven camera moves for users who've requested reduced motion,
   while still delivering the content itself without motion gating access to it.

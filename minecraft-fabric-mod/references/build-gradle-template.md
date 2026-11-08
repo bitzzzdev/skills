@@ -1,7 +1,7 @@
 # build.gradle / gradle.properties templates
 
 All version placeholders below (anything in `<ANGLE_BRACKETS>`) must be filled in with
-values confirmed via research in SKILL.md Step 1 — never with memorized numbers.
+values confirmed via research in SKILL.md Step 1: never with memorized numbers.
 
 ## settings.gradle
 
@@ -22,7 +22,7 @@ pluginManagement {
 org.gradle.jvmargs=-Xmx2G
 org.gradle.parallel=true
 
-# Fabric Properties — confirm ALL of these via web research, do not guess
+# Fabric Properties: confirm ALL of these via web research, do not guess
 minecraft_version=<MC_VERSION>
 yarn_mappings=<MC_VERSION>+build.<BUILD_NUMBER>
 loader_version=<LOADER_VERSION>
@@ -42,7 +42,7 @@ fabric_version=<FABRIC_API_VERSION_FOR_THIS_MC_VERSION>
 plugins {
     id 'fabric-loom' version '<LOOM_VERSION>'
     // Note: as of mid-2026 Loom has two plugin ids depending on the target MC version's
-    // obfuscation status — confirm which one applies (see SKILL.md Step 1, item 5):
+    // obfuscation status: confirm which one applies (see SKILL.md Step 1, item 5):
     //   id 'net.fabricmc.fabric-loom' version '<LOOM_VERSION>'          // non-obfuscated
     //   id 'net.fabricmc.fabric-loom-remap' version '<LOOM_VERSION>'    // obfuscated
     id 'maven-publish'
@@ -107,12 +107,12 @@ jar {
 ## Notes
 
 - `gradle/wrapper/gradle-wrapper.properties` must specify a Gradle version that meets or
-  exceeds the minimum required by the chosen Loom version — check the Loom release notes
+  exceeds the minimum required by the chosen Loom version: check the Loom release notes
   (https://github.com/FabricMC/fabric-loom/releases) for "requires Gradle X.Y" statements.
 - If the mod needs client-only code (rendering, screens, keybinds), use
   `loom.splitEnvironmentSourceSets()` and put that code under `src/client/java`, with an
   entrypoint class implementing `ClientModInitializer`, registered in `fabric.mod.json`
   under `entrypoints.client`.
 - If depending on other mods not on Maven Central/Fabric's maven, CurseMaven or the
-  Modrinth maven are common — add the repository under `repositories {}` and confirm the
+  Modrinth maven are common: add the repository under `repositories {}` and confirm the
   exact coordinate string by searching for the mod's Modrinth/CurseForge page.

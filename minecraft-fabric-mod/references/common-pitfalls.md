@@ -8,7 +8,7 @@ Check this list before telling the user the mod is done.
    rather than incrementing a previous version's build number by guesswork.
 
 2. **Fabric API version doesn't support the target MC version.** Fabric API ships a
-   different build per MC version (or per small range of versions) — a Fabric API version
+   different build per MC version (or per small range of versions): a Fabric API version
    built for an older MC version will fail to resolve or will resolve but crash at runtime.
    Cross-check on https://github.com/FabricMC/fabric/releases or Modrinth's Fabric API page,
    filtered to the exact target MC version.
@@ -29,17 +29,17 @@ Check this list before telling the user the mod is done.
    what the target MC version needs, compilation fails or the game refuses to launch.
 
 6. **Registry API changes.** Minecraft's registration APIs (for items, blocks, blockstates,
-   creative tabs, etc) have changed meaningfully across versions — deferred/registry-key
+   creative tabs, etc) have changed meaningfully across versions: deferred/registry-key
    based registration replaced some older direct-registration patterns in various updates.
    Don't assume registration code from an older MC version's mod compiles unchanged against
-   a newer one — search for `<MC_VERSION> fabric how to register item` (or block/etc) if the
+   a newer one: search for `<MC_VERSION> fabric how to register item` (or block/etc) if the
    target version postdates your training knowledge, rather than copying an old pattern.
 
 7. **Mixin refmap / mixin config mistakes.** If mixins are used, `mymod.mixins.json` must
    correctly list the mixin package and the `build.gradle`/Loom setup must be configured to
    produce a refmap; a missing refmap causes runtime `MixinTransformationException`s. Only
    add mixins if the mod actually needs to alter vanilla behavior that can't be done via
-   normal Fabric API hooks — most simple mods (new items/blocks/recipes) need zero mixins.
+   normal Fabric API hooks: most simple mods (new items/blocks/recipes) need zero mixins.
 
 8. **Client-only code placed in the main sourceset.** Rendering code, screen/GUI code, and
    keybind registration are client-only. If not using split sourcesets, guard such code so
@@ -47,8 +47,7 @@ Check this list before telling the user the mod is done.
    crash dedicated servers with a `ClassNotFoundException` for client-only Minecraft classes.
 
 9. **Assuming an unreleased/snapshot MC version is "the latest release."** If a user says
-   "the new version," confirm whether they mean the latest *stable release* or a snapshot —
-   Fabric support for snapshots can lag, and mappings/Fabric API for snapshots are less
+   "the new version," confirm whether they mean the latest *stable release* or a snapshot: Fabric support for snapshots can lag, and mappings/Fabric API for snapshots are less
    stable. Ask if ambiguous, or default to latest stable and say so.
 
 10. **Not verifying at all.** If Gradle/network access is available in the environment,

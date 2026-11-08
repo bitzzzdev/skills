@@ -1,8 +1,8 @@
 # GitHub Actions CI build workflow
 
-This project builds exclusively through GitHub Actions — never locally, never in the sandbox.
+This project builds exclusively through GitHub Actions: never locally, never in the sandbox.
 Every scaffolded app must include a debug-build workflow at `.github/workflows/build.yml`.
-Release-signing is a separate, opt-in workflow — only add it if the user actually asks for signed
+Release-signing is a separate, opt-in workflow: only add it if the user actually asks for signed
 release builds, since it requires them to configure signing secrets in their own repo.
 
 ## Base debug-build workflow (required default, no secrets needed)
@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           # Match whatever JDK version was confirmed in SKILL.md Step 1 for the AGP version in
-          # use — keep this in sync with build.gradle.kts's compileOptions/jvmTarget.
+          # use: keep this in sync with build.gradle.kts's compileOptions/jvmTarget.
           java-version: '17'
           distribution: 'temurin'
 
@@ -61,26 +61,26 @@ jobs:
 ```
 
 Notes:
-- `assembleDebug` produces a debug-signed APK using Android's built-in debug keystore — this
+- `assembleDebug` produces a debug-signed APK using Android's built-in debug keystore: this
   needs **no secrets or signing configuration** and is why it's the required default CI build,
   unlike a release build (see below).
 - The GitHub-hosted `ubuntu-latest` runner does not include the Android SDK pre-configured for
-  Gradle's `android` plugin in every image variant — if a run fails specifically on SDK/license
+  Gradle's `android` plugin in every image variant: if a run fails specifically on SDK/license
   issues, add an explicit SDK setup step (search `android-actions/setup-android` or the current
   equivalent GitHub Action, since the Android SDK setup action landscape has shifted over time;
   confirm the current recommended action rather than assuming an old one is still maintained).
   Many recent `ubuntu-latest` images do include a working Android SDK out of the box for basic
-  Gradle Android builds — check whether the base workflow above succeeds first before adding an
+  Gradle Android builds: check whether the base workflow above succeeds first before adding an
   extra SDK setup step unnecessarily.
 - Lint and unit tests are included by default since they're fast, need no secrets, and catch real
-  issues — drop them only if the user explicitly wants a minimal build-only workflow.
+  issues: drop them only if the user explicitly wants a minimal build-only workflow.
 
 ## Optional: release-signing workflow (only add if the user asks for signed release builds)
 
 Signing a release build requires secrets the user must configure themselves in their repo's
 Settings → Secrets and variables → Actions: typically a base64-encoded keystore file, the
 keystore password, key alias, and key password. Never invent or generate a keystore/signing
-credentials on the user's behalf inside this sandbox — signing keys are sensitive, long-lived
+credentials on the user's behalf inside this sandbox: signing keys are sensitive, long-lived
 secrets the user must own and back up themselves.
 
 ```yaml
@@ -137,7 +137,7 @@ jobs:
 ```
 
 This assumes `app/build.gradle.kts` has a `signingConfigs { release { ... } }` block reading those
-same environment variables — set that up explicitly if wiring up release signing, and explain to
+same environment variables: set that up explicitly if wiring up release signing, and explain to
 the user exactly which secrets they need to add and how to generate/export a keystore, rather
 than assuming they already have one configured.
 
@@ -150,7 +150,7 @@ After pushing, don't declare the app "done" until the workflow has actually been
   user to check manually.
 - If `gh` isn't available, tell the user to check the repository's **Actions** tab, and that the
   debug APK (once the workflow succeeds) is downloadable from that run's **Artifacts** section.
-- If the workflow fails, read the actual failure log rather than guessing — Gradle/AGP build
+- If the workflow fails, read the actual failure log rather than guessing: Gradle/AGP build
   failures are usually specific about which dependency, SDK component, or config mismatch failed,
   which often points back to a Step 1 research step worth re-checking (e.g. a Compose BOM version
   incompatible with the Kotlin version in use, or a missing Android SDK component on the runner).

@@ -2,10 +2,10 @@
 
 ## Model format
 
-- **glTF/GLB is the standard format** for Three.js scenes — prefer `.glb` (binary, single file)
+- **glTF/GLB is the standard format** for Three.js scenes: prefer `.glb` (binary, single file)
   over `.gltf` (JSON + separate assets) for simpler deployment.
 - Compress geometry with **Draco** or **Meshopt** compression for anything beyond a simple
-  low-poly model — large uncompressed glTF files are a common cause of slow, janky first loads.
+  low-poly model: large uncompressed glTF files are a common cause of slow, janky first loads.
 - Load with `GLTFLoader` + the matching decoder (`DRACOLoader` for Draco-compressed files):
 
 ```js
@@ -25,12 +25,12 @@ gltfLoader.load('/models/product.glb', (gltf) => {
 
 ## Texture strategy
 
-- Compress/resize textures appropriately for how large they'll appear on screen — a 4K texture
+- Compress/resize textures appropriately for how large they'll appear on screen: a 4K texture
   on an object that's a few hundred pixels tall is wasted bandwidth and memory.
 - Use `.webp` or `.avif` for any 2D image assets (backgrounds, UI images) shown via HTML/CSS
-  rather than as Three.js textures — matches the reference site's own use of `.webp` throughout.
+  rather than as Three.js textures: matches the reference site's own use of `.webp` throughout.
 - For Three.js textures specifically, consider KTX2/Basis compressed textures
-  (`KTX2Loader`) for large scenes with many textures, to reduce GPU memory pressure — this
+  (`KTX2Loader`) for large scenes with many textures, to reduce GPU memory pressure: this
   matters more for complex scenes than a single hero object.
 - Set `texture.colorSpace = THREE.SRGBColorSpace` on color textures (base color/albedo maps) so
   colors render correctly with the renderer's output color space; leave normal/roughness/metalness
@@ -50,7 +50,7 @@ manager.onProgress = (url, loaded, total) => {
 };
 
 manager.onLoad = () => {
-  // All tracked assets loaded — trigger the intro reveal animation (GSAP timeline),
+  // All tracked assets loaded: trigger the intro reveal animation (GSAP timeline),
   // then remove/hide the preloader overlay.
   playIntroSequence();
 };
@@ -62,10 +62,10 @@ const textureLoader = new THREE.TextureLoader(manager);
 
 Cautions:
 - Don't block the preloader on assets that aren't actually needed for the first paint (e.g. video
-  files for later sections) — only gate on what's needed for the hero, then lazy-load the rest as
+  files for later sections): only gate on what's needed for the hero, then lazy-load the rest as
   the user scrolls toward those sections.
 - Give the preloader a minimum sensible display time or graceful exit animation even if loading
-  is instant (cached assets) — an preloader that flashes for 40ms looks like a bug, not
+  is instant (cached assets): an preloader that flashes for 40ms looks like a bug, not
   intentional pacing. A small artificial minimum (e.g. 400-600ms) plus a smooth transition out is
   common practice, but don't overdo it into an artificial multi-second delay that just frustrates
   repeat visitors.

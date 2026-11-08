@@ -1,7 +1,7 @@
 # Three.js scene setup
 
 A standard, sane bootstrap for a full-viewport WebGL hero scene. Adapt object/material choices
-to the actual design direction — this is the plumbing, not the art direction.
+to the actual design direction: this is the plumbing, not the art direction.
 
 ## Basic renderer / scene / camera
 
@@ -13,7 +13,7 @@ const canvas = document.querySelector('#webgl-canvas');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-  35, // fov — narrower (25-40) reads as more "product photography", wider (50-75) more immersive
+  35, // fov: narrower (25-40) reads as more "product photography", wider (50-75) more immersive
   window.innerWidth / window.innerHeight,
   0.1,
   100
@@ -26,7 +26,7 @@ const renderer = new THREE.WebGLRenderer({
   alpha: true, // transparent background if compositing over HTML/CSS behind it
 });
 
-// Cap pixel ratio — rendering at full devicePixelRatio (often 2-3 on modern displays) with
+// Cap pixel ratio: rendering at full devicePixelRatio (often 2-3 on modern displays) with
 // post-processing is a common, easily avoidable performance killer.
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -103,22 +103,21 @@ const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  0.4,  // strength — keep subtle; strong bloom reads as a demo reel, not a product site
+  0.4,  // strength: keep subtle; strong bloom reads as a demo reel, not a product site
   0.6,  // radius
   0.85  // threshold
 ));
 // Then call composer.render() instead of renderer.render(scene, camera) in the loop.
 ```
 
-Post-processing multiplies render cost — only add passes the design actually calls for, and
+Post-processing multiplies render cost: only add passes the design actually calls for, and
 always check the performance guidance in `performance-and-fallbacks.md` before shipping heavy
 effects.
 
 ## Module source
 
 Import Three.js addons (`OrbitControls`, `RGBELoader`, post-processing passes, `GLTFLoader`,
-`DRACOLoader`, etc.) from `three/addons/...` when using a bundler with the `three` npm package —
-this is the current convention (replacing the older `three/examples/jsm/...` path pattern still
+`DRACOLoader`, etc.) from `three/addons/...` when using a bundler with the `three` npm package: this is the current convention (replacing the older `three/examples/jsm/...` path pattern still
 seen in older tutorials/blog posts, which may still work but isn't the current recommended
 import path). Confirm the current recommended import convention against threejs.org's own docs
 or examples if something doesn't resolve, since Three.js's own internal module layout has shifted
