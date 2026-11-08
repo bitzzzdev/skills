@@ -24,7 +24,7 @@ Run `python scripts/validate_skills.py` before opening a pull request. CI runs t
 
 - Keep changes small and focused.
 - Write plainly. No emoji, no em dashes, no marketing language. The `human-writing` skill has a scanner you can run: `python human-writing/scripts/scan.py <path>`.
-- Commit messages are short and in the imperative, for example `Add retry notes to android-app-dev`.
+- Commit messages follow the format in [`context-rich-commits`](context-rich-commits): a short imperative subject, then the why, the changes and how you checked them.
 
 ## Reporting issues
 

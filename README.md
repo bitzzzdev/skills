@@ -7,6 +7,7 @@ A collection of agent skills for Claude Code, OpenCode and Claude.ai. Each skill
 | Skill | What it does |
 |---|---|
 | [`android-app-dev`](android-app-dev) | Builds, edits and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup and GitHub Actions builds. |
+| [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions and gotchas, and checkpoint commits snapshot the whole codebase so anyone joining later can read the log and get up to speed. Includes a linter and a history reader. |
 | [`error-docs-lookup`](error-docs-lookup) | Makes the agent read current official docs, changelogs and GitHub issues before fixing a build, type, lint, install or runtime error, instead of guessing from memory. |
 | [`human-writing`](human-writing) | Keeps written output sounding like a person. Bans em dashes and emoji, cuts common AI phrasing, and covers code comments, commit messages, READMEs and UI copy. Includes a scanner script. |
 | [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files and common effects. |
