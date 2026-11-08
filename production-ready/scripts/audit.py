@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Production-readiness audit for a project folder.
 
-usage: audit.py [PROJECT_ROOT] [--skills-dir DIR] [--strict]
+usage: audit.py [PROJECT_ROOT] [--skills-dir DIR] [--type TYPE] [--strict]
 
-Reports MISSING, STALE and OK items for the changelog, docs, legal and
-community files, then lists the skills to run in the refresh pass.
+Guesses the project type, reports MISSING, STALE and OK items for the
+changelog, docs, legal and community files, then lists which skills to USE
+and which to SKIP for that type.
 Exit status is 0 unless --strict is given and something is MISSING or STALE.
 """
 import argparse
@@ -67,6 +68,92 @@ def manifest_version(root):
             if m:
                 return m.group(1), name
     return None, None
+
+
+TYPES = ("website", "mobile-native", "desktop", "game-mod", "shaderpack", "library-cli", "bot", "api")
+
+
+def detect_types(root):
+    """Return a list of project types guessed from marker files and dependencies."""
+    found = []
+    names, text = set(), ""
+    for d, dirs, files in os.walk(root):
+        dirs[:] = [x for x in dirs if x not in SKIP]
+        if d.count(os.sep) - root.count(os.sep) > 3:
+            dirs[:] = []
+        for f in files:
+            names.add(f)
+            if f in ("package.json", "pyproject.toml", "requirements.txt", "Cargo.toml", "go.mod",
+                     "build.gradle", "build.gradle.kts", "pubspec.yaml", "Gemfile", "composer.json"):
+                text += "\n" + read(os.path.join(d, f)).lower()
+            if f.endswith((".fsh", ".vsh", ".glsl")):
+                names.add("__shader__")
+    has = lambda *ws: any(w in text for w in ws)
+    if "AndroidManifest.xml" in names or "pubspec.yaml" in names or "Info.plist" in names \
+            or any(n.endswith(".xcodeproj") for n in names) or has("react-native", '"expo"', "com.android.application"):
+        found.append("mobile-native")
+    if "fabric.mod.json" in names or "mods.toml" in names or "neoforge.mods.toml" in names:
+        found.append("game-mod")
+    if "__shader__" in names and any(os.path.isdir(os.path.join(root, x)) for x in ("shaders", "assets")):
+        found.append("shaderpack")
+    if has('"electron"', "tauri", "pyqt", "pyside", "wpf") or "tauri.conf.json" in names:
+        found.append("desktop")
+    if has("discord.js", "discord.py", "discord-py", "telegraf", "python-telegram-bot", "@slack/bolt", "slack_bolt"):
+        found.append("bot")
+    web = has('"next"', '"nuxt"', '"astro"', "gatsby", "@sveltejs/kit", "@remix-run", "wordpress", "jekyll", "hugo") \
+        or "index.html" in names or "wp-config.php" in names
+    if web and "mobile-native" not in found and "game-mod" not in found:
+        found.append("website")
+    if has("express", "fastify", "fastapi", "flask", "django", "rails", "gin-gonic", "actix", "axum", "koa") \
+            and "website" not in found and "bot" not in found:
+        found.append("api")
+    if not found:
+        found.append("library-cli")
+    return found
+
+
+SPECIFIC = {
+    "mobile-native": ("android-app-dev", "native Android project"),
+    "game-mod": ("minecraft-fabric-mod", "Minecraft mod project"),
+    "shaderpack": ("iris-shaderpack-dev", "Minecraft shaderpack"),
+}
+
+
+def report_skills(types, root, skills_dir):
+    use = ["debug-and-fix (build, tests, lint)", "error-docs-lookup (warnings and deprecations)",
+           "human-writing (scan docs)", "context-rich-commits (commit)"]
+    skip = []
+    if "website" in types:
+        use.append("SEO and performance check (references/seo.md)")
+        use.append("accessibility pass")
+    else:
+        kinds = "/".join(t for t in types)
+        listing = {"mobile-native": "store listing text", "desktop": "landing page only if one exists",
+                   "game-mod": "mod page text", "shaderpack": "mod page text", "bot": "bot listing text",
+                   "api": "docs site only", "library-cli": "registry description"}
+        alt = ", ".join(sorted({listing[t] for t in types if t in listing}))
+        skip.append("SEO and Core Web Vitals (%s has no search-ranked pages), write %s instead" % (kinds, alt or "a clear description"))
+    if "mobile-native" in types or "desktop" in types:
+        use.append("accessibility pass")
+    for t in types:
+        if t in SPECIFIC:
+            name, why = SPECIFIC[t]
+            home = [skills_dir] if skills_dir else []
+            home += [os.path.join(root, ".claude", "skills"), os.path.expanduser("~/.claude/skills"), os.path.join(root, "..", "skills")]
+            if any(h and os.path.isdir(os.path.join(h, name)) for h in home):
+                use.append("%s (%s)" % (name, why))
+            else:
+                skip.append("%s not installed, skip" % name)
+    others = {"android-app-dev": "mobile-native", "minecraft-fabric-mod": "game-mod", "iris-shaderpack-dev": "shaderpack"}
+    for name, t in others.items():
+        if t not in types:
+            skip.append("%s (project is not %s)" % (name, t))
+    if "website" not in types:
+        skip.append("threejs-awwwards-site (not a website)")
+    legal = "terms and privacy needed if the project has users or collects data"
+    if types and all(t in ("shaderpack", "library-cli", "game-mod") for t in types):
+        legal = "terms and privacy usually not needed, license and contributing are"
+    return use, skip, legal
 
 
 def check_files(root):
@@ -199,6 +286,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("root", nargs="?", default=".")
     ap.add_argument("--skills-dir")
+    ap.add_argument("--type", help="override detected type, comma separated: " + ", ".join(TYPES))
     ap.add_argument("--strict", action="store_true")
     a = ap.parse_args()
     root = os.path.abspath(a.root)
@@ -206,6 +294,12 @@ def main():
         print("not a directory: " + root, file=sys.stderr)
         return 2
 
+    types = [t.strip() for t in a.type.split(",")] if a.type else detect_types(root)
+    unknown = [t for t in types if t not in TYPES]
+    if unknown:
+        print("unknown type: " + ", ".join(unknown), file=sys.stderr)
+        return 2
+    print("Project type: " + ", ".join(types))
     found = check_files(root)
     if found.get("CHANGELOG"):
         check_changelog(root, found["CHANGELOG"])
@@ -220,8 +314,14 @@ def main():
             for _, label, detail in rows:
                 print("  %-26s %s" % (label, detail))
     bad = sum(1 for r in results if r[0] in ("MISSING", "STALE"))
-    print("\nRefresh pass: debug-and-fix (build, tests), error-docs-lookup (warnings), "
-          "human-writing (scan docs), context-rich-commits (commit).")
+    use, skip, legal = report_skills(types, root, a.skills_dir)
+    print("\n== USE ==")
+    for u in dict.fromkeys(use):
+        print("  " + u)
+    print("\n== SKIP ==")
+    for k in skip:
+        print("  " + k)
+    print("\nLegal: " + legal)
     print("%d item(s) need attention." % bad)
     return 1 if (a.strict and bad) else 0
 
