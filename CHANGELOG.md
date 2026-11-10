@@ -7,6 +7,10 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added `systematic-issue-sweep` skill with guide (`SKILL.md`), reference
+  (`references/sweep-patterns.md`), and CLI scanner (`scripts/sweep.py`) to
+  sweep the entire workspace and eradicate defect classes across code, tests,
+  docs, and configuration.
 - Added project owner authority rules and assistant meta-instruction bans
   across `human-writing` and `production-ready`, eliminating assistant coaching
   leaks, placeholder advice, and unselected license prompts.
@@ -36,6 +40,12 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Integrated `systematic-issue-sweep` into `production-ready` multi-skill
+  orchestration and refresh pass, requiring workspace sweeps for any reported
+  bug, typo, or user inconvenience before release.
+- Integrated `systematic-issue-sweep` into `debug-and-fix` workflow to search
+  and fix recurrences across all files after root cause resolution.
+- Updated `audit.py` to recommend `systematic-issue-sweep` in production audits.
 - Updated `human-writing` `SKILL.md` and `references/ai-tells.md` to require
   writing from the owner's perspective, ban assistant-to-developer coaching,
   and provide before/after examples for license sections and code comments.

@@ -18,6 +18,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 | [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom, mapping guidance, and CI workflows. |
 | [`persistent-goal-execution`](persistent-goal-execution) | Keeps agents focused on the complete requested outcome across long tasks, retries, waiting, context compaction, and failures. |
 | [`production-ready`](production-ready) | Takes a project to a production release. Directs the agent to orchestrate all other relevant skills in its toolkit, audits the repository, generates changelogs and docs, drafts legal files, and conducts a multi-skill refresh pass. Includes an audit script. |
+| [`systematic-issue-sweep`](systematic-issue-sweep) | Sweeps the entire workspace to locate, fix, and prevent recurrences of any reported issue, typo, style flaw, or logic error. Eradicates whole defect classes across code, tests, docs, and configs. Includes a sweep script. |
 | [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL websites with scroll-driven motion, smooth scrolling, and cinematic transitions. |
 
 ## Skill Orchestration
@@ -36,6 +37,7 @@ The skills work together as an interconnected toolkit:
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
 - Every skill includes an update check directing agents to inspect git status in the skill directory (such as `~/.copilot/skills/` or `~/.gemini/antigravity-cli/skills/`) before running, so instructions stay current.
 - All documentation, license entries, and comments are authored strictly from the perspective and authority of the project owner, banning assistant coaching leaks, meta-instructions, and unselected license checklists.
+- When any defect, typo, or user-pointed inconvenience is identified, `production-ready` and `debug-and-fix` invoke `systematic-issue-sweep` to search the entire workspace and eradicate all related occurrences across code, docs, tests, and configuration before release.
 
 ## Installation
 
