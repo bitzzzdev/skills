@@ -7,6 +7,11 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added corporate release documentation suite and audit checks to
+  `production-ready`, covering terms of service, privacy policy, third-party
+  credits, security policy, contributing guidelines, and code of conduct.
+- Added support for `--force-release`, `--personal`, `--skip-legal`, and
+  `--skip-files` flags in `audit.py`.
 - Added skill folder update checks to every skill so agents inspect git status in
   the skill directory before running.
 - Added `scripts/check_skill_update.py` to inspect git status and branch tracking
@@ -21,6 +26,13 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Updated `production-ready` `SKILL.md` and `references/legal-and-rules.md` with
+  enterprise document outlines, codebase audit steps, and architecture decision
+  trees.
+- Enhanced `audit.py` with clear output categorization across REQUIRED,
+  RECOMMENDED, OPTIONAL, and USER-EXCLUDED document tiers.
+- Added automatic private project detection and explicit user override handling
+  in production readiness checks.
 - Updated `validate_skills.py` to verify skill folder update checks in all skills.
 - Updated `audit.py` and `production-ready` flow to inspect skill folder status
   and include `~/.copilot/skills`.

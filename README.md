@@ -31,6 +31,7 @@ The skills work together as an interconnected toolkit:
 - `production-ready` pushes every release to `dev` first and promotes the
   exact commit to production only after its `dev` CI/CD check passes.
 - For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
+- `production-ready` verifies the corporate release document suite (terms, privacy, licenses, third-party attribution, security policies, and community standards) while properly handling private projects, user exclusions, and release overrides.
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
 - Every skill includes an update check directing agents to inspect git status in the skill directory (such as `~/.copilot/skills/` or `~/.gemini/antigravity-cli/skills/`) before running, so instructions stay current.
