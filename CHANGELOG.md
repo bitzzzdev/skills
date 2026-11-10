@@ -10,6 +10,8 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 - Added `persistent-goal-execution` for preserving complete objectives,
   acceptance criteria, plans, authoritative evidence, and completion state
   across long coding tasks.
+- Added `credential-safety` for checking credentials before commits, pushes,
+  and production releases.
 
 ### Changed
 
@@ -19,4 +21,5 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
   explicit confirmation before pushing to production.
 - Clarified that all production work must be pushed to `dev` without
   confirmation first, while production pushes still require human approval.
+- Added credential checks to the `production-ready` orchestration flow.
 

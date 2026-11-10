@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (persistent-goal-execution, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch.
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (persistent-goal-execution, credential-safety, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch.
 ---
 
 # Production Ready
@@ -14,15 +14,16 @@ Work on what the project actually has. Read the code and git history first, writ
 When finishing a project, you act as the orchestrator across your entire skill ecosystem. Do not treat production readiness as simply editing markdown files. Proactively invoke and apply the other skills available in your environment when their criteria are met:
 
 1. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
-2. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
-3. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
-4. **google-seo-skill**:
+2. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
+3. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
+4. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
+5. **google-seo-skill**:
    - **Pull updates first**: If any update to `google-seo-skill` is available in git (upstream `https://github.com/mikezupper/google-seo-skill`), pull it first using `python scripts/update_seo_skill.py`. Verify clean frontmatter and human writing, then push updates to the skills repo.
    - **Use when**: Working on a public web project where search ranking and public search engine visibility are needed. Use it to audit crawlability, metadata, structured data, canonical URLs, and Core Web Vitals.
    - **Avoid when**: Working on a personal project, private repository, internal dashboard, staging site, or any project where search indexing is not desired. In those cases, skip SEO ranking checks entirely and verify that `noindex` meta tags, `X-Robots-Tag: noindex` headers, or robots disallow rules are present to prevent indexing.
-5. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
-6. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
-7. **Domain-specific skills**:
+6. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
+7. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
+8. **Domain-specific skills**:
    - `android-app-dev`: Use for Android apps to verify the CI workflow, Gradle version catalog, and Compose configuration.
    - `minecraft-fabric-mod`: Use for Minecraft Fabric mods to verify Loom, Fabric API, and CI build workflows.
    - `iris-shaderpack-dev`: Use for shaderpacks to verify program names and shaders.properties.
@@ -74,16 +75,17 @@ Read `references/skill-selection.md` and confirm the project type from the audit
 Run the applicable skills in this sequence:
 
 1. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
-2. **debug-and-fix**: Run the project's build, test, and lint commands. Fix any failures at their root cause.
-3. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
-4. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
-5. **Search indexing and SEO check**:
+2. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
+3. **debug-and-fix**: Run the project's build, test, and lint commands. Fix any failures at their root cause.
+4. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
+5. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
+6. **Search indexing and SEO check**:
    - If using `google-seo-skill`, first check if any update is available in git (`python scripts/update_seo_skill.py`) and pull it.
    - For public websites where ranking is needed: run `google-seo-skill` (or `references/seo.md`).
    - For personal or internal projects: verify that `noindex` headers or meta tags and robots rules are correctly in place.
-6. **human-writing**: Run `human-writing/scripts/scan.py` on every touched file (README, changelog, docs, terms, comments). Eliminate all hard hits (no em dashes, no emoji).
-7. **Audit rerun**: Rerun `scripts/audit.py`. Confirm zero remaining MISSING or STALE items.
-8. **context-rich-commits and push**: Commit the changes using structured commit messages:
+7. **human-writing**: Run `human-writing/scripts/scan.py` on every touched file (README, changelog, docs, terms, comments). Eliminate all hard hits (no em dashes, no emoji).
+8. **Audit rerun**: Rerun `scripts/audit.py`. Confirm zero remaining MISSING or STALE items.
+9. **context-rich-commits and push**: Commit the changes using structured commit messages:
    - One commit for docs and changelog.
    - One commit for legal and community files.
    - A final checkpoint commit capturing the current state of the repository.
