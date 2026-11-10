@@ -7,6 +7,11 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added technical social media post writing reference
+  (`human-writing/references/social-posts.md`) covering post themes, archetypes,
+  platform rules for X and Reddit, hook engineering, and editing checklists.
+- Added soft pattern detection in `human-writing/scripts/scan.py` for social media
+  engagement bait and thread cliches.
 - Added corporate release documentation suite and audit checks to
   `production-ready`, covering terms of service, privacy policy, third-party
   credits, security policy, contributing guidelines, and code of conduct.
@@ -26,6 +31,9 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Updated `human-writing` `SKILL.md` with guidelines for technical social posts
+  on X, Reddit, and developer forums, including the inverted rule of excitement,
+  zero throat-clearing, platform rules, and before/after comparisons.
 - Updated `production-ready` `SKILL.md` and `references/legal-and-rules.md` with
   enterprise document outlines, codebase audit steps, and architecture decision
   trees.
