@@ -87,7 +87,10 @@ Run the applicable skills in this sequence:
    - One commit for docs and changelog.
    - One commit for legal and community files.
    - A final checkpoint commit capturing the current state of the repository.
-   - After updating skills or completing a release, push the commits to the repository.
+   - Inspect local and remote branches before pushing. If `dev` exists, push
+     there first, verify the remote state, then ask for explicit user
+     confirmation before pushing to the production branch. If no `dev` branch
+     exists, ask for confirmation before pushing directly to production.
    - A final checkpoint commit capturing the current state of the repository.
 
 ### 7. Report

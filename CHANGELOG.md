@@ -15,4 +15,6 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 - Updated `production-ready` and the skills catalog to include the new goal
   execution skill.
+- Added branch-aware push guidance: use `dev` first when available and require
+  explicit confirmation before pushing to production.
 

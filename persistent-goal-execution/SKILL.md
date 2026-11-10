@@ -21,6 +21,21 @@ not about choosing a particular implementation.
 - Preserve existing user changes. Do not use destructive commands unless the
   user explicitly authorizes them.
 
+## Push safely
+
+- Inspect the repository's local and remote branches before pushing.
+- If a `dev` branch exists, push the completed changes to `dev` first.
+- Treat the production branch as the repository's default branch unless the
+  user specifies another branch.
+- After the `dev` push succeeds, ask the user for explicit confirmation before
+  pushing to the production branch. Do not infer confirmation from a prior
+  request to implement, commit, or push.
+- If no `dev` branch exists, ask for explicit confirmation before pushing
+  directly to the production branch.
+- Verify the target remote, branch, pushed commit, and worktree after every
+  push. Report push failures and do not claim deployment or completion from a
+  local commit alone.
+
 ## Maintain a live plan
 
 For multi-step work, keep a short current plan. Update it whenever the next
