@@ -14,15 +14,17 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 | [`human-writing`](human-writing) | Keeps written output sounding human. Bans em dashes and emoji, eliminates stock AI phrasing, and covers code comments, commit messages, READMEs, and UI copy. Includes a scanner script. |
 | [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files, and common shader effects. |
 | [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom, mapping guidance, and CI workflows. |
+| [`persistent-goal-execution`](persistent-goal-execution) | Keeps agents focused on the complete requested outcome across long tasks, retries, waiting, context compaction, and failures. |
 | [`production-ready`](production-ready) | Takes a project to a production release. Directs the agent to orchestrate all other relevant skills in its toolkit, audits the repository, generates changelogs and docs, drafts legal files, and conducts a multi-skill refresh pass. Includes an audit script. |
 | [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL websites with scroll-driven motion, smooth scrolling, and cinematic transitions. |
 
 ## Skill Orchestration
 
 The skills work together as an interconnected toolkit:
-- When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
+- When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `persistent-goal-execution`, `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
 - For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
+- For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
 
 ## Installation
 
