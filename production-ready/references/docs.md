@@ -7,7 +7,7 @@
 4. Run or usage, with one real example and its output.
 5. Configuration: every environment variable and option, its default, and whether it is required. Keep `.env.example` in sync.
 6. Common problems, only ones you have seen.
-7. Contributing, license, support link.
+7. Contributing, license, support link. Write as the project owner. The license entry must state the actual license or copyright notice (`Distributed under the MIT License. See LICENSE for details.` or `Copyright (c) [YEAR] [OWNER]. All rights reserved.`), never an assistant instruction or multiple-choice checklist like "The license is not selected yet. Choose one before publishing: ...".
 
 Skip badge walls, feature lists of adjectives and a table of contents on a short file.
 

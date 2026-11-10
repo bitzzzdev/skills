@@ -176,10 +176,11 @@ Adopt the standard Contributor Covenant 2.1:
 - Permissive licenses like MIT (minimal restrictions), Apache-2.0 (permissive with explicit patent grant and NOTICE requirement), or BSD-2/3-Clause.
 - Copyleft licenses like GPL-3.0 (strong copyleft, modifications must be GPL), or AGPL-3.0 (network copyleft for hosted services).
 - Proprietary licenses like Commercial All Rights Reserved (closed-source, internal tools, proprietary SaaS).
-- Rule of integrity: Never guess or change an existing license without explicit user authorization. If no license exists, present the options and ask.
+- Rule of integrity: Never guess or change an existing license without explicit user authorization. If no license exists, present the options and ask in conversation. Never write assistant advice, meta-instructions, or multiple-choice placeholder text (like "Choose one before publishing") into project files. If undecided, write standard owner copyright notice: `Copyright (c) [YEAR] [OWNER]. All rights reserved.`
 
 ## Integrity and Human Writing Rules
 
+- Write as the owner: All generated text must speak with the direct voice and authority of the project creator or maintainer, avoiding detached observer commentary or assistant-to-developer coaching.
 - Never invent facts: Do not invent names, dates, addresses, or phone numbers.
 - Always use explicit placeholders: `[COMPANY NAME]`, `[CONTACT EMAIL]`, `[JURISDICTION]`, `[SECURITY EMAIL]`, `[EFFECTIVE DATE]`.
 - Clearly state in reports that legal documents are initial drafts that need professional legal review prior to production launch.

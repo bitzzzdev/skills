@@ -58,6 +58,10 @@ Adverbs: seamlessly, effortlessly, meticulously, ultimately, essentially, fundam
 - a wide range of / a variety of / a plethora of
 - not only ... but also
 - navigate the complexities of
+- choose one before publishing / choose a license before releasing
+- the license is not selected yet / the license has not been chosen
+- replace this with your / insert your details here
+- note to developer / note to the user / note to author
 
 ## 4. Sentence and paragraph structure
 
@@ -134,6 +138,8 @@ Commits, PRs, docs:
 - "feat: implement robust ... leveraging ... to ensure ..."
 - PR bodies with Summary / Changes / Testing sections when the change is three lines.
 - READMEs with emoji section titles, badge walls, a "Features" list of adjectives, and a table of contents on a short file.
+- Assistant coaching and meta-instructions left in deliverables ("The license is not selected yet. Choose one before publishing: MIT, Apache-2.0, GPL-3.0, or a proprietary notice.", "Replace this with your API key", "Remember to configure this", "Note to developer:").
+- Writing as an outside observer or assistant instead of as the project owner. Every file must be written with the direct authority of the creator or maintainer.
 
 ## 8. Replacement guide
 
@@ -156,3 +162,5 @@ Commits, PRs, docs:
 | ensuring a smooth experience | (cut, or state the concrete effect) |
 | Successfully saved! | Saved |
 | Oops! Something went wrong | (say what failed) |
+| The license is not selected yet. Choose one before publishing: ... | Distributed under the MIT License. See LICENSE for details. (or: Copyright 2026 [OWNER]. All rights reserved.) |
+| Note to developer: remember to replace this with your key | Read API_KEY from environment |

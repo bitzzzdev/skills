@@ -88,7 +88,7 @@ The script reports items organized into clear categories:
 Create or update `CHANGELOG.md` following `references/changelog.md`. Source entries from `git log` since the last release tag and from the git diff, not from memory. Write for users: what they can now do or what behaves differently, not an internal list of moved files. Group under Added, Changed, Fixed, Removed, Security. Keep an `Unreleased` section at the top until a version release is cut.
 
 ### 3. Docs and README
-Create or update the README and anything under `docs/`. Follow the checklist in `references/docs.md`. The standard: a newcomer can go from cloning to running in a few minutes using only the README.
+Create or update the README and anything under `docs/`. Follow the checklist in `references/docs.md`. The standard: a newcomer can go from cloning to running in a few minutes using only the README. Always write as the project owner, never as an external assistant. Never leave assistant coaching, multiple-choice options, or reminders in README or docs (such as "The license is not selected yet. Choose one before publishing: ...").
 
 Run every install and execution command you document. A command you did not run is an unverified guess, so either run it or mark it unverified. Update docs for every behavior mentioned in the changelog, and remove docs for removed features.
 
@@ -97,7 +97,7 @@ Review `references/legal-and-rules.md` for complete outlines, codebase audit che
 
 1. **Terms of Service (`TERMS.md` or `TERMS_OF_SERVICE.md`)**: Covers eligibility, user accounts, acceptable use, user-generated content, intellectual property, third-party integrations, disclaimer of warranties, liability limits, termination, governing law, and dispute resolution.
 2. **Privacy Policy (`PRIVACY.md`)**: Audits the real codebase for data collection (cookies, localStorage, session tokens, analytics, crash reporters, third-party APIs, authentication providers). Details data retention, user rights (GDPR/CCPA access and deletion), international transfers, and privacy contact information.
-3. **License (`LICENSE`)**: Verifies an explicit license exists (MIT, Apache-2.0, GPL-3.0, BSD, or proprietary Commercial All Rights Reserved). Never guesses or changes an existing license without explicit authorization.
+3. **License (`LICENSE`)**: Verifies an explicit license exists (MIT, Apache-2.0, GPL-3.0, BSD, or proprietary Commercial All Rights Reserved). Never guesses or changes an existing license without explicit authorization. If no license exists, ask the user in chat or write clean owner terms (`Copyright (c) [YEAR] [OWNER]. All rights reserved.`). Never commit assistant options lists or coaching instructions into the repository.
 4. **Third-Party Credits and Attribution (`CREDITS.md` or `NOTICE`)**: Details third-party dependencies, open-source packages, fonts, media assets, and external APIs used by the project, including required copyright and license notices.
 5. **Security Policy (`SECURITY.md`)**: Defines supported versions, private vulnerability reporting process, response timelines (SLA), security contact address, and safe harbor / responsible disclosure expectations.
 6. **Contributing Guidelines (`CONTRIBUTING.md`)**: Explains local setup, branching rules, testing expectations, pull request workflows, and code review standards.
@@ -166,6 +166,7 @@ Provide a concise, factual summary:
 
 ## Rules that keep this honest
 
+- Write as the project owner: All documentation, README entries, comments, and licenses must speak with the direct voice and authority of the repository creator or maintainer. Never include assistant meta-instructions, advice to the developer, or multiple-choice checklists in committed deliverables.
 - Version numbers and dates come from the manifest, tags, and git, never from guesses. Use today's system date for release headings.
 - Do not bump the version or tag a release unless the user asked. Put changes under `Unreleased` otherwise.
 - Do not delete existing legal text. Extend or flag it.

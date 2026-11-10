@@ -104,6 +104,15 @@ PHRASES = [
     r"mind-blowing",
     r"buckle up",
     r"don'?t scroll past",
+    r"choose (one|a license) before (publishing|releasing|launching|deploying)",
+    r"license (is )?not selected yet",
+    r"the license has not been (selected|chosen)",
+    r"replace (this|these) with your",
+    r"insert your \w+ here",
+    r"note to (the )?(developer|maintainer|user|author)",
+    r"fill (this|these) (in|out) before (publishing|releasing|launching)",
+    r"make sure to (replace|update|fill in|configure) .{1,40} before (publishing|releasing|deploying)",
+    r"remember to (update|replace|configure|add) .{1,30} before (publishing|releasing|deploying)",
 ]
 
 LINE_START_FILLER = re.compile(
@@ -138,6 +147,18 @@ SOFT_PATTERNS = [
             r"^\s*(?://|#)\s*(Initialize|Initialise|Loop through|Iterate (over|through)|"
             r"Define|Import|Create a|Set the|Return the|Get the|Increment|Check if|"
             r"Helper function)\b",
+            re.I,
+        ),
+    ),
+    (
+        "assistant meta-instruction or developer coaching leak (write as project owner)",
+        re.compile(
+            r"\b(choose (one|a license) before (publishing|releasing)|"
+            r"license (is )?not selected yet|"
+            r"the license has not been (selected|chosen)|"
+            r"replace (this|these) with your|"
+            r"insert your \w+ here|"
+            r"note to (the )?(developer|maintainer|user|author))\b",
             re.I,
         ),
     ),

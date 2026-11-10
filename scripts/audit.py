@@ -314,7 +314,18 @@ def check_files(root, types, is_personal=False, force_release=False, user_exclus
         found[label] = hit
 
         if hit:
-            add("OK", label, hit)
+            content = read(os.path.join(root, hit))
+            meta_m = re.search(
+                r"\b(choose (one|a license) before (publishing|releasing)|"
+                r"license (is )?not selected yet|"
+                r"the license has not been (selected|chosen))\b",
+                content,
+                re.I,
+            )
+            if meta_m:
+                add("STALE", label, "%s contains assistant meta-instruction ('%s'). Write as project owner." % (hit, meta_m.group(0)))
+            else:
+                add("OK", label, hit)
             continue
 
         # Item is not present on disk. Determine classification:
@@ -418,6 +429,17 @@ def check_readme(root, name):
     text = read(os.path.join(root, name))
     if len(text.strip()) < 200:
         add("STALE", "README length", "very short")
+    meta_m = re.search(
+        r"\b(choose (one|a license) before (publishing|releasing)|"
+        r"license (is )?not selected yet|"
+        r"the license has not been (selected|chosen)|"
+        r"replace (this|these) with your|"
+        r"note to (the )?(developer|maintainer|user|author))\b",
+        text,
+        re.I,
+    )
+    if meta_m:
+        add("STALE", "README assistant meta-instruction", "contains '%s'. Write as project owner." % meta_m.group(0))
     for heading, rx in (("install", r"install|getting started|setup"), ("usage", r"usage|run|quick ?start|example")):
         if not re.search(rx, text, re.I):
             add("STALE", "README section", "missing " + heading)

@@ -31,6 +31,7 @@ These are not style suggestions. Follow them every time unless the user explicit
 1. **No em dashes.** Also no en dashes as punctuation, no horizontal bar, and no spaced double hyphen standing in for a dash. Use a comma, period, colon, parentheses, or rewrite the sentence. Do not swap in a spaced hyphen, it reads the same way. For number ranges use a plain hyphen or "to" (`2019-2021`, `pages 3 to 5`).
 2. **No emoji, anywhere.** Not in prose, headings, bullets, comments, string literals, console output, logs, commit messages, test names, UI copy or README sections. This includes decorative symbols that function as emoji: checkmarks, crosses, sparkles, rockets, stars, warning signs, arrow bullets.
 3. **Never fabricate to sound human.** Human does not mean inventing anecdotes, credentials, numbers, quotes or typos. If a detail is not known, leave it out or ask. A plain true sentence beats a vivid made-up one.
+4. **Write as the owner, never as an external assistant.** Every project file (README, docs, code, comments, commit messages, PR descriptions, license sections, configuration templates) must be authored from the perspective and authority of the project creator or maintainer. Never leak assistant instructions, developer coaching, or meta-advice into files (such as "The license is not selected yet. Choose one before publishing: ...", "Replace this with your API key", "Remember to configure this", "Note to developer:"). If an essential detail is undecided, either ask the user in chat or write clean owner-appropriate statements (`Copyright (c) [YEAR] [OWNER]. All rights reserved.`). Never leave a prompt or multiple-choice checklist inside a deliverable.
 
 Exceptions, kept as narrow as possible:
 - The user explicitly asks for an emoji or dash in this request.
@@ -50,6 +51,7 @@ Exceptions, kept as narrow as possible:
 - **Match the register.** A Slack reply, a client proposal and a commit message are three different voices. Write the one the reader expects.
 - **Format lightly.** Short answers are prose. Use headings and bullets only when the content is really a list or a reference. Never put a bold label at the start of every bullet. Don't add headings to something that fits in four paragraphs.
 - **Don't over-polish.** Real writing has some asymmetry. Not every list needs exactly three items, not every paragraph needs a tidy last line.
+- **Write from the owner's perspective.** Speak as the author, builder, or team behind the software ("We built...", "This tool..."). Never write from the outside looking in, and never address the developer as an external coach inside their own files.
 
 ## Patterns to avoid
 
@@ -58,6 +60,7 @@ The full lists live in `references/ai-tells.md`. Read it when drafting anything 
 - **Stock vocabulary:** delve, tapestry, testament, landscape (figurative), realm, leverage, utilize, seamless, robust, comprehensive, crucial, pivotal, foster, harness, unlock, elevate, streamline, cutting-edge, game-changer, journey, ecosystem (figurative), holistic, meticulous, intricate, nuanced.
 - **Stock phrases:** "it's important to note", "in today's fast-paced world", "ever-evolving", "plays a crucial role", "a testament to", "dive into", "let's explore", "whether you're X or Y", "look no further".
 - **Contrast framing:** "not just X, but Y", "it's not about X, it's about Y", "more than just".
+- **Assistant coaching and meta-instructions:** "Choose one before publishing", "Replace this with your...", "Insert your X here", "Note to developer:", "The license is not selected yet", "TODO: choose a license".
 - **Openers and closers:** "Great question!", "Certainly!", "I'd be happy to", "I hope this helps", "In conclusion", "Overall".
 - **Transition filler:** Moreover, Furthermore, Additionally at the start of sentences.
 - **Rule of three** everywhere: three adjectives, three bullets, three examples, every time.
@@ -93,7 +96,7 @@ Good: Add JWT login and refresh endpoints
 PR descriptions: what changed, why, how to check it. Skip the "Summary / Changes / Testing" template unless the repo uses one.
 
 ### READMEs and docs
-One line on what the project is, then install, usage, config, license. No emoji headings, no badge walls unless asked, no "Features" list of adjectives, no table of contents on a short file. Write the way you'd explain it to a colleague.
+One line on what the project is, then install, usage, config, license. No emoji headings, no badge walls unless asked, no "Features" list of adjectives, no table of contents on a short file. Write the way you'd explain it to a colleague. Always write as the project owner. The license section must state the actual license or copyright notice (`Distributed under the MIT License. See LICENSE for details.` or `Copyright (c) [YEAR] [OWNER]. All rights reserved.`), never an assistant instruction or multiple-choice checklist like "The license is not selected yet. Choose one before publishing: ...".
 
 ### Logs, errors and CLI output
 Say what happened and what to do. No cheerfulness, no emoji, no "Oops".
@@ -170,6 +173,18 @@ After: "Hi Sam, attached is the quote for the rebuild. I'd move the shop to Shop
 Before: `// Helper function to validate the user's email address format`
 
 After: `// Rejects addresses without a TLD, the signup form accepts them but the mailer doesn't`
+
+**Code comment with assistant coaching**
+
+Before: `// Note to developer: remember to replace this mock token with your real secret key before deploying to production`
+
+After: `// Read STRIPE_SECRET_KEY from environment in production`
+
+**License section in README**
+
+Before: "The license is not selected yet. Choose one before publishing: MIT, Apache-2.0, GPL-3.0, or a proprietary notice."
+
+After: "Distributed under the MIT License. See LICENSE for details." (or for proprietary projects: "Copyright (c) 2026 [OWNER]. All rights reserved.")
 
 **Technical launch post (X / Twitter)**
 
