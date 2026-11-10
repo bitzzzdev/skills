@@ -95,9 +95,14 @@ Run the applicable skills in this sequence:
      without waiting for user confirmation, whether the implementation is
      incomplete or complete. Verify the remote state and report what remains
      unfinished when applicable.
-   - After the `dev` push succeeds, a production push always requires explicit
-     human confirmation. If no `dev` branch exists, create it before asking
-     for confirmation to push to production.
+   - After the `dev` push succeeds, wait for the CI/CD workflow for that exact
+     commit. If the workflow passes, push that same verified commit to the
+     production branch without asking for confirmation. If CI/CD fails, is
+     unavailable, or does not cover the full change, do not push to production.
+     Report the failure or missing evidence and continue remediation.
+   - If no `dev` branch exists, create it before waiting for CI/CD. A
+     production push is never allowed without a successful `dev` check for
+     the exact commit.
    - A final checkpoint commit capturing the current state of the repository.
 
 ### 7. Report

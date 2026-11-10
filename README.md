@@ -28,6 +28,8 @@ The skills work together as an interconnected toolkit:
   `credential-safety` to check for exposed credentials and stop unsafe pushes.
 - When a release includes a feature copied or ported from another repository,
   `production-ready` runs `deep-research` before accepting the implementation.
+- `production-ready` pushes every release to `dev` first and promotes the
+  exact commit to production only after its `dev` CI/CD check passes.
 - For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.

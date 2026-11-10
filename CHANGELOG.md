@@ -26,4 +26,6 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 - Added credential checks to the `production-ready` orchestration flow.
 - Added deep research checks to the `production-ready` orchestration flow for
   copied or ported functionality.
+- Updated release promotion to require a passing CI/CD check on the exact
+  `dev` commit before automatically pushing it to production.
 
