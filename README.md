@@ -33,8 +33,20 @@ The skills work together as an interconnected toolkit:
 - For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
+- Every skill includes an update check directing agents to inspect git status in the skill directory (such as `~/.copilot/skills/` or `~/.gemini/antigravity-cli/skills/`) before running, so instructions stay current.
 
 ## Installation
+
+**GitHub Copilot**
+
+Copy the skill folder into your personal Copilot skills directory:
+
+```bash
+git clone https://github.com/bitzzdev/skills.git
+cp -r skills/google-seo-skill ~/.copilot/skills/
+```
+
+Or clone the entire repository directly into `~/.copilot/skills/`.
 
 **Antigravity and Gemini CLI**
 

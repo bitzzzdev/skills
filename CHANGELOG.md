@@ -7,6 +7,10 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added skill folder update checks to every skill so agents inspect git status in
+  the skill directory before running.
+- Added `scripts/check_skill_update.py` to inspect git status and branch tracking
+  across known skill locations.
 - Added `persistent-goal-execution` for preserving complete objectives,
   acceptance criteria, plans, authoritative evidence, and completion state
   across long coding tasks.
@@ -17,6 +21,10 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Updated `validate_skills.py` to verify skill folder update checks in all skills.
+- Updated `audit.py` and `production-ready` flow to inspect skill folder status
+  and include `~/.copilot/skills`.
+- Documented GitHub Copilot skill installation and update checks in README.
 - Updated `production-ready` and the skills catalog to include the new goal
   execution skill.
 - Added branch-aware push guidance: use `dev` first when available and require
