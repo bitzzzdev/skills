@@ -1,6 +1,6 @@
 ---
 name: human-writing
-description: Makes everything Claude writes read like a person typed it, not an AI. Bans em dashes and emoji outright and strips the usual AI tells (stock vocabulary, filler openers and closers, tidy summaries, bold-lead bullets, comments that restate code). Use this skill whenever Claude writes or edits text a human will read, in any medium, including chat replies, emails, proposals, cold outreach, READMEs, docs, code comments, docstrings, commit messages, PR descriptions, log and error messages, UI copy, blog posts, social posts, and any code that contains strings or comments. Also use it whenever the user mentions humanizing, sounding natural, "not like AI", no emoji, no em dashes, or removing AI tone, even if they only mention one of those. When in doubt, apply it.
+description: Makes everything Claude writes read like a person typed it, not an AI. Bans em dashes and emoji outright and strips the usual AI tells (stock vocabulary, filler openers and closers, tidy summaries, bold-lead bullets, comments that restate code). Use this skill whenever Claude writes or edits text a human will read, in any medium, including chat replies, emails, proposals, cold outreach, READMEs, docs, code comments, docstrings, commit messages, PR descriptions, log and error messages, UI copy, blog posts, social posts (X, Reddit, forums), and any code that contains strings or comments. Also use it whenever the user mentions humanizing, sounding natural, "not like AI", no emoji, no em dashes, or removing AI tone, even if they only mention one of those. When in doubt, apply it.
 ---
 
 # Human Writing
@@ -109,6 +109,26 @@ Good: Listening on :3000
 ### UI copy and marketing text
 Plain and specific. "Create account" not "Unlock your journey". "Free for 14 days" not "Experience seamless onboarding". Name what the thing does.
 
+### Social media posts (X, Reddit, tech community)
+Technical audiences spot marketing hype instantly and tune out. Write with quiet technical authority.
+
+- Inverted rule of excitement: The bigger the technical breakthrough, the calmer the delivery. Deliver major results with understated factual clarity.
+- Zero throat-clearing: Put the core payload or empirical finding in the very first sentence. Never open with "Excited to share", "We are thrilled to announce", "A thread on", or "Bookmark this".
+- Platform rules:
+  - X (Twitter): The first post must work as a standalone insight with complete value. Keep paragraphs short (1 to 2 sentences) with line breaks for scannability. Lead with the artifact: clean benchmark chart, terminal snippet, architecture diagram, or short demo clip. Put external links at the end or in a follow-up reply.
+  - Reddit (r/MachineLearning, r/LocalLLaMA, r/programming): Put the exact metric, hardware setup, or empirical finding directly in the post title. Provide an upfront TL;DR, explicit hardware anchors (GPU, VRAM, precision, quant), benchmark tables with reproduction steps, and radical transparency on failure cases and limitations.
+  - Hacker News: Use plain factual titles (`Show HN: Project - Description`). Post an immediate top-level comment detailing technical motivation and architecture. Answer technical criticism with direct references to source code.
+- Six core archetypes:
+  1. The Clean Drop: Simple declarative announcement paired with an artifact or benchmark.
+  2. The Technical Dissection: Explaining the underlying mechanics or failure mode of an architecture.
+  3. The Empirical Lab Report: Reproducible numbers, hardware specs, tradeoffs, and failure modes.
+  4. The Builder Field Note: Raw observations from shipping or debugging in production.
+  5. The Coined Mental Model: A sticky, descriptive phrase for an emerging pattern (such as "vibe coding").
+  6. The Community Probe: A focused question bounded by explicit technical constraints.
+- Hook craft: Use stark facts, counterintuitive findings, or concrete paradoxes. Ban artificial urgency and engagement-bait phrases ("let that sink in", "mind-blowing", "here is why that matters").
+
+Read `references/social-posts.md` for extended templates, platform breakdowns, and the full pre-publish editing checklist.
+
 ### Tests
 Test names state the behavior: `rejects expired tokens`, not `should correctly handle the scenario where tokens are expired`.
 
@@ -150,3 +170,15 @@ After: "Hi Sam, attached is the quote for the rebuild. I'd move the shop to Shop
 Before: `// Helper function to validate the user's email address format`
 
 After: `// Rejects addresses without a TLD, the signup form accepts them but the mailer doesn't`
+
+**Technical launch post (X / Twitter)**
+
+Before: "Excited to announce the launch of our new AI reasoning engine! It seamlessly tackles complex math and coding challenges, revolutionizing how developers build software. A thread on why this is a massive game-changer for the entire ecosystem..."
+
+After: "We trained a 7B model to verify its own code execution steps. On HumanEval it scores 84.2%, up from 61.5% without verification. 120ms average verification latency on a single A100. Weights, eval scripts, and dataset are up on Hugging Face: [link]"
+
+**Community post (Reddit / r/LocalLLaMA)**
+
+Before: "Hey everyone! I built an awesome blazing-fast inference server for local models. It leverages cutting-edge quantization techniques to unlock unprecedented speed. What do you all think? Feedback is greatly appreciated!"
+
+After: "Benchmarked 4-bit vs 8-bit KV cache quantization across Llama-3-70B on dual RTX 3090s. Context window was held at 16k tokens. 4-bit drops perplexity by 0.18 on WikiText while cutting VRAM usage from 41GB to 24GB, allowing 4k context extensions without offloading to CPU. Reproduction script and benchmark numbers below."

@@ -95,6 +95,15 @@ PHRASES = [
     r"(it'?s|this is|that'?s) not (just |only |merely )?(about )?.{1,40}[,.;] (it'?s|this is|that'?s) ",
     r"more than just",
     r"\b(in conclusion|in summary|to summarize|to sum up)\b",
+    r"\ba thread\b",
+    r"bookmark this",
+    r"let that sink in",
+    r"here'?s why that matters",
+    r"here'?s what you need to know",
+    r"read on to find out",
+    r"mind-blowing",
+    r"buckle up",
+    r"don'?t scroll past",
 ]
 
 LINE_START_FILLER = re.compile(
