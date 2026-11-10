@@ -12,6 +12,8 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
   across long coding tasks.
 - Added `credential-safety` for checking credentials before commits, pushes,
   and production releases.
+- Added `deep-research` for understanding source and target repositories before
+  copying or porting a feature.
 
 ### Changed
 
@@ -22,4 +24,6 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 - Clarified that all production work must be pushed to `dev` without
   confirmation first, while production pushes still require human approval.
 - Added credential checks to the `production-ready` orchestration flow.
+- Added deep research checks to the `production-ready` orchestration flow for
+  copied or ported functionality.
 

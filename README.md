@@ -9,6 +9,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 | [`android-app-dev`](android-app-dev) | Builds, edits, and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup, and GitHub Actions CI builds. |
 | [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions, and gotchas; checkpoint commits snapshot the repository state. Includes a commit linter and history reader. |
 | [`credential-safety`](credential-safety) | Checks worktree files, commit ranges, ignore rules, and scanner results so credentials do not reach remote repositories. |
+| [`deep-research`](deep-research) | Investigates source and target repositories before copying or porting a feature, tracing behavior, integration points, licensing, and validation. |
 | [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end-to-end. Reproduces the error, searches affected files, checks full logs, reads official documentation, fixes root causes, and verifies. Includes error context extraction scripts. |
 | [`error-docs-lookup`](error-docs-lookup) | Directs the agent to read current official documentation, changelogs, and GitHub issues before fixing build, type, lint, install, or runtime errors instead of guessing from memory. |
 | [`google-seo-skill`](google-seo-skill) | Applies official Google SEO and generative AI search (AEO/GEO) guidance when writing, reviewing, or auditing web pages. Used for public web projects needing search ranking; avoided for personal or internal projects where indexing is not needed. |
@@ -25,6 +26,8 @@ The skills work together as an interconnected toolkit:
 - When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `persistent-goal-execution`, `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
 - Before committing or pushing a release, `production-ready` runs
   `credential-safety` to check for exposed credentials and stop unsafe pushes.
+- When a release includes a feature copied or ported from another repository,
+  `production-ready` runs `deep-research` before accepting the implementation.
 - For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
