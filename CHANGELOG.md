@@ -17,6 +17,6 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
   execution skill.
 - Added branch-aware push guidance: use `dev` first when available and require
   explicit confirmation before pushing to production.
-- Clarified that incomplete production work must be pushed to `dev` without
-  confirmation, while production pushes still require human approval.
+- Clarified that all production work must be pushed to `dev` without
+  confirmation first, while production pushes still require human approval.
 

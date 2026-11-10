@@ -87,14 +87,13 @@ Run the applicable skills in this sequence:
    - One commit for docs and changelog.
    - One commit for legal and community files.
    - A final checkpoint commit capturing the current state of the repository.
-   - If the implementation is incomplete, always create or use a `dev` branch
-     and push the current work there without waiting for user confirmation.
-     Verify the remote state and report what remains unfinished.
-   - For a complete implementation, inspect local and remote branches before
-     pushing. If `dev` exists, push there first and verify the remote state.
-     A production push always requires explicit human confirmation. If no
-     `dev` branch exists, ask for confirmation before pushing directly to
-     production.
+   - Always create or use a `dev` branch and push the current work there
+     without waiting for user confirmation, whether the implementation is
+     incomplete or complete. Verify the remote state and report what remains
+     unfinished when applicable.
+   - After the `dev` push succeeds, a production push always requires explicit
+     human confirmation. If no `dev` branch exists, create it before asking
+     for confirmation to push to production.
    - A final checkpoint commit capturing the current state of the repository.
 
 ### 7. Report
