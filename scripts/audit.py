@@ -2,12 +2,13 @@
 """Production-readiness audit for a project folder.
 
 usage: audit.py [PROJECT_ROOT] [--skills-dir DIR] [--type TYPE] [--strict]
-                [--personal] [--no-indexing]
+                [--personal] [--no-indexing] [--force-release] [--skip-legal]
+                [--skip-files FILES]
 
-Guesses the project type, reports MISSING, STALE and OK items for the
-changelog, docs, legal and community files, then lists which skills to USE
-and which to SKIP for that type and indexing requirements.
-Exit status is 0 unless --strict is given and something is MISSING or STALE.
+Guesses the project type, audits required, recommended, optional, and user-excluded
+documentation assets for enterprise readiness, checks skill folder git status,
+and lists which skills to USE and SKIP.
+Exit status is 0 unless --strict is given and required items are missing or stale.
 """
 import argparse
 import json
@@ -20,8 +21,8 @@ SKIP = {".git", "node_modules", "dist", "build", ".venv", "venv", "__pycache__",
 results = []
 
 
-def add(status, label, detail=""):
-    results.append((status, label, detail))
+def add(status, label, detail="", tier=""):
+    results.append((status, label, detail, tier))
 
 
 def find(root, names):
@@ -72,7 +73,7 @@ def manifest_version(root):
 
 
 def check_personal_or_private(root):
-    """Return True if package manifest or project markers indicate private/personal project."""
+    """Return True if package manifest or project markers indicate private or personal project."""
     pj = os.path.join(root, "package.json")
     if os.path.isfile(pj):
         try:
@@ -85,6 +86,14 @@ def check_personal_or_private(root):
     if os.path.isfile(pyproj):
         text = read(pyproj).lower()
         if 'classifiers = ["private' in text or "private = true" in text:
+            return True
+    cargo = os.path.join(root, "Cargo.toml")
+    if os.path.isfile(cargo):
+        text = read(cargo).lower()
+        if "publish = false" in text:
+            return True
+    for marker in (".private", ".personal", ".internal"):
+        if os.path.isfile(os.path.join(root, marker)):
             return True
     return False
 
@@ -214,21 +223,21 @@ def report_skills(types, root, skills_dir, is_personal=False, no_indexing=False)
 
     if "website" in types:
         if is_personal or no_indexing:
-            skip.append("google-seo-skill (personal/internal project or no indexing needed; avoid ranking optimization, verify noindex or robots disallow)")
-            skip.append("SEO and search ranking (references/seo.md; personal/internal project, ensure noindex is configured)")
+            skip.append("google-seo-skill (personal or internal project, avoid ranking optimization, verify noindex or robots disallow)")
+            skip.append("SEO and search ranking (references/seo.md, ensure noindex is configured)")
         else:
             if is_skill_installed("google-seo-skill", root, skills_dir):
-                use.append("google-seo-skill (official Google SEO & AI search audit)")
+                use.append("google-seo-skill (official Google SEO and AI search audit)")
             else:
                 use.append("SEO and performance check (references/seo.md)")
         use.append("accessibility pass")
         if has_three:
             if is_skill_installed("threejs-awwwards-site", root, skills_dir):
-                use.append("threejs-awwwards-site (Three.js/WebGL scene checks)")
+                use.append("threejs-awwwards-site (Three.js and WebGL scene checks)")
             else:
                 skip.append("threejs-awwwards-site not installed, skip")
         else:
-            skip.append("threejs-awwwards-site (no Three.js/WebGL detected)")
+            skip.append("threejs-awwwards-site (no Three.js or WebGL detected)")
     else:
         kinds = "/".join(t for t in types)
         listing = {"mobile-native": "store listing text", "desktop": "landing page only if one exists",
@@ -257,44 +266,119 @@ def report_skills(types, root, skills_dir, is_personal=False, no_indexing=False)
 
     legal = "terms and privacy needed if the project has users or collects data"
     if is_personal:
-        legal = "personal project: terms and privacy optional unless external users onboarded"
+        legal = "personal or internal project: consumer terms and privacy optional unless external users onboarded"
     elif types and all(t in ("shaderpack", "library-cli", "game-mod") for t in types):
-        legal = "terms and privacy usually not needed, license and contributing are"
+        legal = "terms and privacy usually not needed, license, credits, and contributing are"
 
     return use, skip, legal
 
 
-def check_files(root, is_personal=False):
-    wanted = [
-        ("README", {"readme"}, "required"),
-        ("LICENSE", {"license", "licence", "copying"}, "required"),
-        ("CHANGELOG", {"changelog", "changes", "history", "release_notes"}, "required"),
-        ("CONTRIBUTING", {"contributing"}, "recommended"),
-        ("CODE_OF_CONDUCT", {"code_of_conduct"}, "recommended"),
-        ("SECURITY", {"security"}, "recommended"),
-        ("TERMS", {"terms", "terms_of_service", "tos", "terms_and_conditions"}, "if the project has users" if not is_personal else "optional for personal projects"),
-        ("PRIVACY", {"privacy", "privacy_policy"}, "if the project has users" if not is_personal else "optional for personal projects"),
+def count_env_vars_in_code(root):
+    env_in_code = set()
+    for d, dirs, files in os.walk(root):
+        dirs[:] = [x for x in dirs if x not in SKIP]
+        for f in files:
+            if f.endswith((".js", ".ts", ".tsx", ".jsx", ".py", ".go", ".rb", ".rs")):
+                t = read(os.path.join(d, f))
+                env_in_code |= set(re.findall(r"process\.env\.([A-Z][A-Z0-9_]{2,})", t))
+                env_in_code |= set(re.findall(r"os\.environ(?:\.get)?[\[(]\s*['\"]([A-Z][A-Z0-9_]{2,})", t))
+                env_in_code |= set(re.findall(r"os\.getenv\(\s*['\"]([A-Z][A-Z0-9_]{2,})", t))
+    env_in_code -= {"NODE_ENV", "PATH", "HOME", "CI", "PORT"}
+    return env_in_code
+
+
+def check_files(root, types, is_personal=False, force_release=False, user_exclusions=None):
+    if user_exclusions is None:
+        user_exclusions = set()
+
+    has_hosted_users = any(t in ("website", "api", "mobile-native", "bot") for t in types)
+    env_vars = count_env_vars_in_code(root)
+
+    # Base list of files and their search stems
+    candidates = [
+        ("README", {"readme"}),
+        ("LICENSE", {"license", "licence", "copying"}),
+        ("CHANGELOG", {"changelog", "changes", "history", "release_notes"}),
+        ("TERMS", {"terms", "terms_of_service", "tos", "terms_and_conditions", "terms_of_use"}),
+        ("PRIVACY", {"privacy", "privacy_policy"}),
+        ("CREDITS", {"credits", "notice", "third_party_notices", "acknowledgements", "attributions"}),
+        ("SECURITY", {"security", "security_policy"}),
+        ("CONTRIBUTING", {"contributing"}),
+        ("CODE_OF_CONDUCT", {"code_of_conduct", "conduct"}),
     ]
+
     found = {}
-    for label, stems, need in wanted:
+    for label, stems in candidates:
         hit = find(root, stems) or find(os.path.join(root, "docs"), stems) \
             or find(os.path.join(root, ".github"), stems)
         found[label] = hit
+
         if hit:
             add("OK", label, hit)
-        else:
-            if is_personal and label in ("TERMS", "PRIVACY"):
-                add("INFO", label, "omitted for personal project")
+            continue
+
+        # Item is not present on disk. Determine classification:
+        if label in user_exclusions:
+            add("USER-EXCLUDED", label, "excluded by user preference")
+        elif force_release:
+            if label in ("README", "LICENSE", "CHANGELOG", "TERMS", "PRIVACY", "CREDITS", "SECURITY"):
+                add("REQUIRED", label, "required for full corporate release")
             else:
-                add("MISSING", label, need)
-    if os.path.isfile(os.path.join(root, ".env.example")) or os.path.isfile(os.path.join(root, ".env.sample")):
-        add("OK", ".env.example")
-    elif any(re.search(r"\.env", n) for n in os.listdir(root)):
-        add("MISSING", ".env.example", "a .env exists but no example file")
-    if os.path.isdir(os.path.join(root, ".github", "workflows")):
-        add("OK", "CI workflow")
+                add("RECOMMENDED", label, "recommended for corporate release")
+        elif is_personal:
+            if label in ("README", "CHANGELOG"):
+                add("REQUIRED", label, "required for project orientation")
+            elif label == "LICENSE":
+                add("REQUIRED", label, "internal or proprietary notice required")
+            elif label == "CREDITS":
+                add("RECOMMENDED", label, "recommended for third-party compliance")
+            else:
+                add("OPTIONAL", label, "omitted for personal or internal project")
+        else:
+            # Public project
+            if label in ("README", "LICENSE", "CHANGELOG"):
+                add("REQUIRED", label, "required for public release")
+            elif label in ("TERMS", "PRIVACY"):
+                if has_hosted_users:
+                    add("REQUIRED", label, "required for hosted service with users")
+                else:
+                    add("OPTIONAL", label, "not needed without hosted users or accounts")
+            elif label == "CREDITS":
+                if has_hosted_users:
+                    add("REQUIRED", label, "required for third-party dependency attribution")
+                else:
+                    add("RECOMMENDED", label, "recommended for third-party dependency attribution")
+            elif label == "SECURITY":
+                if has_hosted_users:
+                    add("REQUIRED", label, "required for vulnerability disclosure and SLA")
+                else:
+                    add("RECOMMENDED", label, "recommended for vulnerability reporting")
+            elif label in ("CONTRIBUTING", "CODE_OF_CONDUCT"):
+                add("RECOMMENDED", label, "recommended for open-source collaboration")
+            else:
+                add("OPTIONAL", label, "optional")
+
+    # Check .env.example
+    env_hit = find(root, {"env.example", "env.sample"}) or (
+        ".env.example" if os.path.isfile(os.path.join(root, ".env.example")) else None
+    ) or (
+        ".env.sample" if os.path.isfile(os.path.join(root, ".env.sample")) else None
+    )
+    if env_hit:
+        add("OK", ".env.example", env_hit)
+    elif env_vars:
+        add("REQUIRED", ".env.example", "environment variables used in code but no template found")
     else:
-        add("MISSING", "CI workflow", "recommended")
+        add("OPTIONAL", ".env.example", "no environment variables detected in code")
+
+    # Check CI workflow
+    if os.path.isdir(os.path.join(root, ".github", "workflows")):
+        add("OK", "CI workflow", "GitHub Actions workflows present")
+    elif os.path.isfile(os.path.join(root, ".gitlab-ci.yml")):
+        add("OK", "CI workflow", "GitLab CI configuration present")
+    else:
+        add("RECOMMENDED", "CI workflow", "recommended automated build and test pipeline")
+
     return found
 
 
@@ -336,7 +420,7 @@ def check_readme(root, name):
         add("STALE", "README length", "very short")
     for heading, rx in (("install", r"install|getting started|setup"), ("usage", r"usage|run|quick ?start|example")):
         if not re.search(rx, text, re.I):
-            add("MISSING", "README section", heading)
+            add("STALE", "README section", "missing " + heading)
     bad = []
     for ref in set(re.findall(r"`([\w./-]+/[\w./-]+\.\w{1,5})`", text)):
         if not ref.startswith(("http", "~", "/")) and not os.path.exists(os.path.join(root, ref)):
@@ -352,18 +436,9 @@ def check_readme(root, name):
                 add("STALE", "README npm scripts", "not in package.json: " + ", ".join(sorted(missing)))
         except ValueError:
             pass
-    env_in_code = set()
-    for d, dirs, files in os.walk(root):
-        dirs[:] = [x for x in dirs if x not in SKIP]
-        for f in files:
-            if f.endswith((".js", ".ts", ".tsx", ".jsx", ".py", ".go", ".rb")):
-                t = read(os.path.join(d, f))
-                env_in_code |= set(re.findall(r"process\.env\.([A-Z][A-Z0-9_]{2,})", t))
-                env_in_code |= set(re.findall(r"os\.environ(?:\.get)?[\[(]\s*['\"]([A-Z][A-Z0-9_]{2,})", t))
-                env_in_code |= set(re.findall(r"os\.getenv\(\s*['\"]([A-Z][A-Z0-9_]{2,})", t))
-    env_in_code -= {"NODE_ENV", "PATH", "HOME", "CI", "PORT"}
+    env_in_code = count_env_vars_in_code(root)
     if env_in_code:
-        documented = text + read(os.path.join(root, ".env.example"))
+        documented = text + read(os.path.join(root, ".env.example")) + read(os.path.join(root, ".env.sample"))
         undoc = sorted(v for v in env_in_code if v not in documented)
         if undoc:
             add("STALE", "Undocumented env vars", ", ".join(undoc[:10]))
@@ -392,45 +467,107 @@ def scan_writing(root, files, skills_dir):
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("root", nargs="?", default=".")
-    ap.add_argument("--skills-dir")
+    ap = argparse.ArgumentParser(description="Audit codebase for production readiness.")
+    ap.add_argument("root", nargs="?", default=".", help="project root directory")
+    ap.add_argument("--skills-dir", help="custom skills directory")
     ap.add_argument("--type", help="override detected type, comma separated: " + ", ".join(TYPES))
-    ap.add_argument("--personal", action="store_true", help="mark project as personal/internal (avoids public SEO/terms)")
+    ap.add_argument("--personal", action="store_true", help="mark project as personal or internal")
     ap.add_argument("--no-indexing", action="store_true", help="project should avoid search indexing")
-    ap.add_argument("--strict", action="store_true")
+    ap.add_argument("--force-release", action="store_true", help="enforce full corporate release suite even if private")
+    ap.add_argument("--skip-legal", action="store_true", help="ignore legal files when user opts out")
+    ap.add_argument("--skip-files", help="comma-separated list of document labels to exclude (e.g. terms,privacy)")
+    ap.add_argument("--strict", action="store_true", help="exit with status 1 if required items are missing or stale")
     a = ap.parse_args()
+
     root = os.path.abspath(a.root)
     if not os.path.isdir(root):
         print("not a directory: " + root, file=sys.stderr)
         return 2
 
-    is_personal = a.personal or check_personal_or_private(root)
+    # Determine project scope and release mode
+    is_force_release = a.force_release
+    is_detected_private = check_personal_or_private(root)
+    is_personal = (a.personal or is_detected_private) and not is_force_release
     no_indexing = a.no_indexing or is_personal
+
+    # Determine user-excluded documents
+    user_exclusions = set()
+    if a.skip_legal:
+        user_exclusions.update({"TERMS", "PRIVACY", "LICENSE", "CREDITS", "SECURITY", "CONTRIBUTING", "CODE_OF_CONDUCT"})
+    if a.skip_files:
+        for f in a.skip_files.split(","):
+            f_clean = f.strip().upper().replace("-", "_")
+            if f_clean:
+                user_exclusions.add(f_clean)
 
     types = [t.strip() for t in a.type.split(",")] if a.type else detect_types(root)
     unknown = [t for t in types if t not in TYPES]
     if unknown:
         print("unknown type: " + ", ".join(unknown), file=sys.stderr)
         return 2
+
     print("Project type: " + ", ".join(types))
-    if is_personal or no_indexing:
-        print("Project scope: personal / internal (search indexing avoided)")
-    found = check_files(root, is_personal=is_personal)
+    if is_force_release:
+        print("Project scope: corporate release mode (full enterprise documentation suite enforced)")
+    elif is_personal:
+        print("Project scope: personal or internal (consumer legal docs and search indexing omitted)")
+
+    found = check_files(root, types, is_personal=is_personal, force_release=is_force_release, user_exclusions=user_exclusions)
     if found.get("CHANGELOG"):
         check_changelog(root, found["CHANGELOG"])
     if found.get("README"):
         check_readme(root, found["README"])
-    scan_writing(root, [found.get(k) for k in ("README", "CHANGELOG", "TERMS", "PRIVACY", "CONTRIBUTING")], a.skills_dir)
+
+    doc_files = [found.get(k) for k in ("README", "CHANGELOG", "TERMS", "PRIVACY", "LICENSE", "CREDITS", "SECURITY", "CONTRIBUTING", "CODE_OF_CONDUCT")]
+    scan_writing(root, doc_files, a.skills_dir)
     check_skill_updates(root, a.skills_dir)
 
-    for status in ("MISSING", "STALE", "OK", "INFO"):
-        rows = [r for r in results if r[0] == status]
-        if rows:
-            print("\n== %s ==" % status)
-            for _, label, detail in rows:
-                print("  %-26s %s" % (label, detail))
-    bad = sum(1 for r in results if r[0] in ("MISSING", "STALE"))
+    # Print distinct sections
+    req_rows = [r for r in results if r[0] == "REQUIRED"]
+    rec_rows = [r for r in results if r[0] == "RECOMMENDED"]
+    opt_rows = [r for r in results if r[0] == "OPTIONAL"]
+    exc_rows = [r for r in results if r[0] == "USER-EXCLUDED"]
+    stale_rows = [r for r in results if r[0] == "STALE"]
+    ok_rows = [r for r in results if r[0] == "OK"]
+    info_rows = [r for r in results if r[0] == "INFO"]
+
+    print("\n== REQUIRED ==")
+    if req_rows:
+        for _, label, detail, _ in req_rows:
+            print("  %-26s %s" % (label, detail))
+    else:
+        print("  All required files present")
+
+    if rec_rows:
+        print("\n== RECOMMENDED ==")
+        for _, label, detail, _ in rec_rows:
+            print("  %-26s %s" % (label, detail))
+
+    if opt_rows:
+        print("\n== OPTIONAL ==")
+        for _, label, detail, _ in opt_rows:
+            print("  %-26s %s" % (label, detail))
+
+    if exc_rows:
+        print("\n== USER-EXCLUDED ==")
+        for _, label, detail, _ in exc_rows:
+            print("  %-26s %s" % (label, detail))
+
+    if stale_rows:
+        print("\n== STALE ==")
+        for _, label, detail, _ in stale_rows:
+            print("  %-26s %s" % (label, detail))
+
+    if ok_rows:
+        print("\n== OK ==")
+        for _, label, detail, _ in ok_rows:
+            print("  %-26s %s" % (label, detail))
+
+    if info_rows:
+        print("\n== INFO ==")
+        for _, label, detail, _ in info_rows:
+            print("  %-26s %s" % (label, detail))
+
     use, skip, legal = report_skills(types, root, a.skills_dir, is_personal=is_personal, no_indexing=no_indexing)
     print("\n== USE ==")
     for u in dict.fromkeys(use):
@@ -438,8 +575,20 @@ def main():
     print("\n== SKIP ==")
     for k in skip:
         print("  " + k)
+
+    req_count = len(req_rows)
+    stale_count = len(stale_rows)
+    rec_count = len(rec_rows)
+    exc_count = len(exc_rows)
+    bad = req_count + stale_count
+
     print("\nLegal: " + legal)
-    print("%d item(s) need attention." % bad)
+    print("%d required item(s) missing, %d stale item(s) need attention." % (req_count, stale_count))
+    if rec_count:
+        print("%d recommended item(s) omitted." % rec_count)
+    if exc_count:
+        print("%d item(s) excluded by user preference." % exc_count)
+
     return 1 if (a.strict and bad) else 0
 
 

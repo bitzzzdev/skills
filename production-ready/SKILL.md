@@ -32,7 +32,7 @@ When finishing a project, you act as the orchestrator across your entire skill e
 
 1. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
 2. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
-3. **deep-research**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation.
+3. **deep-research and third-party attribution**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation. Audit third-party packages, bundled code, fonts, and assets to provide licensing attribution in `CREDITS.md` or `NOTICE`.
 4. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
 5. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
 6. **google-seo-skill**:
@@ -51,19 +51,38 @@ When finishing a project, you act as the orchestrator across your entire skill e
 ## Workflow
 
 ### 1. Audit
-Run the audit script from the project root. It inspects the codebase, checks for missing or stale files, and lists which skills to USE and which to SKIP:
+Run the audit script from the project root. It inspects the codebase, checks for missing, stale, or excluded files, verifies skill folder git status, and lists which skills to USE and which to SKIP:
 
 ```bash
 python scripts/audit.py <project-root>
 ```
 
-For personal or internal projects where search indexing should be avoided, pass `--personal` or `--no-indexing`:
+For personal, internal, or private repositories where consumer legal documents and public search indexing should be avoided:
 
 ```bash
 python scripts/audit.py <project-root> --personal
 ```
 
-The script checks for changelog, README, docs, license, terms, privacy, security, contributing, and conduct files; checks skill folder git status; compares the manifest version with the changelog; lists commits since the last tag; detects undocumented environment variables; flags broken README file references and npm scripts; and runs the human-writing scanner.
+When an explicit user override requests full corporate release documentation for an internal or private project:
+
+```bash
+python scripts/audit.py <project-root> --force-release
+```
+
+When the user explicitly opts out of legal documents:
+
+```bash
+python scripts/audit.py <project-root> --skip-legal
+```
+
+The script reports items organized into clear categories:
+- **REQUIRED**: Essential documents and configurations missing for release.
+- **RECOMMENDED**: Advisory best-practice files missing for release.
+- **OPTIONAL**: Documents omitted because they do not apply to this project type or mode.
+- **USER-EXCLUDED**: Documents omitted by explicit user decision.
+- **STALE**: Existing files that are outdated or contain broken references.
+- **OK**: Verified files that are present and up to date.
+- **INFO**: Project scope, branch tracking, and git metadata.
 
 ### 2. Changelog
 Create or update `CHANGELOG.md` following `references/changelog.md`. Source entries from `git log` since the last release tag and from the git diff, not from memory. Write for users: what they can now do or what behaves differently, not an internal list of moved files. Group under Added, Changed, Fixed, Removed, Security. Keep an `Unreleased` section at the top until a version release is cut.
@@ -74,11 +93,22 @@ Create or update the README and anything under `docs/`. Follow the checklist in 
 Run every install and execution command you document. A command you did not run is an unverified guess, so either run it or mark it unverified. Update docs for every behavior mentioned in the changelog, and remove docs for removed features.
 
 ### 4. Terms, privacy, and community rules
-Review `references/legal-and-rules.md` for templates and the decision table:
-- **Software installed or forked**: license, contributing guide, code of conduct, security policy.
-- **Hosted app, public site, bot, or API with users**: add terms and conditions and privacy policy based on actual data collected (accounts, analytics, cookies, payments, uploads, third-party SDKs). Read the code to verify.
-- **Personal project or internal tool**: standard open-source license or proprietary notice; omit consumer terms of service unless external users are onboarded.
-- **Project rules**: write guidelines based on the actual policies enforced (contribution rules, API rate limits, community standards).
+Review `references/legal-and-rules.md` for complete outlines, codebase audit checklists, and decision trees covering the full corporate release suite:
+
+1. **Terms of Service (`TERMS.md` or `TERMS_OF_SERVICE.md`)**: Covers eligibility, user accounts, acceptable use, user-generated content, intellectual property, third-party integrations, disclaimer of warranties, liability limits, termination, governing law, and dispute resolution.
+2. **Privacy Policy (`PRIVACY.md`)**: Audits the real codebase for data collection (cookies, localStorage, session tokens, analytics, crash reporters, third-party APIs, authentication providers). Details data retention, user rights (GDPR/CCPA access and deletion), international transfers, and privacy contact information.
+3. **License (`LICENSE`)**: Verifies an explicit license exists (MIT, Apache-2.0, GPL-3.0, BSD, or proprietary Commercial All Rights Reserved). Never guesses or changes an existing license without explicit authorization.
+4. **Third-Party Credits and Attribution (`CREDITS.md` or `NOTICE`)**: Details third-party dependencies, open-source packages, fonts, media assets, and external APIs used by the project, including required copyright and license notices.
+5. **Security Policy (`SECURITY.md`)**: Defines supported versions, private vulnerability reporting process, response timelines (SLA), security contact address, and safe harbor / responsible disclosure expectations.
+6. **Contributing Guidelines (`CONTRIBUTING.md`)**: Explains local setup, branching rules, testing expectations, pull request workflows, and code review standards.
+7. **Code of Conduct (`CODE_OF_CONDUCT.md`)**: Community and contributor standards based on established industry templates (such as Contributor Covenant 2.1).
+8. **Changelog (`CHANGELOG.md`)**: Chronological release notes adhering strictly to Keep a Changelog and Semantic Versioning.
+9. **Environment Template (`.env.example`)**: Documents all required environment variables without committing actual secrets.
+
+Smart conditional rules for private projects and user preferences:
+- **Private and internal projects**: The audit script automatically detects private projects from `package.json` (`"private": true`), `pyproject.toml`, or internal markers. By default, skip public-facing consumer terms, public privacy policies, and public community files. Focus on code quality, build verification, tests, credential safety, changelog, `.env.example`, internal README, and proprietary license notices.
+- **Explicit user override (`--force-release`)**: If the user explicitly asks to make a private project production-ready, or requests release documents, generate the full corporate suite tailored for commercial/internal software (commercial terms, internal security policy, third-party attribution notices, proprietary license).
+- **User opt-out / denial**: If the user denies or opts out of any legal file (such as "skip terms", "no license needed", "don't add privacy policy", or passes `--skip-legal`), immediately honor the decision, skip generation, and document the omission in the audit report as user-excluded rather than missing.
 
 State plainly in the report that generated terms and privacy text are starting drafts that need legal review before launch. Do not claim legal compliance.
 
@@ -95,7 +125,7 @@ Run the applicable skills in this sequence:
 0. **Skill folder update check**: Inspect git status in the skills folder (`python scripts/check_skill_update.py` or `git -C <skill-folder> status --short --branch`) to verify installed skills are up to date before running the refresh pass.
 1. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
 2. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
-3. **deep-research**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation.
+3. **deep-research and attribution**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation. Verify that `CREDITS.md` or `NOTICE` documents all third-party dependencies and asset licenses.
 4. **debug-and-fix**: Run the project's build, test, and lint commands. Fix any failures at their root cause.
 5. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
 6. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
@@ -126,7 +156,8 @@ Run the applicable skills in this sequence:
 ### 7. Report
 Provide a concise, factual summary:
 - Files created or updated.
-- Placeholders the user must fill in (company name, contact email, jurisdiction, dates).
+- User-excluded documents if legal files were omitted by user decision.
+- Placeholders the user must fill in ([COMPANY NAME], [CONTACT EMAIL], [JURISDICTION], [SECURITY EMAIL], [EFFECTIVE DATE]).
 - Skills used and skills skipped, each with a brief reason.
 - Search indexing status: confirmed public indexing checklist or verified personal/internal `noindex` protections.
 - Commands run and verification results (mark anything unverified as "not verified").
