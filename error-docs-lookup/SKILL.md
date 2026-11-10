@@ -9,6 +9,21 @@ When a build or run fails, fix it from current, verifiable sources instead of me
 
 Work autonomously: do not ask the user for permission to search, fetch, edit, or re-run. Only stop and report when the failure rules below say to.
 
+## Check for skill folder updates
+
+Before applying this skill, check whether the skill folder has updates:
+
+1. Identify the directory where this skill is installed (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the active repository).
+2. If the folder is inside a git repository, check git status:
+   ```bash
+   git -C <skill-folder> status --short --branch
+   ```
+3. When network access is available, check for upstream changes:
+   ```bash
+   git -C <skill-folder> fetch --dry-run
+   ```
+4. If updates are available, pull them before proceeding so you use the latest instructions. If the folder is not a git repository, proceed with the installed files.
+
 ## Workflow
 
 ### 1. Capture the failure exactly

@@ -5,6 +5,21 @@ description: Use whenever the user asks to build, scaffold, edit, or debug a nat
 
 # Android App Development
 
+## Check for skill folder updates
+
+Before applying this skill, check whether the skill folder has updates:
+
+1. Identify the directory where this skill is installed (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the active repository).
+2. If the folder is inside a git repository, check git status:
+   ```bash
+   git -C <skill-folder> status --short --branch
+   ```
+3. When network access is available, check for upstream changes:
+   ```bash
+   git -C <skill-folder> fetch --dry-run
+   ```
+4. If updates are available, pull them before proceeding so you use the latest instructions. If the folder is not a git repository, proceed with the installed files.
+
 ## Scope
 
 Native Android apps: Kotlin (default, preferred over Java for new code unless the user's

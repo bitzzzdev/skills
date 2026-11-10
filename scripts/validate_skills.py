@@ -50,6 +50,11 @@ for skill_md in sorted(ROOT.glob("*/SKILL.md")):
     if EMOJI.search(text):
         errors.append(f"{folder}: SKILL.md contains emoji (violates human-writing rules)")
 
+    # Check for skill folder update check
+    lower = text.lower()
+    if "skill folder update" not in lower or "git status" not in lower:
+        errors.append(f"{folder}: SKILL.md missing check for skill folder update and git status")
+
 if count == 0:
     errors.append("no skills found")
 

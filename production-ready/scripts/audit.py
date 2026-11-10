@@ -96,7 +96,10 @@ def get_skill_homes(root, skills_dir=None):
         os.path.join(root, ".gemini", "skills"),
         os.path.expanduser("~/.gemini/antigravity-cli/skills"),
         os.path.expanduser("~/.gemini/antigravity-cli/builtin/skills"),
+        os.path.expanduser("~/.gemini/config/skills"),
         os.path.expanduser("~/.gemini/skills"),
+        os.path.join(root, ".copilot", "skills"),
+        os.path.expanduser("~/.copilot/skills"),
         os.path.join(root, ".agents", "skills"),
         os.path.expanduser("~/.agents/skills"),
         os.path.join(root, ".claude", "skills"),
@@ -112,6 +115,36 @@ def get_skill_homes(root, skills_dir=None):
             seen.add(h)
             valid.append(h)
     return valid
+
+
+def check_skill_updates(root, skills_dir=None):
+    homes = get_skill_homes(root, skills_dir)
+    checked = set()
+    for h in homes:
+        real = os.path.realpath(h)
+        if real in checked:
+            continue
+        checked.add(real)
+        git_dir = os.path.join(real, ".git")
+        if not os.path.exists(git_dir):
+            continue
+        status = run(["git", "status", "--short", "--branch"], real)
+        if not status:
+            continue
+        lines = status.splitlines()
+        first_line = lines[0] if lines else ""
+        parent_name = os.path.basename(os.path.dirname(real))
+        folder_name = os.path.basename(real)
+        display_name = f"{parent_name}/{folder_name}" if parent_name else folder_name
+        label = f"Skill folder ({display_name})"
+        if "behind" in first_line:
+            add("STALE", label, "behind upstream: " + first_line.lstrip("# ").strip())
+        elif "ahead" in first_line:
+            add("INFO", label, "ahead of upstream: " + first_line.lstrip("# ").strip())
+        elif len(lines) > 1:
+            add("INFO", label, "local changes present (%d files)" % (len(lines) - 1))
+        else:
+            add("OK", label, "up to date (" + first_line.lstrip("# ").strip() + ")")
 
 
 def is_skill_installed(name, root, skills_dir=None):
@@ -389,6 +422,7 @@ def main():
     if found.get("README"):
         check_readme(root, found["README"])
     scan_writing(root, [found.get(k) for k in ("README", "CHANGELOG", "TERMS", "PRIVACY", "CONTRIBUTING")], a.skills_dir)
+    check_skill_updates(root, a.skills_dir)
 
     for status in ("MISSING", "STALE", "OK", "INFO"):
         rows = [r for r in results if r[0] == status]

@@ -9,6 +9,21 @@ AI text gets spotted fast, and once a reader spots it they stop trusting the con
 
 It covers prose and code. Code is included because comments, commit messages, log lines, error text, UI strings, test names and READMEs are all writing, and they give AI output away just as often as essays do.
 
+## Check for skill folder updates
+
+Before applying this skill, check whether the skill folder has updates:
+
+1. Identify the directory where this skill is installed (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the active repository).
+2. If the folder is inside a git repository, check git status:
+   ```bash
+   git -C <skill-folder> status --short --branch
+   ```
+3. When network access is available, check for upstream changes:
+   ```bash
+   git -C <skill-folder> fetch --dry-run
+   ```
+4. If updates are available, pull them before proceeding so you use the latest instructions. If the folder is not a git repository, proceed with the installed files.
+
 ## Hard rules
 
 These are not style suggestions. Follow them every time unless the user explicitly asks otherwise in the current request.

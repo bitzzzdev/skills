@@ -9,9 +9,26 @@ A project is not finished when the code works. It is finished when someone else 
 
 Work on what the project actually has. Read the code and git history first, write second. Never invent features, versions, dates, company names, addresses, or legal facts. If a fact is unknown, leave a clearly marked placeholder like `[COMPANY NAME]` and list it in the final report.
 
+## Check for skill folder updates
+
+Before applying this skill, check whether the skill folder has updates:
+
+1. Identify the directory where this skill is installed (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the active repository).
+2. If the folder is inside a git repository, check git status:
+   ```bash
+   git -C <skill-folder> status --short --branch
+   ```
+3. When network access is available, check for upstream changes:
+   ```bash
+   git -C <skill-folder> fetch --dry-run
+   ```
+4. If updates are available, pull them before proceeding so you use the latest instructions. If the folder is not a git repository, proceed with the installed files.
+
 ## Multi-Skill Orchestration
 
 When finishing a project, you act as the orchestrator across your entire skill ecosystem. Do not treat production readiness as simply editing markdown files. Proactively invoke and apply the other skills available in your environment when their criteria are met:
+
+0. **Skill folder update check**: Inspect git status in active skill folders (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the project skills directory) with `git -C <skill-folder> status --short --branch` or `python scripts/check_skill_update.py`. Pull pending updates before running release audits.
 
 1. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
 2. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
@@ -46,7 +63,7 @@ For personal or internal projects where search indexing should be avoided, pass 
 python scripts/audit.py <project-root> --personal
 ```
 
-The script checks for changelog, README, docs, license, terms, privacy, security, contributing, and conduct files; compares the manifest version with the changelog; lists commits since the last tag; detects undocumented environment variables; flags broken README file references and npm scripts; and runs the human-writing scanner.
+The script checks for changelog, README, docs, license, terms, privacy, security, contributing, and conduct files; checks skill folder git status; compares the manifest version with the changelog; lists commits since the last tag; detects undocumented environment variables; flags broken README file references and npm scripts; and runs the human-writing scanner.
 
 ### 2. Changelog
 Create or update `CHANGELOG.md` following `references/changelog.md`. Source entries from `git log` since the last release tag and from the git diff, not from memory. Write for users: what they can now do or what behaves differently, not an internal list of moved files. Group under Added, Changed, Fixed, Removed, Security. Keep an `Unreleased` section at the top until a version release is cut.
@@ -75,6 +92,7 @@ Read `references/skill-selection.md` and confirm the project type from the audit
 ### 6. Multi-skill refresh pass
 Run the applicable skills in this sequence:
 
+0. **Skill folder update check**: Inspect git status in the skills folder (`python scripts/check_skill_update.py` or `git -C <skill-folder> status --short --branch`) to verify installed skills are up to date before running the refresh pass.
 1. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
 2. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
 3. **deep-research**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation.
