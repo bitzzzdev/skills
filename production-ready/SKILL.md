@@ -34,14 +34,15 @@ When finishing a project, you act as the orchestrator across your entire skill e
 2. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
 3. **deep-research and third-party attribution**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation. Audit third-party packages, bundled code, fonts, and assets to provide licensing attribution in `CREDITS.md` or `NOTICE`.
 4. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
-5. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
-6. **google-seo-skill**:
+5. **systematic-issue-sweep**: Whenever an issue, bug, typo, anti-pattern, or user-pointed inconvenience is identified during testing, audit, or review, sweep the entire codespace to locate and resolve all related occurrences. Abstract the underlying mistake pattern and eradicate it across code, tests, docs, and configs so the defect is never repeated elsewhere in the project.
+6. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
+7. **google-seo-skill**:
    - **Pull updates first**: If any update to `google-seo-skill` is available in git (upstream `https://github.com/mikezupper/google-seo-skill`), pull it first using `python scripts/update_seo_skill.py`. Verify clean frontmatter and human writing, then push updates to the skills repo.
    - **Use when**: Working on a public web project where search ranking and public search engine visibility are needed. Use it to audit crawlability, metadata, structured data, canonical URLs, and Core Web Vitals.
    - **Avoid when**: Working on a personal project, private repository, internal dashboard, staging site, or any project where search indexing is not desired. In those cases, skip SEO ranking checks entirely and verify that `noindex` meta tags, `X-Robots-Tag: noindex` headers, or robots disallow rules are present to prevent indexing.
-7. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
-8. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
-9. **Domain-specific skills**:
+8. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
+9. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
+10. **Domain-specific skills**:
    - `android-app-dev`: Use for Android apps to verify the CI workflow, Gradle version catalog, and Compose configuration.
    - `minecraft-fabric-mod`: Use for Minecraft Fabric mods to verify Loom, Fabric API, and CI build workflows.
    - `iris-shaderpack-dev`: Use for shaderpacks to verify program names and shaders.properties.
@@ -126,7 +127,7 @@ Run the applicable skills in this sequence:
 1. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
 2. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
 3. **deep-research and attribution**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation. Verify that `CREDITS.md` or `NOTICE` documents all third-party dependencies and asset licenses.
-4. **debug-and-fix**: Run the project's build, test, and lint commands. Fix any failures at their root cause.
+4. **debug-and-fix and systematic-issue-sweep**: Run the project's build, test, and lint commands. Fix any failures at their root cause. When fixing any error, bug, typo, or user-pointed issue, invoke `systematic-issue-sweep` to abstract the pattern and eradicate all identical or related occurrences across the entire workspace.
 5. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
 6. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
 7. **Search indexing and SEO check**:
@@ -166,6 +167,7 @@ Provide a concise, factual summary:
 
 ## Rules that keep this honest
 
+- Eradicate issues workspace-wide: When any bug, typo, anti-pattern, or inconvenience is pointed out by the user or identified during tests, sweep the entire codespace using `systematic-issue-sweep` to ensure the issue pattern is not repeated anywhere else.
 - Write as the project owner: All documentation, README entries, comments, and licenses must speak with the direct voice and authority of the repository creator or maintainer. Never include assistant meta-instructions, advice to the developer, or multiple-choice checklists in committed deliverables.
 - Version numbers and dates come from the manifest, tags, and git, never from guesses. Use today's system date for release headings.
 - Do not bump the version or tag a release unless the user asked. Put changes under `Unreleased` otherwise.

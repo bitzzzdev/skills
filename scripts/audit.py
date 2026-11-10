@@ -211,8 +211,8 @@ SPECIFIC = {
 
 
 def report_skills(types, root, skills_dir, is_personal=False, no_indexing=False):
-    use = ["debug-and-fix (build, tests, lint)", "error-docs-lookup (warnings and deprecations)",
-           "human-writing (scan docs)", "context-rich-commits (commit)"]
+    use = ["debug-and-fix (build, tests, lint)", "systematic-issue-sweep (sweep workspace for defect recurrences)",
+           "error-docs-lookup (warnings and deprecations)", "human-writing (scan docs)", "context-rich-commits (commit)"]
     skip = []
 
     # Check 3D / WebGL for website

@@ -1,6 +1,6 @@
 ---
 name: debug-and-fix
-description: Finds the cause of a bug or error and fixes it. Use whenever the user asks Claude or an agent to fix, debug, troubleshoot or investigate something broken, including pasted stack traces, failing tests, build or CI errors, crashes, "it doesn't work", "why is this failing", or "fix this". The agent searches the relevant files, reads the error, checks the official docs online, fixes the root cause and verifies the fix. Also use it when the user tags this skill by name, even if they only describe a symptom. Pairs with error-docs-lookup for the online docs step and with human-writing and context-rich-commits for the commit.
+description: Finds the cause of a bug or error and fixes it. Use whenever the user asks Claude or an agent to fix, debug, troubleshoot or investigate something broken, including pasted stack traces, failing tests, build or CI errors, crashes, "it doesn't work", "why is this failing", or "fix this". The agent searches the relevant files, reads the error, checks the official docs online, fixes the root cause and verifies the fix. Also use it when the user tags this skill by name, even if they only describe a symptom. Pairs with error-docs-lookup for the online docs step, with systematic-issue-sweep to eliminate recurrences across the workspace, and with human-writing and context-rich-commits for the commit.
 ---
 
 # Debug and Fix
@@ -30,6 +30,7 @@ Before applying this skill, check whether the skill folder has updates:
 4. **Smallest change that works.** Don't refactor or reformat unrelated code while fixing a bug.
 5. **Verify.** Rerun the original failing command and the nearby tests. Report what you ran and what happened. If you couldn't run anything, say "not verified".
 6. **Don't invent.** Only claim a cause you saw in the code, logs or docs.
+7. **Sweep for recurrences.** Never assume a bug, typo, or flawed assumption exists in only one file. When a cause is fixed, sweep the entire workspace using `systematic-issue-sweep` to find and fix identical or related occurrences.
 
 ## Workflow
 
@@ -67,13 +68,16 @@ Write the cause in one or two sentences before editing: what is wrong, where, an
 
 Then make the fix. Match the project's existing style.
 
-### 6. Verify
+### 6. Sweep the workspace for recurrences
+Before considering the bug resolved, use the `systematic-issue-sweep` skill to search the rest of the workspace for the same pattern, typo, unhandled edge case, or flawed logic. Fix every occurrence so the bug cannot recur elsewhere in the repository.
+
+### 7. Verify
 - Rerun the exact command that failed.
 - Run the tests for the files you touched, then the wider suite if it's quick.
 - If no test covers the bug, add a small one that fails without the fix and passes with it.
 - Remove any debug prints or temporary files you added.
 
-### 7. Report
+### 8. Report
 Keep it short and plain:
 
 - What was wrong and where (file and line).
