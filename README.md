@@ -13,7 +13,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 | [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end-to-end. Reproduces the error, searches affected files, checks full logs, reads official documentation, fixes root causes, and verifies. Includes error context extraction scripts. |
 | [`error-docs-lookup`](error-docs-lookup) | Directs the agent to read current official documentation, changelogs, and GitHub issues before fixing build, type, lint, install, or runtime errors instead of guessing from memory. |
 | [`google-seo-skill`](google-seo-skill) | Applies official Google SEO and generative AI search (AEO/GEO) guidance when writing, reviewing, or auditing web pages. Used for public web projects needing search ranking; avoided for personal or internal projects where indexing is not needed. |
-| [`human-writing`](human-writing) | Keeps written output sounding human. Bans em dashes and emoji, eliminates stock AI phrasing, and covers code comments, commit messages, READMEs, UI copy, and technical social posts on X and Reddit. Includes a scanner script. |
+| [`human-writing`](human-writing) | Keeps written output sounding human. Enforces project owner authority, bans assistant meta-instructions, bans em dashes and emoji, eliminates stock AI phrasing, and covers code comments, commit messages, READMEs, UI copy, and technical social posts on X and Reddit. Includes a scanner script. |
 | [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files, and common shader effects. |
 | [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom, mapping guidance, and CI workflows. |
 | [`persistent-goal-execution`](persistent-goal-execution) | Keeps agents focused on the complete requested outcome across long tasks, retries, waiting, context compaction, and failures. |
@@ -35,6 +35,7 @@ The skills work together as an interconnected toolkit:
 - When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
 - For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
 - Every skill includes an update check directing agents to inspect git status in the skill directory (such as `~/.copilot/skills/` or `~/.gemini/antigravity-cli/skills/`) before running, so instructions stay current.
+- All documentation, license entries, and comments are authored strictly from the perspective and authority of the project owner, banning assistant coaching leaks, meta-instructions, and unselected license checklists.
 
 ## Installation
 

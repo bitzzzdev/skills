@@ -7,6 +7,11 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added project owner authority rules and assistant meta-instruction bans
+  across `human-writing` and `production-ready`, eliminating assistant coaching
+  leaks, placeholder advice, and unselected license prompts.
+- Added assistant coaching and meta-instruction detection patterns to
+  `human-writing/scripts/scan.py` and `scripts/audit.py`.
 - Added technical social media post writing reference
   (`human-writing/references/social-posts.md`) covering post themes, archetypes,
   platform rules for X and Reddit, hook engineering, and editing checklists.
@@ -31,6 +36,14 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Updated `human-writing` `SKILL.md` and `references/ai-tells.md` to require
+  writing from the owner's perspective, ban assistant-to-developer coaching,
+  and provide before/after examples for license sections and code comments.
+- Updated `production-ready` `SKILL.md`, `references/docs.md`, and
+  `references/legal-and-rules.md` to mandate owner perspective for license
+  notices and READMEs, forbidding unselected option prompts.
+- Updated `audit.py` to flag assistant meta-instructions in README and candidate
+  release documents as stale.
 - Updated `human-writing` `SKILL.md` with guidelines for technical social posts
   on X, Reddit, and developer forums, including the inverted rule of excitement,
   zero throat-clearing, platform rules, and before/after comparisons.
