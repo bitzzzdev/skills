@@ -7,6 +7,12 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added `context-search` skill with guide (`SKILL.md`), agent store reference
+  (`references/agent-stores.md`), extraction guide
+  (`references/extraction.md`), and a read-only discovery script
+  (`scripts/find_agent_sessions.py`) that finds prior sessions from OpenCode,
+  Codex, Claude Code, Antigravity, Gemini CLI, Muse, Aider, editor agents, and
+  generic JSONL stores, then extracts a redacted brief.
 - Added `systematic-issue-sweep` skill with guide (`SKILL.md`), reference
   (`references/sweep-patterns.md`), and CLI scanner (`scripts/sweep.py`) to
   sweep the entire workspace and eradicate defect classes across code, tests,
@@ -40,6 +46,11 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Integrated `context-search` into `production-ready` orchestration, the
+  workflow as a pre-audit recovery step, the refresh pass, and the skill
+  selection matrix. Prior transcripts are treated as leads that must be
+  verified against git and the live worktree.
+- Updated `audit.py` to recommend `context-search` when the skill is installed.
 - Integrated `systematic-issue-sweep` into `production-ready` multi-skill
   orchestration and refresh pass, requiring workspace sweeps for any reported
   bug, typo, or user inconvenience before release.

@@ -8,6 +8,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 |---|---|
 | [`android-app-dev`](android-app-dev) | Builds, edits, and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup, and GitHub Actions CI builds. |
 | [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions, and gotchas; checkpoint commits snapshot the repository state. Includes a commit linter and history reader. |
+| [`context-search`](context-search) | Recovers prior work when a new agent session starts in an existing codebase. Finds installed agents (OpenCode, Codex, Claude Code, Antigravity, Gemini, Muse, Aider, editor agents), locates project-matched sessions, extracts a bounded brief, and verifies it against git and the live worktree. Includes a discovery script. |
 | [`credential-safety`](credential-safety) | Checks worktree files, commit ranges, ignore rules, and scanner results so credentials do not reach remote repositories. |
 | [`deep-research`](deep-research) | Investigates source and target repositories before copying or porting a feature, tracing behavior, integration points, licensing, and validation. |
 | [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end-to-end. Reproduces the error, searches affected files, checks full logs, reads official documentation, fixes root causes, and verifies. Includes error context extraction scripts. |
@@ -24,6 +25,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 ## Skill Orchestration
 
 The skills work together as an interconnected toolkit:
+- When a release starts in an existing repository, `production-ready` invokes `context-search` to find prior agent sessions, recover decisions and open work, and verify every claim against the current worktree before continuing.
 - When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `persistent-goal-execution`, `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
 - Before committing or pushing a release, `production-ready` runs
   `credential-safety` to check for exposed credentials and stop unsafe pushes.
