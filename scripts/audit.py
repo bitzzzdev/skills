@@ -213,8 +213,12 @@ SPECIFIC = {
 def report_skills(types, root, skills_dir, is_personal=False, no_indexing=False):
     use = ["debug-and-fix (build, tests, lint)", "systematic-issue-sweep (sweep workspace for defect recurrences)",
            "error-docs-lookup (warnings and deprecations)", "human-writing (scan docs)", "context-rich-commits (commit)"]
+    priority = []
+    if is_skill_installed("agent-self-awareness", root, skills_dir):
+        priority.append("agent-self-awareness (set execution mode and research gate from the active model tier)")
     if is_skill_installed("context-search", root, skills_dir):
-        use.insert(0, "context-search (recover prior agent sessions and verify them against git)")
+        priority.append("context-search (recover prior agent sessions and verify them against git)")
+    use = priority + use
     skip = []
 
     # Check 3D / WebGL for website

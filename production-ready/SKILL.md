@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch.
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch.
 ---
 
 # Production Ready
@@ -30,20 +30,21 @@ When finishing a project, you act as the orchestrator across your entire skill e
 
 0. **Skill folder update check**: Inspect git status in active skill folders (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the project skills directory) with `git -C <skill-folder> status --short --branch` or `python scripts/check_skill_update.py`. Pull pending updates before running release audits.
 
-1. **context-search**: On a new session in an existing codebase, discover installed agents, find project-matched session transcripts or databases, extract a bounded brief, and verify it against git and the live worktree. Prior transcripts are clues, never authority.
-2. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
-3. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
-4. **deep-research and third-party attribution**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation. Audit third-party packages, bundled code, fonts, and assets to provide licensing attribution in `CREDITS.md` or `NOTICE`.
-5. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
-6. **systematic-issue-sweep**: Whenever an issue, bug, typo, anti-pattern, or user-pointed inconvenience is identified during testing, audit, or review, sweep the entire codespace to locate and resolve all related occurrences. Abstract the underlying mistake pattern and eradicate it across code, tests, docs, and configs so the defect is never repeated elsewhere in the project.
-7. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
-8. **google-seo-skill**:
+1. **agent-self-awareness**: Detect the active harness and model, classify its capability tier, and switch to a research-first protocol when it is not a frontier coding model. Unknown models are treated as non-frontier. The tier raises the evidence bar; it never lowers the requested outcome.
+2. **context-search**: On a new session in an existing codebase, discover installed agents, find project-matched session transcripts or databases, extract a bounded brief, and verify it against git and the live worktree. Prior transcripts are clues, never authority.
+3. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
+4. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
+5. **deep-research and third-party attribution**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation. Audit third-party packages, bundled code, fonts, and assets to provide licensing attribution in `CREDITS.md` or `NOTICE`.
+6. **debug-and-fix**: Run the project build, tests, and linters. Fix any failures at their root cause. A release with a red build is not production ready.
+7. **systematic-issue-sweep**: Whenever an issue, bug, typo, anti-pattern, or user-pointed inconvenience is identified during testing, audit, or review, sweep the entire codespace to locate and resolve all related occurrences. Abstract the underlying mistake pattern and eradicate it across code, tests, docs, and configs so the defect is never repeated elsewhere in the project.
+8. **error-docs-lookup**: When encountering library deprecations, build tool warnings, or version migrations, search and read current official documentation before applying fixes.
+9. **google-seo-skill**:
    - **Pull updates first**: If any update to `google-seo-skill` is available in git (upstream `https://github.com/mikezupper/google-seo-skill`), pull it first using `python scripts/update_seo_skill.py`. Verify clean frontmatter and human writing, then push updates to the skills repo.
    - **Use when**: Working on a public web project where search ranking and public search engine visibility are needed. Use it to audit crawlability, metadata, structured data, canonical URLs, and Core Web Vitals.
    - **Avoid when**: Working on a personal project, private repository, internal dashboard, staging site, or any project where search indexing is not desired. In those cases, skip SEO ranking checks entirely and verify that `noindex` meta tags, `X-Robots-Tag: noindex` headers, or robots disallow rules are present to prevent indexing.
-9. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
-10. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
-11. **Domain-specific skills**:
+10. **human-writing**: Scan all written or edited text (README, changelog, documentation, legal text, commit messages, and code comments) with `human-writing/scripts/scan.py`. Enforce zero hard hits (no em dashes, no emoji) and clear, human tone.
+11. **context-rich-commits**: Record the release work using structured git commits (separating doc updates from legal text and code changes), followed by a project checkpoint commit. Push committed releases to the repo when instructed.
+12. **Domain-specific skills**:
    - `android-app-dev`: Use for Android apps to verify the CI workflow, Gradle version catalog, and Compose configuration.
    - `minecraft-fabric-mod`: Use for Minecraft Fabric mods to verify Loom, Fabric API, and CI build workflows.
    - `iris-shaderpack-dev`: Use for shaderpacks to verify program names and shaders.properties.
@@ -52,14 +53,17 @@ When finishing a project, you act as the orchestrator across your entire skill e
 
 ## Workflow
 
-### 0. Recover prior agent context
-If a previous agent session may have worked on this project, run `context-search` before the audit:
+### 0. Recover context and set the execution mode
+Run self-awareness and context recovery before the audit. They are independent and can run in parallel:
 
 ```bash
+python agent-self-awareness/scripts/detect_model.py
 python context-search/scripts/find_agent_sessions.py --project <project-root> --brief
 ```
 
-Read `context-search/references/agent-stores.md` for session locations and `references/extraction.md` for the brief format. Check git status, git log, and the named files before trusting any transcript. Record the recovered brief and what you verified in the final report.
+`agent-self-awareness` decides whether a research-first protocol is mandatory. If the model is capable, efficient, or unknown, read current official documentation and inspect the code before implementing. `context-search` recovers prior agent decisions and open work. Read `context-search/references/agent-stores.md` for session locations and `references/extraction.md` for the brief format.
+
+Check git status, git log, and the named files before trusting any transcript. Record the execution mode, recovered brief, and what you verified in the final report.
 
 ### 1. Audit
 Run the audit script from the project root. It inspects the codebase, checks for missing, stale, or excluded files, verifies skill folder git status, and lists which skills to USE and which to SKIP:
@@ -134,20 +138,21 @@ Read `references/skill-selection.md` and confirm the project type from the audit
 Run the applicable skills in this sequence:
 
 0. **Skill folder update check**: Inspect git status in the skills folder (`python scripts/check_skill_update.py` or `git -C <skill-folder> status --short --branch`) to verify installed skills are up to date before running the refresh pass.
-1. **context-search**: Recover prior agent context on a new session in an existing codebase. Run `context-search/scripts/find_agent_sessions.py --brief`, build the short brief, and verify it against the current worktree, git history, and tests before relying on it.
-2. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
-3. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
-4. **deep-research and attribution**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation. Verify that `CREDITS.md` or `NOTICE` documents all third-party dependencies and asset licenses.
-5. **debug-and-fix and systematic-issue-sweep**: Run the project's build, test, and lint commands. Fix any failures at their root cause. When fixing any error, bug, typo, or user-pointed issue, invoke `systematic-issue-sweep` to abstract the pattern and eradicate all identical or related occurrences across the entire workspace.
-6. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
-7. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
-8. **Search indexing and SEO check**:
+1. **agent-self-awareness**: Detect the active model and tier. If it is not frontier class, enforce research-first mode for the refresh pass: official docs, code inspection, tests, and diff review before any fix. Report the execution mode.
+2. **context-search**: Recover prior agent context on a new session in an existing codebase. Run `context-search/scripts/find_agent_sessions.py --brief`, build the short brief, and verify it against the current worktree, git history, and tests before relying on it.
+3. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
+4. **credential-safety**: Check for credentials before committing or pushing. Stop and remediate findings, rotate exposed values, and do not expose secret contents in reports.
+5. **deep-research and attribution**: If the release includes copied or ported functionality, verify source behavior, licensing, target integration, and intentional differences before accepting the implementation. Verify that `CREDITS.md` or `NOTICE` documents all third-party dependencies and asset licenses.
+6. **debug-and-fix and systematic-issue-sweep**: Run the project's build, test, and lint commands. Fix any failures at their root cause. When fixing any error, bug, typo, or user-pointed issue, invoke `systematic-issue-sweep` to abstract the pattern and eradicate all identical or related occurrences across the entire workspace.
+7. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
+8. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
+9. **Search indexing and SEO check**:
    - If using `google-seo-skill`, first check if any update is available in git (`python scripts/update_seo_skill.py`) and pull it.
    - For public websites where ranking is needed: run `google-seo-skill` (or `references/seo.md`).
    - For personal or internal projects: verify that `noindex` headers or meta tags and robots rules are correctly in place.
-9. **human-writing**: Run `human-writing/scripts/scan.py` on every touched file (README, changelog, docs, terms, comments). Eliminate all hard hits (no em dashes, no emoji).
-10. **Audit rerun**: Rerun `scripts/audit.py`. Confirm zero remaining MISSING or STALE items.
-11. **context-rich-commits and push**: Commit the changes using structured commit messages:
+10. **human-writing**: Run `human-writing/scripts/scan.py` on every touched file (README, changelog, docs, terms, comments). Eliminate all hard hits (no em dashes, no emoji).
+11. **Audit rerun**: Rerun `scripts/audit.py`. Confirm zero remaining MISSING or STALE items.
+12. **context-rich-commits and push**: Commit the changes using structured commit messages:
    - One commit for docs and changelog.
    - One commit for legal and community files.
    - A final checkpoint commit capturing the current state of the repository.
@@ -171,6 +176,7 @@ Provide a concise, factual summary:
 - User-excluded documents if legal files were omitted by user decision.
 - Placeholders the user must fill in ([COMPANY NAME], [CONTACT EMAIL], [JURISDICTION], [SECURITY EMAIL], [EFFECTIVE DATE]).
 - Skills used and skills skipped, each with a brief reason.
+- Execution mode: model tier and evidence source, plus the research protocol applied when the model was not frontier class.
 - Recovered prior context: agents and stores checked, sessions found, and what was verified against git and tests.
 - Search indexing status: confirmed public indexing checklist or verified personal/internal `noindex` protections.
 - Commands run and verification results (mark anything unverified as "not verified").
@@ -180,6 +186,7 @@ Provide a concise, factual summary:
 ## Rules that keep this honest
 
 - The current worktree, git history, and test output outrank every recovered transcript. Use `context-search` to find prior work, then verify each claim against the repository before acting on it.
+- When the model is capable, efficient, or unknown, research comes before implementation. Use `agent-self-awareness` to set the mode, then read official docs and inspect the code instead of guessing. A lower tier raises the evidence bar; it never lowers the deliverable.
 - Eradicate issues workspace-wide: When any bug, typo, anti-pattern, or inconvenience is pointed out by the user or identified during tests, sweep the entire codespace using `systematic-issue-sweep` to ensure the issue pattern is not repeated anywhere else.
 - Write as the project owner: All documentation, README entries, comments, and licenses must speak with the direct voice and authority of the repository creator or maintainer. Never include assistant meta-instructions, advice to the developer, or multiple-choice checklists in committed deliverables.
 - Version numbers and dates come from the manifest, tags, and git, never from guesses. Use today's system date for release headings.
