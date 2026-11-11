@@ -6,6 +6,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 
 | Skill | What it does |
 |---|---|
+| [`agent-self-awareness`](agent-self-awareness) | Makes an agent identify its harness and model, classify its capability tier, and switch to a mandatory research-first protocol when it is not a frontier coding model. Requires official docs, code inspection, tests, and diff review before implementation. Includes a model detection script. |
 | [`android-app-dev`](android-app-dev) | Builds, edits, and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup, and GitHub Actions CI builds. |
 | [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions, and gotchas; checkpoint commits snapshot the repository state. Includes a commit linter and history reader. |
 | [`context-search`](context-search) | Recovers prior work when a new agent session starts in an existing codebase. Finds installed agents (OpenCode, Codex, Claude Code, Antigravity, Gemini, Muse, Aider, editor agents), locates project-matched sessions, extracts a bounded brief, and verifies it against git and the live worktree. Includes a discovery script. |
@@ -25,6 +26,7 @@ A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode,
 ## Skill Orchestration
 
 The skills work together as an interconnected toolkit:
+- At the start of release work, `production-ready` invokes `agent-self-awareness` to detect the model tier. Capable, efficient, and unknown models must gather official documentation, inspect the code, and run verification before implementing instead of guessing.
 - When a release starts in an existing repository, `production-ready` invokes `context-search` to find prior agent sessions, recover decisions and open work, and verify every claim against the current worktree before continuing.
 - When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `persistent-goal-execution`, `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
 - Before committing or pushing a release, `production-ready` runs

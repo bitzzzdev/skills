@@ -7,6 +7,12 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added `agent-self-awareness` skill with guide (`SKILL.md`), model tier
+  reference (`references/model-tiers.md`), quality gate reference
+  (`references/quality-gates.md`), and a detection script
+  (`scripts/detect_model.py`) that identifies the harness and model from live
+  session data, environment, and config, then sets a research-first protocol
+  when the model is not frontier class or cannot be identified.
 - Added `context-search` skill with guide (`SKILL.md`), agent store reference
   (`references/agent-stores.md`), extraction guide
   (`references/extraction.md`), and a read-only discovery script
@@ -46,6 +52,10 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Integrated `agent-self-awareness` into `production-ready` orchestration, the
+  pre-audit workflow, the refresh pass, the skill selection matrix, and the
+  audit recommendations. Non-frontier and unknown models must research before
+  implementing, and the report records the execution mode.
 - Integrated `context-search` into `production-ready` orchestration, the
   workflow as a pre-audit recovery step, the refresh pass, and the skill
   selection matrix. Prior transcripts are treated as leads that must be
