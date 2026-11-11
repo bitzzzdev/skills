@@ -30,6 +30,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 | Skill or task | website (public) | website (personal/internal) | mobile-native | desktop | game-mod | shaderpack | library-cli | bot | api |
 |---|---|---|---|---|---|---|---|---|---|
 | changelog | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| context-search | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | README and docs | yes | yes | yes | yes | yes | yes | yes | yes | yes, plus API reference |
 | terms and privacy | yes if users | no | yes, stores require privacy URL | yes if data collected | rarely | no | no | yes | yes if public |
 | license, contributing, security | yes | yes if open source | yes if open source | yes if open source | yes | yes | yes | yes | yes |
@@ -45,6 +46,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 ## Skill orchestration guidelines
 
 When productionizing a project, orchestrate all relevant skills in sequence:
+- **context-search**: On a new session in an existing codebase, discover installed agents, locate project sessions, extract a bounded brief, and verify it against git and the current files before resuming work.
 - **debug-and-fix**: Verify tests, build, and linters. Fix any breakages at their root cause.
 - **error-docs-lookup**: When encountering deprecations, toolchain issues, or version upgrades, look up official documentation before making changes.
 - **google-seo-skill**: Invoke for public web projects needing search ranking and AI Overviews visibility. Avoid for personal/internal tools or projects with no indexing needed.
@@ -61,4 +63,4 @@ When productionizing a project, orchestrate all relevant skills in sequence:
 
 ## Missing skills
 
-If a skill the project calls for is not installed in the environment, perform its checks from the matching reference file (`references/seo.md`, `references/docs.md`, `references/legal-and-rules.md`) and note this in the final report. Never claim to have run a skill that was not executed.
+If a skill the project calls for is not installed in the environment, perform its checks from the matching reference file (`references/seo.md`, `references/docs.md`, `references/legal-and-rules.md`, or `context-search/references/agent-stores.md`) and note this in the final report. Never claim to have run a skill that was not executed.
