@@ -1,152 +1,247 @@
-# skills
+# AI Coding Agent Skills
 
-A collection of agent skills for Antigravity, Gemini CLI, Claude Code, OpenCode, and Claude.ai. Each skill is a self-contained folder with a `SKILL.md` and reference files that load only when the agent needs them.
+This repository contains reusable skills for AI coding agents (OpenCode, Claude Code, Copilot CLI, and other agents). Skills are standalone, modular instructions that can be loaded by an agent to handle specific coding workflows.
 
-## Skills
+## Available Skills
 
-| Skill | What it does |
-|---|---|
-| [`agent-self-awareness`](agent-self-awareness) | Makes an agent identify its harness and model, classify its capability tier, and switch to a mandatory research-first protocol when it is not a frontier coding model. Requires official docs, code inspection, tests, and diff review before implementation. Includes a model detection script. |
-| [`android-app-dev`](android-app-dev) | Builds, edits, and debugs native Android apps in Kotlin or Java, with Jetpack Compose or XML views, Gradle setup, and GitHub Actions CI builds. |
-| [`context-rich-commits`](context-rich-commits) | Turns git history into project memory. Commit messages record why, what changed, decisions, and gotchas; checkpoint commits snapshot the repository state. Includes a commit linter and history reader. |
-| [`context-search`](context-search) | Recovers prior work when a new agent session starts in an existing codebase. Finds installed agents (OpenCode, Codex, Claude Code, Antigravity, Gemini, Muse, Aider, editor agents), locates project-matched sessions, extracts a bounded brief, and verifies it against git and the live worktree. Includes a discovery script. |
-| [`credential-safety`](credential-safety) | Checks worktree files, commit ranges, ignore rules, and scanner results so credentials do not reach remote repositories. |
-| [`deep-research`](deep-research) | Investigates source and target repositories before copying or porting a feature, tracing behavior, integration points, licensing, and validation. |
-| [`debug-and-fix`](debug-and-fix) | Finds and fixes bugs end-to-end. Reproduces the error, searches affected files, checks full logs, reads official documentation, fixes root causes, and verifies. Includes error context extraction scripts. |
-| [`error-docs-lookup`](error-docs-lookup) | Directs the agent to read current official documentation, changelogs, and GitHub issues before fixing build, type, lint, install, or runtime errors instead of guessing from memory. |
-| [`google-seo-skill`](google-seo-skill) | Applies official Google SEO and generative AI search (AEO/GEO) guidance when writing, reviewing, or auditing web pages. Used for public web projects needing search ranking; avoided for personal or internal projects where indexing is not needed. |
-| [`human-writing`](human-writing) | Keeps written output sounding human. Enforces project owner authority, bans assistant meta-instructions, bans em dashes and emoji, eliminates stock AI phrasing, and covers code comments, commit messages, READMEs, UI copy, and technical social posts on X and Reddit. Includes a scanner script. |
-| [`iris-shaderpack-dev`](iris-shaderpack-dev) | Creates and debugs Minecraft shaderpacks for Iris and OptiFine, including `shaders.properties`, program files, and common shader effects. |
-| [`minecraft-fabric-mod`](minecraft-fabric-mod) | Scaffolds and updates Fabric mods for Minecraft Java Edition, with version-sensitive Gradle, Loom, mapping guidance, and CI workflows. |
-| [`persistent-goal-execution`](persistent-goal-execution) | Keeps agents focused on the complete requested outcome across long tasks, retries, waiting, context compaction, and failures. |
-| [`production-ready`](production-ready) | Takes a project to a production release. Directs the agent to orchestrate all other relevant skills in its toolkit, audits the repository, generates changelogs and docs, drafts legal files, and conducts a multi-skill refresh pass. Includes an audit script. |
-| [`systematic-issue-sweep`](systematic-issue-sweep) | Sweeps the entire workspace to locate, fix, and prevent recurrences of any reported issue, typo, style flaw, or logic error. Eradicates whole defect classes across code, tests, docs, and configs. Includes a sweep script. |
-| [`threejs-awwwards-site`](threejs-awwwards-site) | Builds Three.js and WebGL websites with scroll-driven motion, smooth scrolling, and cinematic transitions. |
+### 1. Production-Ready
+**ID:** `production-ready`
+**Level:** Orchestrator for releases and code audits
 
-## Skill Orchestration
+Manages complete production-level workflows including audits, documentation, changelogs, legal text, CI testing, and git commits. Ideal for finalizing projects and preparing for public releases.
 
-The skills work together as an interconnected toolkit:
-- At the start of release work, `production-ready` invokes `agent-self-awareness` to detect the model tier. Capable, efficient, and unknown models must gather official documentation, inspect the code, and run verification before implementing instead of guessing.
-- When a release starts in an existing repository, `production-ready` invokes `context-search` to find prior agent sessions, recover decisions and open work, and verify every claim against the current worktree before continuing.
-- When preparing a release, invoke `production-ready`. It acts as the orchestrator, detecting the project type and running `persistent-goal-execution`, `debug-and-fix`, `error-docs-lookup`, `google-seo-skill` (if a public website needing search ranking), `human-writing`, and `context-rich-commits`.
-- Before committing or pushing a release, `production-ready` runs
-  `credential-safety` to check for exposed credentials and stop unsafe pushes.
-- When a release includes a feature copied or ported from another repository,
-  `production-ready` runs `deep-research` before accepting the implementation.
-- `production-ready` pushes every release to `dev` first and promotes the
-  exact commit to production only after its `dev` CI/CD check passes.
-- For personal or internal projects where search indexing is not desired, `production-ready` automatically avoids SEO ranking checks and ensures `noindex` or authentication guards are in place.
-- `production-ready` verifies the corporate release document suite (terms, privacy, licenses, third-party attribution, security policies, and community standards) while properly handling private projects, user exclusions, and release overrides.
-- When an error occurs during any build or test, `debug-and-fix` automatically pairs with `error-docs-lookup` to consult official live documentation before making changes.
-- For difficult or multi-step work, `persistent-goal-execution` keeps the full objective, acceptance criteria, current plan, authoritative evidence, and completion state active until the requested end state is proven.
-- Every skill includes an update check directing agents to inspect git status in the skill directory (such as `~/.copilot/skills/` or `~/.gemini/antigravity-cli/skills/`) before running, so instructions stay current.
-- All documentation, license entries, and comments are authored strictly from the perspective and authority of the project owner, banning assistant coaching leaks, meta-instructions, and unselected license checklists.
-- When any defect, typo, or user-pointed inconvenience is identified, `production-ready` and `debug-and-fix` invoke `systematic-issue-sweep` to search the entire workspace and eradicate all related occurrences across code, docs, tests, and configuration before release.
+### 2. Token Optimizer
+**ID:** `token-optimizer`
+**Level:** Configuration & Optimization
+
+Minimizes AI agent token usage by:
+- Detecting and disabling thinking/reasoning features across agents (OpenCode, Claude Code, Copilot CLI, Muse, Antigravity, Aider, etc.)
+- Creating automatic progress tracking files (.progress.md) instead of using reasoning tokens
+- Adding new todos dynamically for bugs, syntax issues, or blocking problems
+- Preserving code quality while maximizing throughput
+
+**Best for:** Long coding sessions, frequent project restarts, and projects where thinking overhead adds up significantly.
+
+### 3. Base Package Tracker
+**ID:** `base-package-tracker`
+**Level:** Quality Assurance & Maintenance
+
+Tracks updates to base packages (Chromium, frameworks, libraries) and guides UI adaptation:
+- Automatically detects base package version changes
+- Records UI impact and migration needs
+- Generates minimal-progress updates instead of long reasoning chains
+- Tracks changes and commits them to GitLab/GitHub
+- Provides specific, actionable UI guidance for breaking changes
+
+**Best for:** Projects that build on top of frameworks (e.g., custom browsers on Chromium), long-term dependency management, and multi-repo UI tracking.
+
+### 4. Debug and Fix
+**ID:** `debug-and-fix`
+**Level:** Error Resolution
+
+Finds and fixes bugs, crashes, and runtime errors by:
+- Running tests and linters
+- Analyzing error messages and stack traces
+- Searching codebases for patterns
+- Implementing fixes at the root cause
+
+### 5. Systematic Issue Sweep
+**ID:** `systematic-issue-sweep`
+**Level:** Quality Assurance
+
+When any issue or anti-pattern is found, sweeps the entire workspace to:
+- Find all related occurrences
+- Abstract the underlying mistake pattern
+- Fix every instance
+- Add regression guards
+
+### 6. Agent Self-Awareness
+**ID:** `agent-self-awareness`
+**Level:** Model Detection
+
+Detects the active harness and model, classifies capability tier, and switches to a research-first protocol when appropriate.
+
+### 7. Context Search
+**ID:** `context-search`
+**Level:** Knowledge Recovery
+
+Discovers prior agent work across codebases, locating session transcripts, databases, and prior decisions. Links to git history and current worktree.
+
+### 8. Persistent Goal Execution
+**ID:** `persistent-goal-execution`
+**Level:** Orchestration
+
+Keeps the complete user objective active across retry contexts, waits, and failures. Ensures work is completed before declaring success.
+
+### 9. Credential Safety
+**ID:** `credential-safety`
+**Level:** Security
+
+Stops agents from committing or pushing API keys, passwords, or tokens to remote repositories.
+
+### 10. Deep Research
+**ID:** `deep-research`
+**Level:** Research
+
+Reconstructs feature behavior and integration context from repositories when porting features or adapting codebases.
+
+### 11. Error Docs Lookup
+**ID:** `error-docs-lookup`
+**Level:** Documentation
+
+Searches and reads current official documentation before fixing build, compile, syntax, type, or runtime errors.
+
+### 12. Google SEO Skill
+**ID:** `google-seo-skill`
+**Level:** Optimization
+
+Audits crawlability, metadata, structured data, and Core Web Vitals for public web projects.
+
+### 13. Human Writing
+**ID:** `human-writing`
+**Level:** Quality
+
+Ensures all written text reads like a person typed it (no AI tells, no emoji, no em dashes).
+
+### 14. Context Rich Commits
+**ID:** `context-rich-commits`
+**Level:** Git
+
+Records git history as long-term memory, maintaining context across sessions with detailed commit messages.
 
 ## Installation
 
-**GitHub Copilot**
+### For openagents/skills (OpenCode)
 
-Copy the skill folder into your personal Copilot skills directory:
+This repository is the primary install location. Skills are accessed via:
+
+```json
+{
+  "skills": [
+    "token-optimizer",
+    "base-package-tracker",
+    "debug-and-fix",
+    "context-rich-commits",
+    ...
+  ]
+}
+```
+
+### For Claude Code
+
+1. Make a copy of the skills folder:
+   ```bash
+   cp -r /home/dev/projects/skills ~/.claude/skills/
+   ```
+
+2. Load a skill in Claude Code:
+   ```bash
+   /skill token-optimizer
+   ```
+
+### For Copilot CLI
+
+1. Copy skills to:
+   ```bash
+   cp -r /home/dev/projects/skills ~/.copilot/skills/
+   ```
+
+2. Skills are loaded automatically by Copilot CLI via its configuration.
+
+### For GitHub Copilot Workspace
+
+The skills in `.agents/skills/` are picked up by Copilot Workspace in GitHub.
+
+## Loading a Skill
+
+Every skill has a frontmatter format:
+
+```yaml
+---
+name: skill-id
+description: One-line description of what the skill does
+---
+
+# Skill Documentation
+
+Extended documentation here explaining:
+- When to use the skill
+- How it works
+- Workflow steps
+- Important notes
+```
+
+To load a skill, run:
 
 ```bash
-git clone https://github.com/bitzzdev/skills.git
-cp -r skills/google-seo-skill ~/.copilot/skills/
+.skill token-optimizer
 ```
 
-Or clone the entire repository directly into `~/.copilot/skills/`.
-
-**Antigravity and Gemini CLI**
-
-Copy the skill folder into your personal skills directory:
-
-```bash
-git clone https://github.com/bitzzdev/skills.git
-cp -r skills/google-seo-skill ~/.gemini/antigravity-cli/skills/
-```
-
-For project-specific skills, place them in `.gemini/skills/` within your project root.
-
-**Claude Code**
-
-Copy the skill folder into your personal skills directory, or into a project:
-
-```bash
-cp -r skills/google-seo-skill ~/.claude/skills/
-```
-
-For a single project, use `.claude/skills/` inside that project instead.
-
-**OpenCode**
-
-Copy the skill folder into your OpenCode skills directory (such as `~/.config/opencode/skills/`).
-
-**Claude.ai**
-
-Zip the skill folder so `SKILL.md` sits inside a top-level folder named after the skill, rename the archive to `<skill-name>.skill`, and upload it from the skills section of your Claude.ai settings.
-
-## Smart sync
-
-Installed copies of this repository can keep themselves current with the newest
-verified source. The sync script fetches GitHub and GitLab, checks CI evidence
-for the `dev` branch, and updates from the newest source that passed. When
-GitHub Actions is unavailable and the GitLab `dev` pipeline passed, it switches
-the clone to the tested `dev` branch instead of leaving it on a stale `main`.
-
-Install the helpers for fish, bash, and zsh:
-
-```bash
-shell/install.sh
-```
-
-Then run:
-
-```shell
-skill -p                 # sync every known skills folder
-pull_agent_skills        # same thing
-update_agent_skill_repo ~/.agents/skills   # sync one folder
-skill -c                 # clone missing folders
-```
-
-Bash and zsh also get `skill-pull` and `skill-clone` aliases. The installer
-copies the sync script into `${XDG_DATA_HOME:-$HOME/.local/share}/agent-skills/`,
-installs the fish functions into `~/.config/fish/functions/`, and adds a managed
-source block to `~/.bashrc` and `~/.zshrc`.
-
-GitLab CI checks use the GitLab API when a token is available:
-
-```bash
-export GITLAB_TOKEN=your_read_api_token
-```
-
-Without a token the sync still uses the newest `dev` commit but reports GitLab
-CI as unverified. See [shell/README.md](shell/README.md) for the trust marker,
-dry-run mode, and branch switching rules.
-
-## Layout
+Or in most agent interfaces, type:
 
 ```
-skill-name/
-  SKILL.md          required, YAML frontmatter plus instructions
-  references/       optional, loaded when the skill points to them
-  scripts/          optional, helpers the skill can run
+/load token-optimizer
 ```
 
-The `name` in the frontmatter must match the folder name. A GitHub Action checks this on every push and pull request. You can run the same check locally:
+## Skill Structure
 
-```bash
-pip install pyyaml
-python scripts/validate_skills.py
+Each skill follows this structure:
+
 ```
+skill-id/
+├── SKILL.md                # Main documentation
+├── scripts/                # Python scripts for automation
+└── references/            # Additional documentation
+    ├── design.md          # Design decisions
+    ├── patterns.md        # Usage patterns
+    └── examples.md        # Examples
+```
+
+## Skill Guidelines
+
+### Creating a New Skill
+
+When adding a skill, follow these principles:
+
+1. **Keep it focused:** One skill = one clear problem domain
+2. **Be Prescriptive:** Give clear, step-by-step instructions
+3. **Use Frontmatter:** Include `name` and `description` for agent discovery
+4. **Add Examples:** Provide concrete examples in scripts/references
+5. **Document Dependencies:** Note other skills or requirements
+
+### Naming Conventions
+
+Use kebab-case IDs:
+- ✅ `token-optimizer`
+- ✅ `base-package-tracker`
+- ✅ `android-app-dev`
+- ❌ `TokenOptimizer`
+- ❌ `BasePackageTracker`
+
+### Documentation Style
+
+- Write in imperative mood (e.g., "Run `npm test` instead of "You should run...")
+- Use bold for tool names and file paths
+- Provide code examples with syntax highlighting
+- Keep descriptions within 5-10 words in frontmatter
 
 ## Contributing
 
-Fixes and new skills are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+1. Fork this repository
+2. Create a feature branch
+3. Add your skill in `skills/` directory
+4. Render examples/test to ensure it's working
+5. Submit a pull request with tested skills
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+See LICENSE file for details.
 
 ## Support
 
-If these are useful to you, you can support the work on [Ko-fi](https://ko-fi.com/bitzdev).
+For bug reports or feature requests, open an issue in this repository.
+
+---
+
+**Created:** 2026-11-11
+**Maintained:** OpenCode Tools Team
