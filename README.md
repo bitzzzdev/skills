@@ -85,6 +85,44 @@ Copy the skill folder into your OpenCode skills directory (such as `~/.config/op
 
 Zip the skill folder so `SKILL.md` sits inside a top-level folder named after the skill, rename the archive to `<skill-name>.skill`, and upload it from the skills section of your Claude.ai settings.
 
+## Smart sync
+
+Installed copies of this repository can keep themselves current with the newest
+verified source. The sync script fetches GitHub and GitLab, checks CI evidence
+for the `dev` branch, and updates from the newest source that passed. When
+GitHub Actions is unavailable and the GitLab `dev` pipeline passed, it switches
+the clone to the tested `dev` branch instead of leaving it on a stale `main`.
+
+Install the helpers for fish, bash, and zsh:
+
+```bash
+shell/install.sh
+```
+
+Then run:
+
+```shell
+skill -p                 # sync every known skills folder
+pull_agent_skills        # same thing
+update_agent_skill_repo ~/.agents/skills   # sync one folder
+skill -c                 # clone missing folders
+```
+
+Bash and zsh also get `skill-pull` and `skill-clone` aliases. The installer
+copies the sync script into `${XDG_DATA_HOME:-$HOME/.local/share}/agent-skills/`,
+installs the fish functions into `~/.config/fish/functions/`, and adds a managed
+source block to `~/.bashrc` and `~/.zshrc`.
+
+GitLab CI checks use the GitLab API when a token is available:
+
+```bash
+export GITLAB_TOKEN=your_read_api_token
+```
+
+Without a token the sync still uses the newest `dev` commit but reports GitLab
+CI as unverified. See [shell/README.md](shell/README.md) for the trust marker,
+dry-run mode, and branch switching rules.
+
 ## Layout
 
 ```

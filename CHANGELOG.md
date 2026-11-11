@@ -49,6 +49,19 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
   and production releases.
 - Added `deep-research` for understanding source and target repositories before
   copying or porting a feature.
+- Added `scripts/sync_skills.py`, a smart sync engine that fetches GitHub and
+  GitLab, checks CI evidence for the `dev` branch, and updates each skills clone
+  from the newest verified source. When GitHub Actions is unavailable and the
+  GitLab `dev` pipeline passed, it switches a clean `main` clone to the tested
+  `dev` branch.
+- Added fish functions (`skill`, `pull_agent_skills`, `clone_agent_skills`,
+  `update_agent_skill_repo`) plus bash and zsh functions and aliases in `shell/`,
+  so the sync helpers can be installed from this repository.
+- Added `shell/install.sh` to install the sync script and shell helpers into
+  `${XDG_DATA_HOME:-$HOME/.local/share}/agent-skills/`, copy fish functions to
+  `~/.config/fish/functions/`, and update `~/.bashrc` and `~/.zshrc`.
+- Added `.gitlab-ci.yml` so GitLab validates the skills, scripts, and shell
+  helpers on `dev` and `main`.
 
 ### Changed
 

@@ -1,0 +1,18 @@
+stages:
+  - validate
+
+validate-skills:
+  stage: validate
+  image: python:3.12-slim
+  before_script:
+    - apt-get update --quiet
+    - apt-get install --quiet --yes --no-install-recommends git
+  script:
+    - pip install --quiet pyyaml
+    - python scripts/validate_skills.py
+    - python -m py_compile scripts/sync_skills.py scripts/audit.py agent-self-awareness/scripts/detect_model.py context-search/scripts/find_agent_sessions.py
+    - bash -n shell/install.sh shell/shared/agent-skills.sh shell/bash/agent-skills.sh shell/test_sync.sh
+    - bash shell/test_sync.sh
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main")'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
