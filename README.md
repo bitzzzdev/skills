@@ -101,13 +101,17 @@ Audits crawlability, metadata, structured data, and Core Web Vitals for public w
 **ID:** `human-writing`
 **Level:** Quality
 
-Ensures all written text reads like a person typed it (no AI tells, no emoji, no em dashes).
+Mandatory for every task. Enforces natural, factual writing and prohibits emojis, emoji-like symbols, em dashes, and AI-generated filler in all communication and project files.
 
 ### 14. Context Rich Commits
 **ID:** `context-rich-commits`
 **Level:** Git
 
 Records git history as long-term memory, maintaining context across sessions with detailed commit messages.
+
+## Repository standards
+
+All agents must load `human-writing/SKILL.md` at the start of every task. Emoji and emoji-like symbols are prohibited throughout project files and communication. Public and production releases must follow `production-ready/SKILL.md`, including user documentation, help, FAQs, troubleshooting, known issues, terms of use, privacy, and third-party credits where applicable.
 
 ## Installation
 
@@ -212,11 +216,11 @@ When adding a skill, follow these principles:
 ### Naming Conventions
 
 Use kebab-case IDs:
-- ✅ `token-optimizer`
-- ✅ `base-package-tracker`
-- ✅ `android-app-dev`
-- ❌ `TokenOptimizer`
-- ❌ `BasePackageTracker`
+- `token-optimizer`
+- `base-package-tracker`
+- `android-app-dev`
+- `TokenOptimizer`
+- `BasePackageTracker`
 
 ### Documentation Style
 

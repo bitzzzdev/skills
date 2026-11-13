@@ -16,3 +16,4 @@ validate-skills:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main")'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - python scripts/check_changed_writing.py

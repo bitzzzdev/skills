@@ -54,16 +54,16 @@ Instead of using thinking tokens to plan and track work, the skill creates a sim
 
 ## Tasks
 
-### Completed (✅)
+### Completed
 - [x] Task 1: Initial setup
 - [x] Task 2: Create base structure
 - [x] Task 3: Implement core feature
 
-### In Progress 🔄
+### In Progress
 - [ ] Task 4: Add error handling
 - [ ] Task 5: Write unit tests
 
-### Pending (📋)
+### Pending
 - [ ] Task 6: Deploy to staging
 - [ ] Task 7: Run integration tests
 
@@ -80,13 +80,13 @@ Instead of using thinking tokens to plan and track work, the skill creates a sim
 
 When working:
 
-1. **Start a task:** Mark it as in-progress `🔄` when you begin
-2. **Finish a task:** Move to `✅` when completed and optionally add details
+1. **Start a task:** Mark it as in-progress `[~]` when you begin
+2. **Finish a task:** Move to `[x]` when completed and optionally add details
 3. **Encounter an issue:** Add to the Bugs & Issues section with:
    - A clear description
    - Affected file(s) and line(s)
    - Expected vs actual behavior
-4. **Create a subtask:** Add a new bullet under `📌 -` to break complex tasks into smaller pieces
+4. **Create a subtask:** Add a new bullet under `[ ]` to break complex tasks into smaller pieces
 
 The progress file is written to disk, truncated, or appended to as needed with minimal tokens used for JSON/parsing operations.
 
