@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped.
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, token-optimizer, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped, and always runs with thinking turned off and a live todo list (token-optimizer).
 ---
 
 # Production Ready
@@ -29,7 +29,7 @@ Before applying this skill, check whether the skill folder has updates:
 Self-awareness is not optional, and neither is this check. Before any substantive work, and again whenever the task changes scope, the agent decides for itself which skills in its toolkit apply. It does not wait for the user to name them, and it does not rely on the lists in this file, which go stale as skills are added.
 
 1. **Inventory.** List every skill available: the harness skill listing, installed skill folders (`~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, `~/.agents/skills/`), and the skills repository. Read each skill's name and frontmatter description. The `dev` branch of the skills repository holds the current set.
-2. **Always on.** `agent-self-awareness` runs every time, and so does this check. `credential-safety` and `context-rich-commits` apply whenever anything is committed or pushed. `human-writing` applies whenever text a person will read is written or edited. `context-search` applies on a new session in an existing codebase.
+2. **Always on.** `agent-self-awareness` and `token-optimizer` run every time, and so does this check. `credential-safety` and `context-rich-commits` apply whenever anything is committed or pushed. `human-writing` applies whenever text a person will read is written or edited. `context-search` applies on a new session in an existing codebase.
 3. **Match.** Compare each remaining skill's description against the task, the project type, and the files being touched. Mark it USE or SKIP and write a one-line reason. When unsure, read the skill's `SKILL.md` before deciding. Do not skip a skill only because it is missing from the lists in this file.
 4. **Load.** Read the full `SKILL.md` of every USE skill, plus any reference file or script it tells you to read, before acting. Naming a skill without reading it does not count as using it.
 5. **Repeat.** Run the check again when the work shifts: a new file type or framework, a failure, a deployment step, a second repeated error, or a model or harness switch.
@@ -38,11 +38,31 @@ Self-awareness is not optional, and neither is this check. Before any substantiv
 
 Record the outcome as a short table of skill, USE or SKIP, and reason. It goes in the final report.
 
+## Mandatory token-optimizer mode
+
+`token-optimizer` is always on, like `agent-self-awareness`. Every agent working under this skill runs with thinking off and works from a live todo list instead of reasoning its way through the task.
+
+1. **Turn thinking off first.** Before the first substantive step, follow `token-optimizer/SKILL.md` and `token-optimizer/references/agents.md`: detect the active agent, read its config, back it up, and disable reasoning and thinking (extended thinking, reasoning effort, thinking budget). Record the agent, the config path, and the before and after values in `.progress.md`. If a harness or model cannot go fully off, clamp it to the lowest setting and record that. Never claim thinking is off without reading the setting back. Change only the config files `token-optimizer` lists, and keep the backup.
+2. **Do not think, follow the list.** Do not spend tokens on extended deliberation, long plans, or narrated reasoning. Pick the next action by reading the next open item in `.progress.md`, do it, and update the file. Keep any text between tool calls to a line.
+3. **One interactive todo list.** `.progress.md` in the project root is the single source of truth for what is done, in progress, and pending. If the project already has a tracking file or handoff note, use that instead and do not start a second list.
+   - Break the objective and its acceptance criteria into items before starting. One item is one verifiable action.
+   - Re-read the file before each item, after each context compaction, and when resuming a session.
+   - Mark an item in progress before starting it. Mark it done only after its check passed.
+   - Add items the moment work turns them up: a failing test, a bug, a skill from the relevance check, a doc gap, a blocker. Do not hold them in memory.
+   - The user can edit the file at any time to add, reorder, or remove items. Re-read before acting and treat their edits as instructions.
+   - Other agents read and update the same file. Preserve their entries and never rewrite the whole list.
+4. **Plain markers.** Use `[ ]` pending, `[~]` in progress, `[x]` done, `[!]` blocked. No emoji, since `human-writing` forbids them in project files. Keep secrets out of the file.
+5. **Evidence still required.** Thinking off does not lower the bar. The research-first mode from `agent-self-awareness`, official documentation lookup, tests, and diff review still happen, but as tool calls and todo items, not as reasoning. Each research step is an item with its result noted beside it. When the two skills seem to conflict, the evidence requirements stay and only the form changes.
+6. **Cannot disable.** If the config cannot be edited or the model has a reasoning floor, say so in the file and the report, keep the list discipline, and continue.
+7. **Final state.** Leave `.progress.md` current: nothing marked done without evidence, and open items with the next action at the top of pending. It is the handoff for the next agent.
+
 ## Multi-Skill Orchestration
 
 When finishing a project, you act as the orchestrator across your entire skill ecosystem. Do not treat production readiness as simply editing markdown files. Proactively invoke and apply the other skills available in your environment when their criteria are met:
 
 0. **Skill folder update check**: Inspect git status in active skill folders (such as `~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, or the project skills directory) with `git -C <skill-folder> status --short --branch` or `python scripts/check_skill_update.py`. Pull pending updates before running release audits.
+
+0a. **token-optimizer**: Disable thinking and reasoning in the active agent, then plan and track every step in `.progress.md` instead of reasoning. Always on.
 
 1. **agent-self-awareness**: Detect the active harness and model, classify its capability tier, and switch to a research-first protocol when it is not a frontier coding model. Unknown models are treated as non-frontier. The tier raises the evidence bar; it never lowers the requested outcome.
 2. **context-search**: On a new session in an existing codebase, discover installed agents, find project-matched session transcripts or databases, extract a bounded brief, and verify it against git and the live worktree. Prior transcripts are clues, never authority.
@@ -69,6 +89,9 @@ When finishing a project, you act as the orchestrator across your entire skill e
 
 ### Step 0. Skill relevance check (mandatory, always first)
 Before the audit, run the check from "Mandatory skill relevance check" above: inventory the available skills, mark each USE or SKIP with a reason, and read the full `SKILL.md` of every USE skill. This step never gets skipped, including for small tasks and for sessions that resume earlier work. Repeat it when the task shifts.
+
+### Step 0b. Token optimizer mode (mandatory, always)
+Right after the relevance check, apply "Mandatory token-optimizer mode" above: turn thinking off, read the setting back, create or open the todo list in `.progress.md`, and load every later step as an item. From here on, work the list: re-read it before each item and update it after each one.
 
 ### 0. Recover context and set the execution mode
 Run self-awareness and context recovery before the audit. They are independent and can run in parallel:
@@ -155,6 +178,7 @@ Read `references/skill-selection.md` and confirm the project type from the audit
 Run the applicable skills in this sequence:
 
 0. **Skill folder update check**: Inspect git status in the skills folder (`python scripts/check_skill_update.py` or `git -C <skill-folder> status --short --branch`) to verify installed skills are up to date before running the refresh pass.
+0b. **token-optimizer**: Confirm thinking is still off and `.progress.md` matches the real state before each stage. Update it after each stage.
 1. **agent-self-awareness**: Detect the active model and tier. If it is not frontier class, enforce research-first mode for the refresh pass: official docs, code inspection, tests, and diff review before any fix. Report the execution mode.
 2. **context-search**: Recover prior agent context on a new session in an existing codebase. Run `context-search/scripts/find_agent_sessions.py --brief`, build the short brief, and verify it against the current worktree, git history, and tests before relying on it.
 3. **persistent-goal-execution**: Preserve the full production objective through the refresh pass and verify every requirement before reporting completion.
@@ -193,6 +217,7 @@ Provide a concise, factual summary:
 - User-excluded documents if legal files were omitted by user decision.
 - Placeholders the user must fill in ([COMPANY NAME], [CONTACT EMAIL], [JURISDICTION], [SECURITY EMAIL], [EFFECTIVE DATE]).
 - Skill relevance check: the inventory source, each skill marked USE or SKIP with a reason, and confirmation that every USE skill's `SKILL.md` was read.
+- Token optimizer: agents and config files changed, thinking state read back after the change, backups made, any agent where thinking could not be turned off, and the final state of `.progress.md`.
 - Skills used and skills skipped, each with a brief reason.
 - Execution mode: model tier and evidence source, plus the research protocol applied when the model was not frontier class.
 - Recovered prior context: agents and stores checked, sessions found, and what was verified against git and tests.
@@ -204,6 +229,7 @@ Provide a concise, factual summary:
 ## Rules that keep this honest
 
 - Check which skills are relevant every time, the same way `agent-self-awareness` runs every time. Do not rely on memory of the skill list, and do not stop at the skills named in this file. Read the full `SKILL.md` of each relevant skill before using it, and report the USE and SKIP decisions.
+- Run `token-optimizer` every time, the same way `agent-self-awareness` runs every time. Thinking stays off, no extended deliberation, and every step comes from the todo list in `.progress.md`, which is re-read before each item and updated after it. Verification and research still happen as tool calls and list items.
 - The current worktree, git history, and test output outrank every recovered transcript. Use `context-search` to find prior work, then verify each claim against the repository before acting on it.
 - When the model is capable, efficient, or unknown, research comes before implementation. Use `agent-self-awareness` to set the mode, then read official docs and inspect the code instead of guessing. A lower tier raises the evidence bar; it never lowers the deliverable.
 - Eradicate issues workspace-wide: When any bug, typo, anti-pattern, or inconvenience is pointed out by the user or identified during tests, sweep the entire codespace using `systematic-issue-sweep` to ensure the issue pattern is not repeated anywhere else.

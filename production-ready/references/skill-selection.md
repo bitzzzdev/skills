@@ -4,13 +4,14 @@ Run a skill only when it fits the project. A skill that does not apply wastes ti
 
 ## Always run the relevance check first
 
-The matrix below is a starting point, not the full list. Before using it, run the mandatory skill relevance check from `SKILL.md`: inventory every available skill, compare each description against the task and project, and read the full `SKILL.md` of every skill that applies. `agent-self-awareness` and this check run every time. Skills added to the repository after this file was written count as candidates too.
+The matrix below is a starting point, not the full list. Before using it, run the mandatory skill relevance check from `SKILL.md`: inventory every available skill, compare each description against the task and project, and read the full `SKILL.md` of every skill that applies. `agent-self-awareness`, `token-optimizer`, and this check run every time. Skills added to the repository after this file was written count as candidates too.
 
 Record the result like this and put it in the final report:
 
 | Skill | Decision | Reason |
 |---|---|---|
 | agent-self-awareness | USE | Always on, sets the execution mode |
+| token-optimizer | USE | Always on, thinking off and steps tracked in `.progress.md` |
 | google-seo-skill | SKIP | Internal dashboard, verified noindex instead |
 | systematic-issue-sweep | USE | Lint failure found, sweeping for the same pattern |
 
@@ -46,6 +47,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 | changelog | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | context-search | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | agent-self-awareness | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| token-optimizer | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | README and docs | yes | yes | yes | yes | yes | yes | yes | yes | yes, plus API reference |
 | terms and privacy | yes if users | no | yes, stores require privacy URL | yes if data collected | rarely | no | no | yes | yes if public |
 | license, contributing, security | yes | yes if open source | yes if open source | yes if open source | yes | yes | yes | yes | yes |
@@ -61,6 +63,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 ## Skill orchestration guidelines
 
 When productionizing a project, orchestrate all relevant skills in sequence:
+- **token-optimizer**: Always on. Turn thinking off, read the setting back, and work from the todo list in `.progress.md`: re-read it before each item, update it after each one, and add items as bugs and blockers appear. Research and verification still run, as tool calls and list items.
 - **agent-self-awareness**: Detect the active model tier. Non-frontier and unknown models must gather official documentation, code evidence, and tests before implementing. Report the execution mode.
 - **context-search**: On a new session in an existing codebase, discover installed agents, locate project sessions, extract a bounded brief, and verify it against git and the current files before resuming work.
 - **debug-and-fix**: Verify tests, build, and linters. Fix any breakages at their root cause.
