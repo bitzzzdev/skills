@@ -1,145 +1,91 @@
 ---
 name: token-optimizer
-description: Reduces AI agent token usage by disabling reasoning/thinking features across OpenCode, Claude Code, Copilot CLI, Muse, Antigravity, Aider, and other tools. Creates and updates task progress files, automatically tracks completed and pending work items, and uses minimal token introspection while preserving code quality. Ideal for long-running coding sessions or projects with frequent restarts where you want maximum throughput without wasting tokens on thinking overhead.
+description: Applies conservative token-saving settings to detected coding agents, runs the settings editor at every task start, and maintains concise progress tracking without weakening verification.
 ---
 
 # Token Optimizer
 
-This skill minimizes AI agent token usage while maintaining code quality by:
+This skill reduces avoidable reasoning-token use while preserving code quality. It changes local agent configuration only where a supported setting is known. It cannot change the model or reasoning policy of a hosted ChatGPT session unless that host exposes a writable setting.
 
-1. Detecting and disabling thinking/reasoning features in supported coding agents (OpenCode, Claude Code, Copilot CLI, Muse, Antigravity, Aider, Cline, Continue.dev, Roo Code, Cursor, Windsurf, etc.)
-2. Automatically generating and updating a progress/todo file that tracks completion status
-3. Adding new todos automatically when bugs, syntax issues, or blocking problems appear
-4. Keeping quality intact by using simple progress tracking instead of full reasoning chains
+## Mandatory execution
 
-## When to Use This Skill
+At the beginning of every coding task, and again after changing the active agent, model, provider, or harness, run this command from the skills repository root:
 
-- Running long coding sessions where thinking/reasoning costs add up
-- Many project restarts where you need to pick up from where you left off
-- Working on complex projects with multiple agents that keep thinking overhead enabled
-- Projects where you want to maximize throughput while maintaining code standards
+```bash
+python token-optimizer/scripts/optimize_agents.py
+```
 
-## What the Skill Does
+This is an apply operation. Do not replace it with a dry run, skip it because the model is frontier, or merely describe the settings that should change. The script is idempotent, creates a `.BAK` backup before each modified file, and reports every detected configuration. If you need to preview changes, run `--dry-run` first, then run the normal command.
 
-### 1. Agent Configuration Detection
+The script must be run before substantive implementation, not after the task is finished. If the repository is installed as a standalone skill folder, run `python scripts/optimize_agents.py` from that folder.
 
-The skill scans your environment for common AI coding agents and checks if they have thinking/reasoning features enabled. It then disables them to stop API token generation for Chain-of-Thought reasoning.
+### Honesty and safety
 
-Supported agents and their configuration paths:
+- Never claim the active model's reasoning was disabled because a local config file changed. Report the exact agent configuration that was modified.
+- A UI option that hides reasoning output is not a token-saving setting. Do not count it as one.
+- The script changes only known settings in detected files. It does not create speculative provider/model options.
+- Configurations without a verified safe edit are reported as manual-only and left unchanged.
+- Never edit a config file that cannot be parsed safely. Keep the original backup and report parse errors.
+- If no supported configuration is found, report that fact. Do not invent a configuration path or claim success.
+- Keep the `.BAK` file until the user has confirmed the new configuration works.
 
-| Agent | Config File | Detection Method | Disable Method |
-|-------|-------------|------------------|----------------|
-| **OpenCode** | `~/.config/opencode/opencode.json` | Checks for `enable_thinking: true` or `thinking: "high"` | Sets `enable_thinking: false` or `thinking: "hide"` |
-| **Claude Code** | `~/.claude/settings.json` | Checks `alwaysThinkingEnabled` or `MAX_THINKING_TOKENS` | Sets both to `false`/`0` and sets `CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING` |
-| **GitHub Copilot CLI** | `~/.copilot/settings.json` | Checks for reasoning-related flags | Clamps to lowest effort or switches to non-reasoning model |
-| **Muse Code** | `~/.config/muse/settings.json` | Checks `reasoning_effort` | Sets to `none` |
-| **Antigravity (agy)** | `~/.antigravity/settings.json` | Checks `thinking_level` | Sets to `MINIMAL` or removes `thinking_config` |
-| **Codex CLI** | `~/.codex/config.toml` | Checks `model_reasoning_effort` | Sets to `none` or `minimal` |
-| **Gemini CLI** | `~/.gemini/settings.json` | Checks `inlineThinkingMode` and `thinkingBudget` | Sets to `off` and `0` |
-| **Aider** | `~/.aider.conf.yml` | Checks `thinking-tokens` or `reasoning-effort` | Sets both to `0` and `none` |
-| **Cline** | `~/.cline/` or VS Code settings | Checks reasoning flags | Sets to `--thinking none` or UI to `OFF` |
-| **Continue.dev** | `~/.continue/config.yaml` | Checks `reasoning` config | Sets to `false` |
+## Supported settings editor
 
-### 2. Progress Tracking
+The required script is `scripts/optimize_agents.py`.
 
-Instead of using thinking tokens to plan and track work, the skill creates a simple **progress file** at `.progress.md` (in the current working directory) with this format:
+It checks these locations:
+
+| Agent | Configuration | Automatic behavior |
+|---|---|---|
+| OpenCode | `~/.config/opencode/opencode.json`, project `opencode.json` | Turns off existing `enable_thinking` and existing `reasoning.enabled` provider options only |
+| Claude Code | `~/.claude/settings.json`, project `.claude/settings.local.json` | Sets `alwaysThinkingEnabled=false` and the documented thinking environment values |
+| Codex CLI | `~/.codex/config.toml` | Sets `model_reasoning_effort=none`, or `low` for o-series models that require a floor |
+| Gemini CLI | `~/.gemini/settings.json`, project `.gemini/settings.json` | Lowers existing model-specific `thinkingBudget` and `thinkingLevel` controls; does not mistake UI hiding for token savings |
+| Muse Code | `~/.config/muse/settings.json` | Sets an existing `reasoning_effort` key to `none` |
+| Antigravity | `~/.antigravity/settings.json` | Lowers existing `thinkingLevel` and `thinkingBudget` keys |
+| Aider | `~/.aider.conf.yml`, project `.aider.conf.yml` | Sets `thinking-tokens: 0` and `reasoning-effort: none` |
+| Copilot CLI | `~/.copilot/settings.json` | Detects the file but leaves it unchanged pending a verified stable settings schema; use the manual guidance in `references/agents.md` |
+
+Cline, Continue.dev, Roo Code, Cursor, and Windsurf may expose controls through version-specific UI or extension state. Do not write guessed settings into those stores. Use the manual guidance in `references/agents.md` and verify the installed version's documentation.
+
+## Workflow
+
+1. Run the settings editor before implementation.
+2. Read its output. Investigate parse failures and manual-only results instead of ignoring them.
+3. Detect the active model and harness with `agent-self-awareness/scripts/detect_model.py` when available. Unknown models use the non-frontier research protocol.
+4. Maintain a concise `.progress.md` for substantial tasks.
+5. Mark work as active, completed, or blocked using plain text. Add new tasks when failures reveal more work.
+6. Preserve backups and never overwrite another agent's unrelated work.
+7. Run the relevant tests, review the diff, and report exact verification results.
+
+## Progress file
+
+Use this format in the active project:
 
 ```markdown
 # Project Progress
 
 ## Active Agent
-- Name: [agent name detected]
-- Config Location: [path to config]
-- Thinking Disabled: [yes/no]
+- Name: [detected agent]
+- Configurations changed: [exact files, or none]
+- Model reasoning changed: [yes/no/unknown, with evidence]
 
 ## Tasks
-
 ### Completed
-- [x] Task 1: Initial setup
-- [x] Task 2: Create base structure
-- [x] Task 3: Implement core feature
+- [x] Task description
 
 ### In Progress
-- [ ] Task 4: Add error handling
-- [ ] Task 5: Write unit tests
+- [ ] Task description
 
 ### Pending
-- [ ] Task 6: Deploy to staging
-- [ ] Task 7: Run integration tests
+- [ ] Task description
 
-## Bugs & Issues
-- [ ] Bug 1: Syntax error in line 42
-- [ ] Issue 1: Memory leak detected in module X
+## Bugs and Issues
+- [ ] Confirmed issue and affected file
 
 ## Last Updated
-- Timestamp: 2026-11-11T10:30:00Z
-- Work session: [agent session ID if available]
+- Timestamp: [ISO 8601]
+- Session: [session ID, if available]
 ```
 
-### 3. Dynamic Task Management
-
-When working:
-
-1. **Start a task:** Mark it as in-progress `[~]` when you begin
-2. **Finish a task:** Move to `[x]` when completed and optionally add details
-3. **Encounter an issue:** Add to the Bugs & Issues section with:
-   - A clear description
-   - Affected file(s) and line(s)
-   - Expected vs actual behavior
-4. **Create a subtask:** Add a new bullet under `[ ]` to break complex tasks into smaller pieces
-
-The progress file is written to disk, truncated, or appended to as needed with minimal tokens used for JSON/parsing operations.
-
-### 4. Quality Preservation
-
-Even though thinking is disabled, you still maintain:
-- Access to existing context via git history, session transcripts, and documentation
-- Code review and testing during normal development workflow
-- Ability to use git branches, commits, and labels to organize work
-- Manual quality checks before committing
-
-The skill focuses on stopping unnecessary *internal* thinking overhead, not your *visible* quality checks or debugging.
-
-## Workflow
-
-### Initial Optimization Check
-
-When you invoke this skill during a coding session:
-
-1. **Detect active agents:** The skill scans all known agent config locations
-2. **Check current state:** Reads existing config files to see what's enabled
-3. **Apply improvements:**
-   - Disables reasoning/thinking APIs where supported
-   - Records current values as baseline for verification
-   - Creates a backup of the modified file (`filename.bak`)
-4. **Create progress file:** Sets up `.progress.md` in the current directory
-5. **Report findings:** Informs you which agents were found and what was changed
-
-### Task Planning
-
-The skill doesn't force specific tasks, but it encourages a simple workflow:
-
-1. **Prompt:** You describe what you want to build or fix
-2. **Response:** Agent provides code with full quality (no thinking overhead)
-3. **Generate todos:** The agent can mark completed tasks and create new ones dynamically
-4. **Update progress:** Files are written as efficiently as possible
-
-### Progress Update Command
-
-After working on tasks, you can refresh the progress by:
-
-```bash
-# Sheep skill will check .progress.md and confirm current state
-```
-
-The skill reads the file and summarizes:
-- How many tasks are completed vs pending
-- Any open bugs or issues
-- Recent changes in configuration
-
-## Notes & Fallback
-
-- Reasoning-enabled models that cannot be fully disabled (e.g., some DeepSeek/O1 series with minimum floors) are clamped to lowest possible level
-- If an agent config file doesn't exist, no modification is attempted
-- Config backups are created before any changes so you can restore if needed
-- The skill is safe for day-to-day development; it enables max speed without sacrificing correctness
+Do not use progress tracking as a substitute for tests, source inspection, or documentation lookup.

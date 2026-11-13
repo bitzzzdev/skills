@@ -249,3 +249,12 @@ In the final report, include:
 - The current code, official docs, and command output outrank memory.
 - Research is a means to quality, not a performance. Stop when the evidence is
   sufficient and the work is verified.
+
+
+## Universal build-failure override
+
+The build-failure gate applies to every model tier, including frontier models. Whenever a build, compile, type-check, lint, install, test, or CI command fails, load and follow `error-docs-lookup/SKILL.md` before editing a fix. This overrides the lighter Frontier mode above. A trivial syntax typo may be corrected without an external search only after reading the mandatory skill and following its failure-capture and verification steps. Never use model memory as the sole basis for a build fix.
+
+## Code search for non-frontier models
+
+For capable, efficient, and unknown models, read `references/code-search.md` whenever you need an implementation example or an unfamiliar API pattern. Search the current repository and exact-version official docs first, then use GitHub, Sourcegraph, or GitLab code search to find candidate examples. Verify the source revision and dependency version, inspect the full file and tests, and reproduce the behavior locally. Search results do not override official docs or installed types.

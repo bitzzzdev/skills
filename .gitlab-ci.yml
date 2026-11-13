@@ -10,7 +10,8 @@ validate-skills:
   script:
     - pip install --quiet pyyaml
     - python scripts/validate_skills.py
-    - python -m py_compile scripts/sync_skills.py scripts/audit.py agent-self-awareness/scripts/detect_model.py context-search/scripts/find_agent_sessions.py
+    - python -m py_compile scripts/sync_skills.py scripts/audit.py agent-self-awareness/scripts/detect_model.py context-search/scripts/find_agent_sessions.py token-optimizer/scripts/optimize_agents.py token-optimizer/scripts/test_optimize_agents.py
+    - python -m unittest discover -s token-optimizer/scripts -p 'test_*.py' -v
     - bash -n shell/install.sh shell/shared/agent-skills.sh shell/bash/agent-skills.sh shell/test_sync.sh
     - bash shell/test_sync.sh
     - python scripts/check_changed_writing.py
