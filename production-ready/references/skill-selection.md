@@ -2,6 +2,20 @@
 
 Run a skill only when it fits the project. A skill that does not apply wastes time, adds noise to docs, and can do harm (SEO tags in a native app are clutter; SEO ranking optimization on a private internal tool leaks private routes). Decide from the project type and privacy requirements, then report which skills were used and which were skipped and why.
 
+## Always run the relevance check first
+
+The matrix below is a starting point, not the full list. Before using it, run the mandatory skill relevance check from `SKILL.md`: inventory every available skill, compare each description against the task and project, and read the full `SKILL.md` of every skill that applies. `agent-self-awareness` and this check run every time. Skills added to the repository after this file was written count as candidates too.
+
+Record the result like this and put it in the final report:
+
+| Skill | Decision | Reason |
+|---|---|---|
+| agent-self-awareness | USE | Always on, sets the execution mode |
+| google-seo-skill | SKIP | Internal dashboard, verified noindex instead |
+| systematic-issue-sweep | USE | Lint failure found, sweeping for the same pattern |
+
+Repeat the check when the task shifts, a failure repeats, or the model or harness changes.
+
 ## Detect the project type and visibility
 
 `scripts/audit.py` guesses the project type and checks whether the repository is private or personal, then prints USE and SKIP recommendations. Confirm by inspecting project files. If it guesses incorrectly, pass `--type`, `--personal`, or `--no-indexing`.

@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch.
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped.
 ---
 
 # Production Ready
@@ -23,6 +23,20 @@ Before applying this skill, check whether the skill folder has updates:
    git -C <skill-folder> fetch --dry-run
    ```
 4. If updates are available, pull them before proceeding so you use the latest instructions. If the folder is not a git repository, proceed with the installed files.
+
+## Mandatory skill relevance check
+
+Self-awareness is not optional, and neither is this check. Before any substantive work, and again whenever the task changes scope, the agent decides for itself which skills in its toolkit apply. It does not wait for the user to name them, and it does not rely on the lists in this file, which go stale as skills are added.
+
+1. **Inventory.** List every skill available: the harness skill listing, installed skill folders (`~/.copilot/skills/`, `~/.gemini/antigravity-cli/skills/`, `~/.claude/skills/`, `~/.agents/skills/`), and the skills repository. Read each skill's name and frontmatter description. The `dev` branch of the skills repository holds the current set.
+2. **Always on.** `agent-self-awareness` runs every time, and so does this check. `credential-safety` and `context-rich-commits` apply whenever anything is committed or pushed. `human-writing` applies whenever text a person will read is written or edited. `context-search` applies on a new session in an existing codebase.
+3. **Match.** Compare each remaining skill's description against the task, the project type, and the files being touched. Mark it USE or SKIP and write a one-line reason. When unsure, read the skill's `SKILL.md` before deciding. Do not skip a skill only because it is missing from the lists in this file.
+4. **Load.** Read the full `SKILL.md` of every USE skill, plus any reference file or script it tells you to read, before acting. Naming a skill without reading it does not count as using it.
+5. **Repeat.** Run the check again when the work shifts: a new file type or framework, a failure, a deployment step, a second repeated error, or a model or harness switch.
+6. **Overlap and conflict.** Apply compatible instructions from several skills together. If two skills conflict, the user's current instruction wins, then the more specific skill. Say which won in the report.
+7. **Not installed.** If a needed skill is missing, do its checks from the matching reference file, note the gap, and never claim to have run it.
+
+Record the outcome as a short table of skill, USE or SKIP, and reason. It goes in the final report.
 
 ## Multi-Skill Orchestration
 
@@ -52,6 +66,9 @@ When finishing a project, you act as the orchestrator across your entire skill e
    - Google Cloud skills (such as `gcloud`, `google-cloud-recipe-onboarding`, `google-cloud-recipe-auth`): Use when configuring or deploying services to Google Cloud Platform.
 
 ## Workflow
+
+### Step 0. Skill relevance check (mandatory, always first)
+Before the audit, run the check from "Mandatory skill relevance check" above: inventory the available skills, mark each USE or SKIP with a reason, and read the full `SKILL.md` of every USE skill. This step never gets skipped, including for small tasks and for sessions that resume earlier work. Repeat it when the task shifts.
 
 ### 0. Recover context and set the execution mode
 Run self-awareness and context recovery before the audit. They are independent and can run in parallel:
@@ -175,6 +192,7 @@ Provide a concise, factual summary:
 - Files created or updated.
 - User-excluded documents if legal files were omitted by user decision.
 - Placeholders the user must fill in ([COMPANY NAME], [CONTACT EMAIL], [JURISDICTION], [SECURITY EMAIL], [EFFECTIVE DATE]).
+- Skill relevance check: the inventory source, each skill marked USE or SKIP with a reason, and confirmation that every USE skill's `SKILL.md` was read.
 - Skills used and skills skipped, each with a brief reason.
 - Execution mode: model tier and evidence source, plus the research protocol applied when the model was not frontier class.
 - Recovered prior context: agents and stores checked, sessions found, and what was verified against git and tests.
@@ -185,6 +203,7 @@ Provide a concise, factual summary:
 
 ## Rules that keep this honest
 
+- Check which skills are relevant every time, the same way `agent-self-awareness` runs every time. Do not rely on memory of the skill list, and do not stop at the skills named in this file. Read the full `SKILL.md` of each relevant skill before using it, and report the USE and SKIP decisions.
 - The current worktree, git history, and test output outrank every recovered transcript. Use `context-search` to find prior work, then verify each claim against the repository before acting on it.
 - When the model is capable, efficient, or unknown, research comes before implementation. Use `agent-self-awareness` to set the mode, then read official docs and inspect the code instead of guessing. A lower tier raises the evidence bar; it never lowers the deliverable.
 - Eradicate issues workspace-wide: When any bug, typo, anti-pattern, or inconvenience is pointed out by the user or identified during tests, sweep the entire codespace using `systematic-issue-sweep` to ensure the issue pattern is not repeated anywhere else.
