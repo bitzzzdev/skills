@@ -41,7 +41,7 @@ def main():
             if EMOJI.search(line):
                 errors.append(f"{path}:{number}: emoji or emoji-like symbol is prohibited")
     if errors:
-        print("\\n".join(errors))
+        print("\n".join(errors))
         return 1
     print("Changed-file emoji policy passed.")
     return 0
