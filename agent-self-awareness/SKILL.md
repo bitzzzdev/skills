@@ -42,6 +42,8 @@ Run the detection at these moments:
 - After the user switches model, provider, or agent harness.
 - Before touching a framework, SDK, build tool, or API whose version you have
   not verified in this session.
+- Before every implementation, including small edits. Run the mandatory change-impact analysis and scale its depth to the risk.
+- After every meaningful implementation increment or adjustment that changes placement, structure, behavior, ownership, or dependencies, rebuild the impact map and trace newly affected surfaces.
 - Before a multi-file change, migration, security-sensitive change, or release.
 - When a task fails twice and your current approach is not working.
 - When the user asks which model is running or why you are being cautious.
@@ -135,6 +137,80 @@ high-risk task. Before implementation:
 
 Do not skip a step because the task looks familiar. Familiar tasks are where
 stale memory causes the most damage.
+
+
+
+## Mandatory change-impact analysis
+
+Perform a change-impact analysis before every implementation, including small edits. Scale the depth to the size and risk of the change, but never skip the check. Repeat it after each meaningful implementation increment and after any adjustment that changes placement, structure, behavior, ownership, or dependencies.
+
+The objective is to identify the full set of reasonably foreseeable effects, then update and verify every affected part of the project. Do not stop at the file or element the user named.
+
+Before editing:
+
+1. Record the intended outcome, constraints, and observable acceptance criteria.
+2. Inspect the target and its surrounding structure. Find its callers, consumers, imports, selectors, references, generated outputs, tests, docs, and runtime configuration.
+3. Build an impact map. Trace direct dependencies and then follow the dependency chain to transitive dependents. Search the repository for references that static imports or the obvious call graph will miss.
+4. List the expected effects and plausible failure outcomes. Include the normal result, partial application, no-op, failure, regressions, boundary conditions, responsive states, stale or cached state, compatibility effects, and rollback needs where relevant.
+5. For each affected surface, decide whether it needs a code change, a test, a documentation update, a compatibility measure, or no change. Record the reason for leaving a surface untouched when the relationship is not obvious.
+6. Define checks that would reveal both the intended behavior and the important regressions.
+
+After editing:
+
+1. Rebuild the impact map from the actual diff, not from the original plan alone. The implementation may affect more surfaces than expected.
+2. Search for every changed symbol, identifier, heading, route, selector, config key, and public interface. Inspect all references and update stale dependents.
+3. Check the behavior at the boundaries and in the contexts where the changed element is used. Test error, empty, loading, disabled, narrow-screen, large-screen, and keyboard states when applicable.
+4. Run focused checks after each increment, then the full relevant test, lint, type-check, build, and integration checks.
+5. Review the complete diff and compare it with the impact map. Add any newly discovered dependencies or outcomes, update the affected files, and repeat the checks.
+6. Stop only when a complete pass finds no new affected surface, every acceptance criterion has evidence, and all identified regressions are resolved or explicitly recorded as unresolved.
+
+### Placement and structure changes
+
+A placement change is a structural change. Moving an element or heading can alter behavior elsewhere even when its own content is unchanged. Trace those effects before calling the move complete.
+
+For a UI header or navigation region, inspect at least:
+
+- Parent layout flow, container sizing, flex or grid relationships, and sibling positions.
+- Sticky or fixed positioning, top offsets, scroll containers, stacking contexts, and z-index.
+- Anchor targets, scroll margins, browser history restoration, and initial scroll position.
+- Responsive breakpoints, mobile navigation, wrapping, overflow, and viewport clipping.
+- Focus order, keyboard navigation, screen-reader landmarks, accessible names, and heading hierarchy.
+- Shared shells, nested routes, pages using the same component, and route-specific overrides.
+- Visual regression tests, snapshots, screenshots, and layout assumptions in other components.
+
+For a document heading or section move, inspect at least:
+
+- Heading level and the resulting document outline.
+- Table of contents entries, generated navigation, and section numbering.
+- Slugs, fragment identifiers, inbound links, bookmarks, and cross-references.
+- Search indexing, metadata, rendered documentation, and generated output.
+- References from other documents, examples, tests, and release notes.
+
+Update every dependent reference that the move makes stale. Preserve stable public anchors where possible. If an anchor must change, provide a redirect or compatibility anchor when the platform supports it.
+
+### Impact map format
+
+For non-trivial changes, keep this compact record in the task plan or progress file:
+
+```markdown
+## Change impact
+
+- Intended change:
+- Directly affected files and components:
+- Transitive dependents:
+- User-visible and runtime effects:
+- Failure and boundary outcomes:
+- Compatibility and migration effects:
+- Documentation and generated outputs:
+- Tests and verification:
+- Rollback or recovery:
+- Unchanged surfaces and why:
+```
+
+Do not invent far-fetched scenarios or attempt to enumerate mathematically infinite outcomes. Cover outcomes supported by the architecture, actual references, user flows, and known failure modes. Prioritize by likelihood and impact. If the dependency graph is unclear, inspect more source or create a focused reproduction before editing.
+
+A change is not complete merely because the requested element moved, the edited file compiles, or the primary screenshot looks correct. The whole affected behavior must be checked.
+
 
 ## What counts as research
 
@@ -258,3 +334,8 @@ The build-failure gate applies to every model tier, including frontier models. W
 ## Code search for non-frontier models
 
 For capable, efficient, and unknown models, read `references/code-search.md` whenever you need an implementation example or an unfamiliar API pattern. Search the current repository and exact-version official docs first, then use GitHub, Sourcegraph, or GitLab code search to find candidate examples. Verify the source revision and dependency version, inspect the full file and tests, and reproduce the behavior locally. Search results do not override official docs or installed types.
+
+
+## Change-impact completion gate
+
+The actual diff may expose new dependencies or side effects that were not visible in the initial plan. Re-run the impact analysis against the final diff, search for all affected references, and update dependent code, tests, docs, anchors, configuration, and generated outputs. Continue until the impact map reaches a stable state: a full pass finds no new affected surface, all acceptance criteria are verified, and every known regression is fixed or clearly recorded as unresolved. This gate applies to every model tier.

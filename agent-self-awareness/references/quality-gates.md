@@ -145,3 +145,14 @@ the actual check.
 ```
 
 Keep it factual. Do not pad it with confidence claims or model commentary.
+
+
+## Change-impact analysis
+
+Run this before every implementation. Keep the analysis proportional to risk, but inspect the target's direct and transitive dependents. Search references, consumers, tests, documentation, configuration, generated output, and runtime layout assumptions.
+
+After each meaningful increment, rebuild the impact map from the actual diff. Include intended behavior, partial or failed application, regressions, boundary states, compatibility, cached state, and rollback where relevant. A newly discovered effect expands the scope: inspect it, update the affected surfaces, and add verification.
+
+For placement changes, explicitly trace layout flow, sticky offsets, scroll and anchor behavior, stacking, responsive states, keyboard and screen-reader order, shared component consumers, and visual tests. For document heading moves, trace heading hierarchy, generated tables of contents, slugs, fragment links, cross-references, search metadata, and inbound references. Preserve stable public anchors or provide compatibility redirects where supported.
+
+Do not claim completion from a successful compile or a correct primary screenshot. Compare the final diff with the impact map and continue until a full pass finds no new affected surface and every acceptance criterion has evidence. Record unresolved effects and their risks.
