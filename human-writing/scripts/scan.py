@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scan text or code for AI writing tells.
+"""Scan text or code for AI writing tells and outside-observer phrasing.
 
 Usage:
     python scan.py FILE_OR_DIR [FILE_OR_DIR ...]
@@ -8,8 +8,7 @@ Usage:
 
 Hard findings (em dash, en dash, horizontal bar, emoji and emoji-like symbols)
 make the script exit with status 1. Soft findings (stock phrases, structural
-tells) are printed as warnings and never change the exit status: reread the
-line and decide.
+tells, and owner-voice issues) are printed as warnings for manual review.
 """
 
 import argparse
@@ -29,8 +28,6 @@ SKIP_EXT = {
 }
 MAX_BYTES = 1_000_000
 
-# Characters are written as escapes so this file never contains the banned
-# characters itself.
 HARD = [
     ("em dash", re.compile("\u2014")),
     ("horizontal bar", re.compile("\u2015")),
@@ -110,9 +107,9 @@ PHRASES = [
     r"replace (this|these) with your",
     r"insert your \w+ here",
     r"note to (the )?(developer|maintainer|user|author)",
-    r"fill (this|these) (in|out) before (publishing|releasing|launching)",
-    r"make sure to (replace|update|fill in|configure) .{1,40} before (publishing|releasing|deploying)",
-    r"remember to (update|replace|configure|add) .{1,30} before (publishing|releasing|deploying)",
+    r"the (developer|maintainer|author|project owner) (should|must|needs to|has to|can|will need to)\b",
+    r"the (project|repository|tool|application) (was|has been|is being) (built|created|developed|maintained) by\b",
+    r"\b(as an ai|as a language model|the assistant|the ai agent)\b",
 ]
 
 LINE_START_FILLER = re.compile(
@@ -129,14 +126,8 @@ SOFT_PATTERNS = [
         "double hyphen used like a dash (ignore if this is a CLI flag separator)",
         re.compile(r"\w\s--\s\w"),
     ),
-    (
-        "enthusiastic exclamation mark",
-        re.compile(r"[A-Za-z)\]]!(?:\s|$)"),
-    ),
-    (
-        "banner or divider comment",
-        re.compile(r"^\s*(?://|#|/\*|<!--)\s*[=\-*#~_]{4,}"),
-    ),
+    ("enthusiastic exclamation mark", re.compile(r"[A-Za-z)\]]!(?:\s|$)")),
+    ("banner or divider comment", re.compile(r"^\s*(?://|#|/\*|<!--)\s*[=\-*#~_]{4,}")),
     (
         "bold lead-in bullet",
         re.compile(r"^\s*[-*]\s+\*\*[^*\n]{1,40}?:?\*\*\s*[:\-]?\s*\S"),
@@ -161,6 +152,18 @@ SOFT_PATTERNS = [
             r"note to (the )?(developer|maintainer|user|author))\b",
             re.I,
         ),
+    ),
+    (
+        "third-person maintainer narration (use first person when describing your own work)",
+        re.compile(
+            r"\bthe (developer|maintainer|author|project owner) "
+            r"(created|built|chose|decided|implemented|added|changed|updated|maintains|recommends)\b",
+            re.I,
+        ),
+    ),
+    (
+        "AI or assistant self-reference in a project deliverable",
+        re.compile(r"\b(as an ai|as a language model|the assistant|the ai agent)\b", re.I),
     ),
 ]
 

@@ -1,31 +1,32 @@
 # AI Writing Tells: Full Reference
 
-Read this when drafting anything longer than a few lines, or when cleaning up existing text. Nothing here is banned by itself except punctuation and emoji (see the hard rules in SKILL.md). The vocabulary and structure items are tells because of how often and how densely AI text uses them. One "robust" in a long document is fine. Three in a page is a signal. When in doubt, use the plain word.
+Read this when drafting anything longer than a few lines, or when cleaning up existing text. Nothing here is banned by itself except punctuation and emoji (see the hard rules in `SKILL.md`). The vocabulary and structure items are tells because of how often and how densely AI text uses them. Use the plain word when it carries the same meaning.
 
 Contents:
 1. Punctuation and symbols
 2. Vocabulary
 3. Phrases
 4. Sentence and paragraph structure
-5. Formatting
-6. Openers and closers
-7. Code and technical text
-8. Replacement guide
+5. Owner voice and point of view
+6. Formatting
+7. Openers and closers
+8. Code and technical text
+9. Replacement guide
 
 ## 1. Punctuation and symbols
 
 Hard bans:
-- Em dash. Replace with a comma, period, colon, parentheses, or restructure.
+- Em dash. Replace it with a comma, period, colon, parentheses, or restructure.
 - En dash used as punctuation. For ranges use a hyphen or "to".
 - Horizontal bar, and a spaced double hyphen used as a dash.
-- Emoji and emoji-like symbols: checkmark and cross marks, sparkles, rocket, stars, warning sign, light bulb, target, fire, party popper, pointing hands, colored circles used as status dots.
+- Emoji and emoji-like symbols: checkmarks, crosses, sparkles, rockets, stars, warning signs, light bulbs, targets, fire, party poppers, pointing hands, and colored status dots.
 
 Soft signals:
-- Curly quotes in code or config (they're also a bug risk). Use straight quotes.
+- Curly quotes in code or config. Use straight quotes.
 - Arrow symbols used as connectors in prose. Write "then" or restructure.
-- Exclamation marks used for enthusiasm. One in a friendly message is fine, several is a tell.
-- Semicolons used to join clauses in casual text. Most people use a period.
-- Colon reveals: "The result? Faster builds." Rhetorical question followed by an answer.
+- Exclamation marks used for enthusiasm.
+- Semicolons joining clauses in casual text.
+- Rhetorical colon reveals such as "The result? Faster builds."
 
 ## 2. Vocabulary
 
@@ -39,109 +40,110 @@ Adverbs: seamlessly, effortlessly, meticulously, ultimately, essentially, fundam
 
 ## 3. Phrases
 
-- it's important to note that / it's worth noting that / it's worth mentioning
-- in today's fast-paced world / in the ever-evolving landscape of / in the digital age
-- plays a crucial (or pivotal, vital) role
-- a testament to
-- at the end of the day
-- when it comes to
-- in the realm of
-- dive into / deep dive / let's explore / let's unpack / let's break this down
-- whether you're a beginner or an expert
-- look no further
-- take it to the next level
-- the key takeaway is
-- by leveraging
-- ensuring that
-- in order to (just write "to")
-- due to the fact that (write "because")
-- a wide range of / a variety of / a plethora of
-- not only ... but also
-- navigate the complexities of
-- choose one before publishing / choose a license before releasing
-- the license is not selected yet / the license has not been chosen
-- replace this with your / insert your details here
-- note to developer / note to the user / note to author
+- "It's important to note that" and "it's worth noting".
+- "In today's fast-paced world" and "in the ever-evolving landscape".
+- "Plays a crucial role" and "a testament to".
+- "At the end of the day" and "when it comes to".
+- "Dive into", "deep dive", "let's explore", and "let's unpack".
+- "Whether you're a beginner or an expert".
+- "Look no further" and "take it to the next level".
+- "The key takeaway is".
+- "By leveraging" and "ensuring that".
+- "In order to" when "to" works.
+- "Due to the fact that" when "because" works.
+- "A wide range of", "a variety of", and "a plethora of".
+- Artificial contrast framing: "not only X but also Y", "not just X but Y".
+- "Choose one before publishing", "the license is not selected yet".
+- "Replace this with your", "insert your details here", and "note to developer".
 
 ## 4. Sentence and paragraph structure
 
-- **Contrast framing.** "It's not just X, it's Y." "This isn't about A. It's about B." "More than just a tool." One use is fine, a document full of them is a tell.
-- **Rule of three.** Three adjectives, three bullets, three examples, always three. Real lists vary: two items, four items, one.
-- **Uniform rhythm.** Every sentence 15 to 22 words, every paragraph 3 to 4 sentences. Mix it up.
-- **Tidy paragraph endings.** Each paragraph closing on a neat one-line moral.
-- **Mirror structure.** Section openers and closers that restate each other.
-- **Throat-clearing.** A sentence that announces what the next sentence will say.
-- **Hedge stacks.** "May potentially help to somewhat improve."
-- **False balance.** "There are pros and cons to both" with no recommendation.
-- **Vague attribution.** "Experts say", "studies show", "many developers find" with no source.
-- **Abstract nouns where a person or action belongs.** "The implementation of authentication facilitates secure access" instead of "Login uses JWT."
-- **Inflated significance.** Treating a small utility or a routine change as a milestone.
-- **Present-participle tails.** "..., ensuring a smooth experience", "..., highlighting the importance of..."
+- Repeated "It's not just X, it's Y" framing.
+- Exactly three adjectives, bullets, or examples in every section.
+- Uniform sentence length and paragraph size.
+- Tidy one-line morals at the end of every paragraph.
+- Section openers and closers that repeat each other.
+- Throat-clearing that announces the next sentence.
+- Stacked hedges such as "may potentially help to somewhat improve".
+- False balance with no recommendation.
+- Vague attribution such as "experts say" or "studies show" without a source.
+- Abstract nouns where a person or action belongs.
+- Inflated significance for routine changes.
+- Present-participle tails that add no concrete information.
 
-## 5. Formatting
+## 5. Owner voice and point of view
 
-- Headings on short content. If it fits in a few paragraphs, skip headings.
-- A bullet list where a sentence would do.
-- Bold lead-in on every bullet: "**Performance:** ...", "**Security:** ...".
-- Bold sprinkled on random phrases for emphasis.
+The main maintainer's voice is the default for project content on every branch. Do not switch to an outside-observer voice for development branches, production branches, references, or handoffs.
+
+Use first person when writing about the maintainer's own work, choices, intent, experience, recommendations, and progress. For a solo-maintained project, use "I". Use "we" only for a real team voice.
+
+Avoid:
+- "The developer created this project..."
+- "The maintainer decided..."
+- "The author recommends..."
+- "The project was built by..."
+- "The next agent should..."
+- "The assistant could not verify..."
+- "As an AI language model..."
+
+Prefer:
+- "I built this project..."
+- "I chose this approach..."
+- "I recommend..."
+- "I could not verify..."
+- "Next, run..."
+- Direct technical statements such as "The CLI reads the config file."
+
+Do not force first person into product behavior, API definitions, commands, UI labels, legal notices, or third-party attribution. Keep facts accurate. Never claim another contributor's work or an unrun test as your own. Read `references/owner-voice.md` for the full rule and examples.
+
+## 6. Formatting
+
+- Headings on short content.
+- Bullets where a sentence would do.
+- Bold lead-ins on every bullet.
+- Random bold emphasis.
 - Title Case On Every Heading. Use sentence case.
-- Numbered steps for things that aren't sequential.
-- A table for two or three data points.
+- Numbered steps for non-sequential content.
+- Tables for two or three data points.
 - Horizontal rules between every section.
-- A "Summary", "Conclusion", "TL;DR" or "Key Takeaways" section that repeats the content above it.
-- Perfectly parallel bullets, all starting with the same verb form and ending the same way.
+- A summary or conclusion that repeats the content above it.
+- Perfectly parallel bullets with identical grammar.
 
-## 6. Openers and closers
+## 7. Openers and closers
 
-Openers to cut:
-- "Great question!" / "That's a great point!" / "Excellent choice!"
-- "Certainly!" / "Absolutely!" / "Of course!" / "Sure thing!"
-- "I'd be happy to help with that."
-- "I hope this email finds you well."
-- Restating the question back before answering.
-- "In this article/guide, we will explore..."
+Cut openers such as "Great question", "Certainly", "I'd be happy to help", and question restatements.
 
-Closers to cut:
-- "I hope this helps!"
-- "Feel free to reach out if you have any questions."
-- "Let me know if you'd like me to elaborate."
-- "In conclusion," / "In summary," / "Overall," / "Ultimately,"
-- A final paragraph that restates the whole answer.
-- Offering a menu of follow-ups at the end of every reply.
+Cut closers such as "I hope this helps", "Feel free to reach out", "Let me know if you'd like me to elaborate", and repeated summaries. End with the last useful point.
 
-A natural ending is the last useful thing. If a next step genuinely exists, name it once, specifically ("Send me the staging URL and I'll check it").
-
-## 7. Code and technical text
+## 8. Code and technical text
 
 Comments:
-- Comments that restate the line below them ("Initialize variable", "Loop through array", "Return the result").
-- Banner comments and ASCII section dividers.
+- Comments that restate the next line.
+- Banner comments and ASCII dividers.
 - "Helper function to..." and "This function..." openers.
-- Full JSDoc or docstring blocks on trivial functions, with every param described by its own name.
-- Comments in perfect grammar on every block while the code around them has none.
-- TODOs and placeholder comments ("add error handling here") left in finished code.
+- Trivial docstrings that repeat parameter names.
+- TODO placeholders left in finished code.
 
 Names and structure:
-- Very long descriptive names (`handleUserAuthenticationDataSubmission`).
-- A try/catch around everything that just logs the error generically.
-- Defensive checks for cases that can't happen.
-- Wrapper functions and abstraction layers for a single use.
+- Overly long names.
+- Generic try/catch blocks that hide the actual error.
+- Defensive checks for impossible states.
+- Abstractions used only once without a reason.
 
 Output text:
-- Emoji in console.log, logger calls, CLI output, test names, commit messages and README headings.
+- Emoji in logs, CLI output, test names, commit messages, and README headings.
 - "Successfully" in every success message.
-- "Oops!" and "Something went wrong" error text with no detail.
+- "Oops" and "Something went wrong" without a useful error.
 - Over-friendly CLI banners.
 
-Commits, PRs, docs:
+Commits, PRs, and docs:
 - Emoji or gitmoji prefixes.
-- "feat: implement robust ... leveraging ... to ensure ..."
-- PR bodies with Summary / Changes / Testing sections when the change is three lines.
-- READMEs with emoji section titles, badge walls, a "Features" list of adjectives, and a table of contents on a short file.
-- Assistant coaching and meta-instructions left in deliverables ("The license is not selected yet. Choose one before publishing: MIT, Apache-2.0, GPL-3.0, or a proprietary notice.", "Replace this with your API key", "Remember to configure this", "Note to developer:").
-- Writing as an outside observer or assistant instead of as the project owner. Every file must be written with the direct authority of the creator or maintainer.
+- Inflated commit subjects.
+- PR templates that add no useful information.
+- Assistant coaching or maintainer instructions left in deliverables.
+- Writing as an outside observer or AI instead of as the main maintainer.
 
-## 8. Replacement guide
+## 9. Replacement guide
 
 | Instead of | Write |
 |---|---|
@@ -149,18 +151,18 @@ Commits, PRs, docs:
 | facilitate | help, let |
 | in order to | to |
 | due to the fact that | because |
-| a plethora of, a myriad of | many, a lot of, or a number |
+| a plethora of, a myriad of | many, a number of |
 | showcase | show |
 | embark on | start |
 | delve into | look at |
-| seamless | (say what actually works: "no manual steps") |
-| robust | (say what it handles: "retries on timeout") |
-| comprehensive | (say what's covered) |
+| seamless | state what works without manual steps |
+| robust | state the cases handled |
+| comprehensive | state what is covered |
 | it's worth noting that X | X |
-| plays a crucial role in | (say what it does) |
+| plays a crucial role in | state what it does |
 | not just X but Y | Y |
-| ensuring a smooth experience | (cut, or state the concrete effect) |
+| ensuring a smooth experience | state the concrete effect or cut it |
 | Successfully saved! | Saved |
-| Oops! Something went wrong | (say what failed) |
-| The license is not selected yet. Choose one before publishing: ... | Distributed under the MIT License. See LICENSE for details. (or: Copyright 2026 [OWNER]. All rights reserved.) |
-| Note to developer: remember to replace this with your key | Read API_KEY from environment |
+| Oops! Something went wrong | state what failed |
+| The license is not selected yet. Choose one before publishing | state the actual license and link to its file |
+| Note to developer: remember to replace this with your key | Read the key from the environment |

@@ -1,21 +1,26 @@
 # Repository-wide agent rules
 
-These instructions apply to every agent and every task in this repository.
+These instructions apply to every agent and every task in this repository, on every branch.
 
 ## Mandatory human writing
 
-Load and follow `human-writing/SKILL.md` before starting any task. This is a mandatory skill, not an optional writing preference. Apply it to assistant communication, planning, code, comments, logs, tests, commit messages, documentation, legal files, and handoffs.
+Load and follow `human-writing/SKILL.md` before starting any task. This is a mandatory skill, not an optional writing preference. Apply it to assistant communication, plans, code, comments, logs, tests, commit messages, pull requests, documentation, legal files, and handoffs.
 
-No emoji or emoji-like symbols are allowed anywhere in new or edited text. This includes status icons, checkmarks, crosses, decorative bullets, pictograms, and emoji presentation selectors. Do not add them to examples or test output. Also follow the skill's punctuation rules and write in a natural, factual voice from the project owner's perspective.
+The main maintainer's voice is mandatory everywhere, regardless of branch. Write as the person responsible for the project, not as an outside observer, reviewer, secondary contributor, or AI narrator. Use first person singular when describing the maintainer's own work, decisions, intent, experience, recommendations, or progress. Use "we" only for a real team voice. Use direct or neutral technical wording for product behavior, commands, API facts, legal notices, and third-party attribution.
 
-Run `python human-writing/scripts/scan.py <changed-files>` before committing. The CI job also checks changed files for emoji and emoji-like symbols. Do not weaken or bypass these checks to make a build pass.
+This rule explicitly covers every `.progress.md`, progress report, checkpoint, session note, reference document, and handoff on `dev`, production, preview, release, feature, and local branches. Do not let a branch-specific copy drift into third-person narration. Read `human-writing/references/owner-voice.md` before writing or editing these files.
+
+Never refer to the authoring system as "the AI", "the assistant", "the agent", "ChatGPT", or "the model" in project deliverables unless that reference is technically necessary. Do not write "the developer should", "the maintainer decided", "the author recommends", or similar outside-observer phrasing when first person or a direct instruction is accurate. Do not fabricate personal experience, team membership, authorship, or verification to imitate a human.
+
+No emoji or emoji-like symbols are allowed anywhere in new or edited text. This includes status icons, checkmarks, crosses, decorative bullets, pictograms, and emoji presentation selectors. Follow the punctuation rules and keep writing factual.
+
+Run `python human-writing/scripts/scan.py <changed-files>` before committing. The CI job also checks changed files for emoji and emoji-like symbols. Review the scanner's soft warnings, including owner-voice warnings, manually. Do not weaken or bypass these checks to make a build pass.
 
 ## Public and production projects
 
 Before calling a project production-ready, apply `production-ready/SKILL.md` and its references. A public release must have user-facing documentation for setup, usage, support, FAQs, troubleshooting, and verified known issues. Include terms of use, a privacy policy, a license, security guidance, and third-party credits or notices whenever required by the project's architecture and dependencies.
 
 Document real behavior only. Verify commands, links, integrations, data collection, dependencies, licenses, and known issues against the repository. Never invent legal facts, support channels, bug reports, or integration details. Link the documentation from the README.
-
 
 ## Mandatory token settings execution
 
