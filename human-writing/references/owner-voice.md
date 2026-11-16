@@ -1,67 +1,49 @@
-# Owner voice reference
+# Owner voice
 
-Use this reference whenever a file speaks about the project, its maintainer, implementation history, decisions, or next steps. The intended voice is the main developer's voice. The reader should hear from the person responsible for the project, not someone reporting on that person.
+Write as the person responsible for the project. Do not make the reader feel that an outside writer is describing the maintainer or that a template is explaining how the document was produced.
 
-This rule is branch-independent. Apply it on `dev`, production, preview, release, feature branches, and local branches. Do not maintain one voice for development notes and another for published documentation.
+## Point of view
 
-## The point of view
+For a solo-maintained project, use "I" when describing the maintainer's work:
+- "I built the CLI to keep setup reproducible."
+- "I chose SQLite because the app needs local storage."
+- "I checked the migration against the current schema."
+- "I could not run the integration tests because staging credentials are unavailable."
 
-For a solo-maintained project, use first person singular when describing the maintainer:
+Use "we" only when the statement genuinely represents a team. Do not invent a team or claim another contributor's work.
 
-- "I built the CLI to keep the setup process reproducible."
-- "I chose SQLite because the app needs local storage and does not need a server."
-- "I checked the migration against the existing schema."
-- "I could not run the integration tests because the staging credentials are unavailable."
+Avoid outside-observer phrasing:
+- "The developer created this tool..." becomes "I built this tool..." when true.
+- "The maintainer chose SQLite..." becomes "I chose SQLite..." when true.
+- "The author recommends..." becomes "I recommend..." when true.
+- "The next agent should run..." becomes "Next, run..."
+- "The assistant could not verify..." becomes "I could not verify..."
 
-Use "we" only when the statement genuinely represents a team or an established collective project voice. Do not invent a team.
+Use direct wording for product behavior, commands, API facts, legal notices, and third-party work. For example, "The CLI reads config.toml" is better than forcing "I" into a neutral technical statement.
 
-Do not refer to the maintainer in third person:
+## Do not narrate the writing rules
 
-| Outside-observer wording | Maintainer wording |
-|---|---|
-| "The developer created this tool to..." | "I built this tool to..." |
-| "The maintainer chose SQLite..." | "I chose SQLite..." |
-| "The project was developed to..." | "I built the project to..." |
-| "The author recommends..." | "I recommend..." |
-| "The team behind the project maintains..." | "I maintain..." |
-| "The developer should configure..." | "Configure..." |
-| "The next agent should run..." | "Next, run..." |
-| "The task was completed by the agent." | "I completed the change." |
-| "The assistant could not verify the build." | "I could not verify the build." |
+Do not add a section to an ordinary project document announcing that it follows engineering standards, writing standards, documentation standards, or quality principles. Those statements are usually template residue. They describe the document's supposed quality instead of giving the reader useful information.
 
-Use the first-person alternative only when it is true. If a named contributor did the work, name that contributor. Do not claim another person's work as the maintainer's own.
+Avoid wording such as:
+- "Engineering and Writing Standards"
+- "Every paper documents observed behavior, verified endpoints, and architectural mechanisms."
+- "All prose follows strict human writing standards."
+- "Configurations must include exact file locations, parameter types, and rollback steps."
 
-## Use first person when it adds authorship
+Apply the underlying requirements without announcing them. If the reader needs configuration details, give the real path, key, type, default, and recovery procedure. If the reader needs test results, give the test, environment, observed result, and any limitation. If a paper needs an architecture explanation, describe the actual components and their interactions.
 
-First person is required when the sentence communicates:
+Delete generic declarations such as "All prose follows..." rather than replacing them with another declaration. Use a standards section only when the standards themselves are the subject of the document.
 
-- Why I started or maintain the project.
-- What I implemented, changed, tested, reviewed, or investigated.
-- Why I chose one design over another.
-- What I recommend or intend to do.
-- What I could not verify, and why.
-- What I learned from a real debugging or release experience.
+## READMEs, papers, and references
 
-First person is not required for:
-
-- API and protocol definitions.
-- Product behavior and feature descriptions.
-- Command instructions and installation steps.
-- Objective facts, version numbers, and configuration keys.
-- Third-party work, quotations, licenses, and externally sourced claims.
-- UI labels and error messages that speak as the product.
-
-Prefer direct wording over passive voice even when first person is not needed. For example, write "The CLI reads `config.toml`" instead of "The configuration file is read by the CLI."
-
-## README and reference documentation
-
-A README should sound like the maintainer introducing their own work:
+Introduce the project from the maintainer's perspective when authorship matters. Then describe behavior directly.
 
 Good:
 - "I built this tool to..."
 - "I use SQLite for local state."
 - "The CLI reads its settings from..."
-- "Run `npm install` to install the dependencies."
+- "Run npm install to install the dependencies."
 
 Avoid:
 - "This project was created by a developer who..."
@@ -69,74 +51,35 @@ Avoid:
 - "The author has chosen..."
 - "Users should note that the project..."
 
-Do not force "I" into every feature sentence. A clear technical statement is better than repeating "I built" in every paragraph. Keep the perspective consistent.
+A paper should report the actual system, experiment, or research question. Do not add a generic paragraph about standards or quality. Include endpoints, observed behavior, configuration details, or rollback instructions only when they are relevant, and use verified project-specific details.
 
 ## Progress notes and handoffs
 
-Every `.progress.md`, progress report, session note, and handoff must use first person for the current author's actions.
+Every .progress.md, progress report, session note, and handoff must use first person for the current author's actions.
 
-Use this structure where it fits:
-
-```markdown
-## Objective
-I am fixing the cache invalidation path.
-
-## Changes
-- I updated the cache key to include the account scope.
-- I kept the public API unchanged.
-
-## Verification
-- I ran the focused unit tests. They passed.
-- I could not run the full suite because the database service was unavailable.
-
-## Decisions
-- I kept the existing storage format to avoid a migration.
-
-## Next
-- I still need to test concurrent invalidation under load.
-```
-
-Rules:
-
-- Use "I changed", not "Changes were made".
-- Use "I verified", not "It was verified", and name the exact check.
-- Use "I could not verify", not "Verification was not possible", and state why.
-- Use "I still need to", not "The next agent should".
-- If an action belongs to another contributor, identify them by name or role and preserve the distinction.
-- Never convert an unverified action into a completed first-person claim.
-- Keep historical notes accurate. Do not rewrite a past failure as a success or attribute it to the current session.
+- "I changed", not "Changes were made".
+- "I verified", not "It was verified". Name the check.
+- "I could not verify", not "Verification was not possible". State why.
+- "I still need to", not "The next agent should".
+- If another contributor did the work, identify them and keep that distinction.
+- Never turn an unverified action into a completed claim.
+- Keep historical notes accurate. Do not rewrite an old failure as a success.
 
 ## Commits and pull requests
 
-Write commit and PR descriptions as the maintainer explaining the change:
-
-- "I added the parser because..."
-- "I kept the old config format to avoid breaking existing installs."
-- "I could not run the integration suite because..."
-
-Keep standard section labels required by the repository's commit convention. The prose under those labels should still sound like the maintainer. A structured commit body does not require detached third-person narration.
+Write commit and PR descriptions as the maintainer explaining the change. Keep the repository's required section labels, but make the content under them sound like a person describing actual work.
 
 ## Third-party attribution
 
-Do not erase attribution to make the writing sound personal. Keep a clear distinction between:
+Keep a clear distinction between my work, another contributor's work, upstream behavior, and external claims. Use names and sources where appropriate. Do not claim someone else's work as mine.
 
-- Work I did.
-- Work another contributor did.
-- Behavior provided by an upstream dependency.
-- Claims from external documentation or research.
+## Final read
 
-Use names, links, and citations where appropriate. Do not write "I built" for an upstream library, borrowed implementation, or another contributor's work.
-
-## Final owner-voice review
-
-Before saving a document, read it once and ask:
-
-1. Does it sound like the main maintainer speaking about their own work?
-2. Did I use first person for my actions, choices, experience, and progress?
-3. Did I accidentally describe the maintainer as "the developer", "the author", or "the project owner"?
-4. Did I mention an AI, assistant, or agent where the reader does not need to know one was involved?
-5. Did I use "we" without a real team voice?
-6. Did I claim work or verification that I cannot prove?
-7. Can any sentence be made direct without losing technical precision?
-
-Fix the answer before committing.
+Before saving, ask:
+1. Does this sound like the main maintainer speaking about their work?
+2. Does any paragraph announce writing or engineering standards instead of giving useful information?
+3. Did I use first person for my own work and decisions?
+4. Did I force first person into neutral technical facts?
+5. Did I mention an AI or assistant when the reader does not need to know?
+6. Did I claim work or verification I cannot prove?
+7. Can I replace a generic statement with a concrete fact, or remove it?

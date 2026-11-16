@@ -1,87 +1,85 @@
-# AI Writing Tells: Full Reference
+# AI writing tells
 
-Read this when drafting anything longer than a few lines, or when cleaning up existing text. Nothing here is banned by itself except punctuation and emoji (see the hard rules in `SKILL.md`). The vocabulary and structure items are tells because of how often and how densely AI text uses them. Use the plain word when it carries the same meaning.
+Use this reference when drafting or revising longer text. A phrase is not automatically wrong because it appears on this list. Look at its purpose and context. The main problem is generic, polished wording that could be pasted into any project without changing a word.
 
-Contents:
-1. Punctuation and symbols
-2. Vocabulary
-3. Phrases
-4. Sentence and paragraph structure
-5. Owner voice and point of view
-6. Formatting
-7. Openers and closers
-8. Code and technical text
-9. Replacement guide
+## Punctuation and symbols
 
-## 1. Punctuation and symbols
+Do not use em dashes, en dashes as punctuation, horizontal bars, emoji, or decorative symbols. Use ordinary punctuation and formatting.
 
-Hard bans:
-- Em dash. Replace it with a comma, period, colon, parentheses, or restructure.
-- En dash used as punctuation. For ranges use a hyphen or "to".
-- Horizontal bar, and a spaced double hyphen used as a dash.
-- Emoji and emoji-like symbols: checkmarks, crosses, sparkles, rockets, stars, warning signs, light bulbs, targets, fire, party poppers, pointing hands, and colored status dots.
+## Generic standards language
 
-Soft signals:
-- Curly quotes in code or config. Use straight quotes.
-- Arrow symbols used as connectors in prose. Write "then" or restructure.
-- Exclamation marks used for enthusiasm.
-- Semicolons joining clauses in casual text.
-- Rhetorical colon reveals such as "The result? Faster builds."
+This is a common source of AI-sounding project text. It announces rules instead of telling the reader something about the actual project.
 
-## 2. Vocabulary
+Avoid headings and declarations such as:
+- "Engineering and Writing Standards"
+- "Documentation and Quality Standards"
+- "Every paper documents observed behavior, verified endpoints, and architectural mechanisms."
+- "All prose follows strict human writing standards."
+- "Configurations must include exact file locations, parameter types, and rollback steps."
+- "All implementations follow best practices and production standards."
+- "The documentation provides a comprehensive overview of the system."
 
-Verbs: delve, leverage, utilize, harness, unlock, unleash, elevate, empower, foster, streamline, supercharge, navigate (figurative), embark, showcase, underscore, highlight (as a lazy verb), resonate, revolutionize, transform (figurative), enhance, facilitate, bolster, spearhead, cultivate.
+Do not replace these with slightly different policy slogans. Apply the requirement and write the relevant facts:
+- Instead of saying every paper documents endpoints, name the endpoints you tested and report their actual responses.
+- Instead of announcing that prose follows writing rules, remove the sentence.
+- Instead of saying configurations must include exact details, give the actual configuration path, parameter name, type, default, and recovery steps when the reader needs them.
+- Instead of claiming the documentation is comprehensive, tell the reader what is covered or link to the specific guide.
 
-Adjectives: seamless, robust, comprehensive, crucial, pivotal, vital, paramount, cutting-edge, state-of-the-art, innovative, dynamic, vibrant, bustling, meticulous, intricate, nuanced, multifaceted, holistic, transformative, groundbreaking, game-changing, tailored, bespoke, effortless, intuitive, user-centric, scalable (when meaningless), blazing-fast, feature-rich, best-in-class, next-generation.
+Use a standards section only when the document is actually about a named standard, specification, or contributor policy. Explain the real scope and source. Do not add one as decorative structure.
 
-Nouns: tapestry, testament, landscape (figurative), realm, journey, ecosystem (figurative), synergy, beacon, cornerstone, plethora, myriad, paradigm, game-changer, deep dive, takeaway, pain points, stakeholders (in casual text), solutions (as a vague noun).
+## Vocabulary that often sounds generic
 
-Adverbs: seamlessly, effortlessly, meticulously, ultimately, essentially, fundamentally, significantly (without a number), notably, importantly, crucially.
+Use a simpler word when it says the same thing.
 
-## 3. Phrases
+Verbs: delve, leverage, utilize, harness, unlock, unleash, elevate, empower, foster, streamline, supercharge, embark, showcase, underscore, resonate, revolutionize, enhance, facilitate, bolster, spearhead, cultivate.
 
+Adjectives: seamless, robust, comprehensive, crucial, pivotal, vital, paramount, cutting-edge, state-of-the-art, innovative, dynamic, meticulous, intricate, nuanced, multifaceted, holistic, transformative, groundbreaking, game-changing, tailored, bespoke, effortless, intuitive, user-centric, feature-rich, best-in-class.
+
+Nouns: tapestry, testament, realm, journey, synergy, beacon, cornerstone, plethora, myriad, paradigm, game-changer, deep dive, takeaway, pain points.
+
+Adverbs: seamlessly, effortlessly, meticulously, ultimately, essentially, fundamentally, notably, importantly, crucially.
+
+These words are fine when they have a precise meaning. Avoid stacking them or using them to inflate a routine feature.
+
+## Stock phrases
+
+Avoid:
 - "It's important to note that" and "it's worth noting".
 - "In today's fast-paced world" and "in the ever-evolving landscape".
 - "Plays a crucial role" and "a testament to".
 - "At the end of the day" and "when it comes to".
-- "Dive into", "deep dive", "let's explore", and "let's unpack".
+- "Dive into", "deep dive", and "let's unpack".
 - "Whether you're a beginner or an expert".
 - "Look no further" and "take it to the next level".
 - "The key takeaway is".
 - "By leveraging" and "ensuring that".
 - "In order to" when "to" works.
 - "Due to the fact that" when "because" works.
-- "A wide range of", "a variety of", and "a plethora of".
-- Artificial contrast framing: "not only X but also Y", "not just X but Y".
-- "Choose one before publishing", "the license is not selected yet".
-- "Replace this with your", "insert your details here", and "note to developer".
+- "A wide range of" and "a plethora of".
+- Artificial contrast framing such as "not only X but also Y".
+- "Choose one before publishing", "replace this with your", and "note to developer".
 
-## 4. Sentence and paragraph structure
+## Sentence and paragraph patterns
 
-- Repeated "It's not just X, it's Y" framing.
-- Exactly three adjectives, bullets, or examples in every section.
-- Uniform sentence length and paragraph size.
-- Tidy one-line morals at the end of every paragraph.
-- Section openers and closers that repeat each other.
-- Throat-clearing that announces the next sentence.
-- Stacked hedges such as "may potentially help to somewhat improve".
-- False balance with no recommendation.
-- Vague attribution such as "experts say" or "studies show" without a source.
-- Abstract nouns where a person or action belongs.
-- Inflated significance for routine changes.
-- Present-participle tails that add no concrete information.
+Watch for repeated structures that make text feel generated:
+- Every section starts with a summary sentence.
+- Every list has exactly three items.
+- Every paragraph ends with a neat conclusion.
+- The introduction and conclusion repeat each other.
+- Every heading uses a broad abstract noun followed by "and" or "standards".
+- Several sections repeat the same point with slightly different wording.
+- A document has a formal standards section that says nothing about the subject itself.
+- Perfectly parallel bullets where natural variation would be clearer.
+- A conclusion that restates the whole document.
 
-## 5. Owner voice and point of view
+## Owner voice
 
-The main maintainer's voice is the default for project content on every branch. Do not switch to an outside-observer voice for development branches, production branches, references, or handoffs.
-
-Use first person when writing about the maintainer's own work, choices, intent, experience, recommendations, and progress. For a solo-maintained project, use "I". Use "we" only for a real team voice.
+Use first person for the maintainer's own work, choices, intent, experience, recommendations, and progress. Use "I" for a solo maintainer and "we" only for a real team.
 
 Avoid:
 - "The developer created this project..."
 - "The maintainer decided..."
 - "The author recommends..."
-- "The project was built by..."
 - "The next agent should..."
 - "The assistant could not verify..."
 - "As an AI language model..."
@@ -92,77 +90,12 @@ Prefer:
 - "I recommend..."
 - "I could not verify..."
 - "Next, run..."
-- Direct technical statements such as "The CLI reads the config file."
+- Direct facts such as "The CLI reads the config file."
 
-Do not force first person into product behavior, API definitions, commands, UI labels, legal notices, or third-party attribution. Keep facts accurate. Never claim another contributor's work or an unrun test as your own. Read `references/owner-voice.md` for the full rule and examples.
+Do not force first person into API definitions, product behavior, commands, legal text, or third-party attribution. Never claim another contributor's work or an unrun test as your own.
 
-## 6. Formatting
+## Formatting and technical text
 
-- Headings on short content.
-- Bullets where a sentence would do.
-- Bold lead-ins on every bullet.
-- Random bold emphasis.
-- Title Case On Every Heading. Use sentence case.
-- Numbered steps for non-sequential content.
-- Tables for two or three data points.
-- Horizontal rules between every section.
-- A summary or conclusion that repeats the content above it.
-- Perfectly parallel bullets with identical grammar.
+Use headings only when they help readers find information. Prefer sentence case. Avoid bold lead-ins on every bullet, badge walls, decorative separators, unnecessary tables, and formal structure on short content.
 
-## 7. Openers and closers
-
-Cut openers such as "Great question", "Certainly", "I'd be happy to help", and question restatements.
-
-Cut closers such as "I hope this helps", "Feel free to reach out", "Let me know if you'd like me to elaborate", and repeated summaries. End with the last useful point.
-
-## 8. Code and technical text
-
-Comments:
-- Comments that restate the next line.
-- Banner comments and ASCII dividers.
-- "Helper function to..." and "This function..." openers.
-- Trivial docstrings that repeat parameter names.
-- TODO placeholders left in finished code.
-
-Names and structure:
-- Overly long names.
-- Generic try/catch blocks that hide the actual error.
-- Defensive checks for impossible states.
-- Abstractions used only once without a reason.
-
-Output text:
-- Emoji in logs, CLI output, test names, commit messages, and README headings.
-- "Successfully" in every success message.
-- "Oops" and "Something went wrong" without a useful error.
-- Over-friendly CLI banners.
-
-Commits, PRs, and docs:
-- Emoji or gitmoji prefixes.
-- Inflated commit subjects.
-- PR templates that add no useful information.
-- Assistant coaching or maintainer instructions left in deliverables.
-- Writing as an outside observer or AI instead of as the main maintainer.
-
-## 9. Replacement guide
-
-| Instead of | Write |
-|---|---|
-| utilize, leverage | use |
-| facilitate | help, let |
-| in order to | to |
-| due to the fact that | because |
-| a plethora of, a myriad of | many, a number of |
-| showcase | show |
-| embark on | start |
-| delve into | look at |
-| seamless | state what works without manual steps |
-| robust | state the cases handled |
-| comprehensive | state what is covered |
-| it's worth noting that X | X |
-| plays a crucial role in | state what it does |
-| not just X but Y | Y |
-| ensuring a smooth experience | state the concrete effect or cut it |
-| Successfully saved! | Saved |
-| Oops! Something went wrong | state what failed |
-| The license is not selected yet. Choose one before publishing | state the actual license and link to its file |
-| Note to developer: remember to replace this with your key | Read the key from the environment |
+Comments should explain why a choice exists, not restate the code. Error messages should say what failed and what the user can do next. Documentation should describe actual behavior, not claim to be comprehensive or production-ready.
