@@ -6,23 +6,49 @@ import os
 import re
 import sys
 
-SKIP_DIRS = {".git", "node_modules", "dist", "build", ".next", ".nuxt", ".venv", "venv", "__pycache__", "coverage", ".cache", "vendor", ".turbo", ".vercel", "out"}
+SKIP_DIRS = {
+    ".git", "node_modules", "dist", "build", ".next", ".nuxt", ".venv", "venv",
+    "__pycache__", "coverage", ".cache", "vendor", ".turbo", ".vercel", "out",
+}
 SKIP_FILES = {"package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb", "Cargo.lock"}
-SKIP_EXT = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".svg", ".pdf", ".zip", ".gz", ".tar", ".woff", ".woff2", ".ttf", ".otf", ".mp3", ".mp4", ".mov", ".webm", ".map", ".class", ".jar", ".exe", ".dll", ".so", ".pyc", ".bin"}
+SKIP_EXT = {
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".svg", ".pdf", ".zip",
+    ".gz", ".tar", ".woff", ".woff2", ".ttf", ".otf", ".mp3", ".mp4", ".mov",
+    ".webm", ".map", ".class", ".jar", ".exe", ".dll", ".so", ".pyc", ".bin",
+}
 MAX_BYTES = 1_000_000
 
 HARD = [
-    ("em dash", re.compile("\\u2014")),
-    ("horizontal bar", re.compile("\\u2015")),
-    ("en dash", re.compile("\\u2013")),
-    ("emoji or decorative symbol", re.compile("[\\U0001F000-\\U0001FAFF\\u2600-\\u27BF\\u2B50\\u2B55\\u2B1B\\u2B1C\\u231A\\u231B\\u23E9-\\u23FA\\u2934\\u2935\\u3030\\u303D\\u3297\\u3299\\uFE0F\\u200D]")),
+    ("em dash", re.compile("\u2014")),
+    ("horizontal bar", re.compile("\u2015")),
+    ("en dash", re.compile("\u2013")),
+    (
+        "emoji or decorative symbol",
+        re.compile(
+            "[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B50\u2B55\u2B1B\u2B1C"
+            "\u231A\u231B\u23E9-\u23FA\u2934\u2935\u3030\u303D\u3297\u3299"
+            "\uFE0F\u200D]"
+        ),
+    ),
 ]
 
-WORDS = ["delve", "leverage", "utilize", "harness", "unlock", "unleash", "elevate", "empower", "foster", "streamline", "supercharge", "embark", "showcase", "underscore", "resonate", "revolutionize", "enhance", "facilitate", "bolster", "spearhead", "cultivate", "seamless", "robust", "comprehensive", "crucial", "pivotal", "paramount", "cutting-edge", "state-of-the-art", "innovative", "dynamic", "meticulous", "intricate", "nuanced", "multifaceted", "holistic", "transformative", "groundbreaking", "game-changing", "tailored", "bespoke", "effortless", "intuitive", "user-centric", "feature-rich", "best-in-class", "tapestry", "testament", "realm", "journey", "synergy", "beacon", "cornerstone", "plethora", "myriad", "paradigm", "game-changer", "takeaway", "pain points"]
+WORDS = [
+    "delve", "leverage", "utilize", "harness", "unlock", "unleash", "elevate",
+    "empower", "foster", "streamline", "supercharge", "embark", "showcase",
+    "underscore", "resonate", "revolutionize", "enhance", "facilitate",
+    "bolster", "spearhead", "cultivate", "seamless", "robust", "comprehensive",
+    "crucial", "pivotal", "paramount", "cutting-edge", "state-of-the-art",
+    "innovative", "dynamic", "meticulous", "intricate", "nuanced",
+    "multifaceted", "holistic", "transformative", "groundbreaking",
+    "game-changing", "tailored", "bespoke", "effortless", "intuitive",
+    "user-centric", "feature-rich", "best-in-class", "tapestry", "testament",
+    "realm", "journey", "synergy", "beacon", "cornerstone", "plethora",
+    "myriad", "paradigm", "game-changer", "takeaway", "pain points",
+]
 
 PHRASES = [
-    r"it'?s (important|worth) (to )?(note|noting|mention|mentioning)",
-    r"in today'?s (fast-paced|digital|modern|ever)",
+    r"it's (important|worth) (to )?(note|noting|mention|mentioning)",
+    r"in today's (fast-paced|digital|modern|ever)",
     r"ever-evolving",
     r"plays? an? (crucial|pivotal|vital|key|important) role",
     r"a testament to",
@@ -30,37 +56,58 @@ PHRASES = [
     r"when it comes to",
     r"dive into",
     r"deep dive",
-    r"let'?s (explore|unpack|break (this|it) down|dive)",
-    r"whether you'?re an? .{1,40} or an? ",
+    r"let's (explore|unpack|break (this|it) down|dive)",
+    r"whether you're an? .{1,40} or an? ",
     r"look no further",
     r"the key takeaway",
     r"in order to",
     r"due to the fact that",
     r"great question",
-    r"i'?d be (happy|glad) to",
+    r"i'd be (happy|glad) to",
     r"i hope this (email )?(helps|finds you)",
     r"feel free to (reach out|ask|contact)",
-    r"not (just|only|merely) .{1,60}\\bbut( also)?\\b",
-    r"\\b(in conclusion|in summary|to summarize|to sum up)\\b",
+    r"not (just|only|merely) .{1,60}\bbut( also)?\b",
+    r"\b(in conclusion|in summary|to summarize|to sum up)\b",
     r"engineering and writing standards",
     r"every paper documents (observed behavior|verified endpoints)",
     r"all prose follows (strict )?(human writing|writing) standards",
     r"configurations must include exact file locations",
-    r"every (paper|document|configuration) must (document|include|contain)\\b",
+    r"every (paper|document|configuration) must (document|include|contain)\b",
 ]
 
-WORD_RE = re.compile(r"\\b(" + "|".join(re.escape(word) for word in WORDS) + r")\\b", re.I)
+WORD_RE = re.compile(r"\b(" + "|".join(re.escape(word) for word in WORDS) + r")\b", re.I)
 PHRASE_RE = re.compile("|".join("(?:%s)" % phrase for phrase in PHRASES), re.I)
-FILLER_RE = re.compile(r"^\\s*(?:[-*>#/]+\\s*)?(Moreover|Furthermore|Additionally|Overall|Ultimately|Certainly|Absolutely)\\b[,!]")
+FILLER_RE = re.compile(
+    r"^\s*(?:[-*>#/]+\s*)?(Moreover|Furthermore|Additionally|Overall|Ultimately|Certainly|Absolutely)\b[,!]"
+)
+
 SOFT_PATTERNS = [
-    ("third-person maintainer narration", re.compile(r"\\bthe (developer|maintainer|author|project owner) (created|built|chose|decided|implemented|added|changed|updated|maintains|recommends)\\b", re.I)),
-    ("AI or assistant self-reference", re.compile(r"\\b(as an ai|as a language model|the assistant|the ai agent)\\b", re.I)),
-    ("generic standards language that should be replaced with project facts", re.compile(r"\\b(engineering and writing standards|every paper documents|all prose follows (strict )?(human writing|writing) standards|configurations must include exact file locations)\\b", re.I)),
+    (
+        "third-person maintainer narration",
+        re.compile(
+            r"\bthe (developer|maintainer|author|project owner) "
+            r"(created|built|chose|decided|implemented|added|changed|updated|maintains|recommends)\b",
+            re.I,
+        ),
+    ),
+    (
+        "AI or assistant self-reference",
+        re.compile(r"\b(as an ai|as a language model|the assistant|the ai agent)\b", re.I),
+    ),
+    (
+        "generic standards language that should be replaced with project facts",
+        re.compile(
+            r"\b(engineering and writing standards|every paper documents|"
+            r"all prose follows (strict )?(human writing|writing) standards|"
+            r"configurations must include exact file locations)\b",
+            re.I,
+        ),
+    ),
 ]
 
 
 def is_text(data):
-    return b"\\x00" not in data[:4096]
+    return b"\x00" not in data[:4096]
 
 
 def iter_files(paths):
@@ -69,7 +116,9 @@ def iter_files(paths):
             for root, dirs, files in os.walk(path):
                 dirs[:] = [name for name in dirs if name not in SKIP_DIRS]
                 for name in files:
-                    if name not in SKIP_FILES and not name.endswith((".min.js", ".min.css")) and os.path.splitext(name)[1].lower() not in SKIP_EXT:
+                    if name in SKIP_FILES or name.endswith((".min.js", ".min.css")):
+                        continue
+                    if os.path.splitext(name)[1].lower() not in SKIP_EXT:
                         yield os.path.join(root, name)
         else:
             yield path
@@ -102,6 +151,7 @@ def main():
     parser.add_argument("paths", nargs="+", help="files, folders, or - for stdin")
     parser.add_argument("--hard-only", action="store_true")
     args = parser.parse_args()
+
     hard_total = soft_total = files_scanned = 0
 
     def report(label, content):
@@ -132,7 +182,11 @@ def main():
                 continue
             if is_text(data):
                 report(filename, data.decode("utf-8", errors="ignore"))
-    print("\\nScanned %d file(s): %d hard, %d soft." % (files_scanned, hard_total, soft_total), file=sys.stderr)
+
+    print(
+        "\nScanned %d file(s): %d hard, %d soft." % (files_scanned, hard_total, soft_total),
+        file=sys.stderr,
+    )
     sys.exit(1 if hard_total else 0)
 
 
