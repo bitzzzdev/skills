@@ -17,3 +17,5 @@ jobs:
       - run: pip install pyyaml
       - name: Check skill frontmatter
         run: python scripts/validate_skills.py
+      - name: Test skill symlink installer
+        run: bash -n install.sh shell/test_install.sh && bash shell/test_install.sh
