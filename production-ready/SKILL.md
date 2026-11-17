@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, token-optimizer, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped, and always runs with thinking turned off and a live todo list (token-optimizer).
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, token-optimizer, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, Ponytail review and audit skills, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped, and always runs with thinking turned off and a live todo list (token-optimizer).
 ---
 
 # Production Ready
@@ -173,6 +173,7 @@ Read `references/skill-selection.md` and confirm the project type from the audit
 - **Personal web project, internal tool, staging site, or no indexing desired**: SKIP `google-seo-skill`. Verify that `noindex` tags or robots disallow rules protect the site from search crawlers.
 - **Native mobile, desktop, mod, shaderpack, bot, or library**: SKIP SEO skills. Prepare store listing copy, mod registry text, or package metadata instead.
 - **Domain skills**: If `android-app-dev`, `minecraft-fabric-mod`, `iris-shaderpack-dev`, or `threejs-awwwards-site` apply and are installed, invoke them for domain-specific checks and verification.
+- **Ponytail skills**: Follow `references/skill-selection.md`. Use `ponytail` to keep implementation to the smallest complete change, `ponytail-review` to review the resulting diff, and `ponytail-audit` for a whole-repository code audit. Use `ponytail-debt` when the repository contains `shortcut:` or legacy `ponytail:` comments. Use `ponytail-gain` only when upstream benchmark results are relevant, and `ponytail-help` only when Ponytail commands or levels need explanation.
 
 ### 6. Multi-skill refresh pass
 Run the applicable skills in this sequence:
@@ -187,6 +188,7 @@ Run the applicable skills in this sequence:
 6. **debug-and-fix and systematic-issue-sweep**: Run the project's build, test, and lint commands. Fix any failures at their root cause. When fixing any error, bug, typo, or user-pointed issue, invoke `systematic-issue-sweep` to abstract the pattern and eradicate all identical or related occurrences across the entire workspace.
 7. **error-docs-lookup**: For any warning, deprecation, or error involving a library or toolchain, look up official documentation for the installed version.
 8. **Domain skill checks**: Run specific checks (for example, verifying CI workflows in `android-app-dev` or `minecraft-fabric-mod`).
+8a. **Ponytail implementation and review**: Apply `ponytail` when making code changes, then run `ponytail-review` against the completed diff. Use `ponytail-audit` when the release task includes a repository-wide code-quality audit. Run `ponytail-debt` only when shortcut markers exist or the user requests the debt ledger. These reports complement the production documentation audit; they do not replace builds, tests, security checks, or `scripts/audit.py`.
 9. **Search indexing and SEO check**:
    - If using `google-seo-skill`, first check if any update is available in git (`python scripts/update_seo_skill.py`) and pull it.
    - For public websites where ranking is needed: run `google-seo-skill` (or `references/seo.md`).

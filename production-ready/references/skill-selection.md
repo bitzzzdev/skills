@@ -60,6 +60,25 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 | context-rich-commits | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | project-specific skill | threejs-awwwards-site if 3D | threejs-awwwards-site if 3D | android-app-dev for Android | none | minecraft-fabric-mod | iris-shaderpack-dev | none | none | cloud skills if deployed |
 
+## Ponytail skills
+
+The Ponytail skills cover code scope and code quality. They do not replace the
+release, security, documentation, or legal checks above.
+
+| Skill | Use it when | Do not use it as |
+|---|---|---|
+| `ponytail` | Implementing or changing code; keep the solution minimal without dropping required behavior or checks. | A reason to skip tests, validation, security, accessibility, or requested scope. |
+| `ponytail-review` | Reviewing the completed code diff before release. | A substitute for running the project's test and build commands. |
+| `ponytail-audit` | The task calls for a repository-wide code-quality audit. | A replacement for `production-ready/scripts/audit.py`, which checks release documentation and repository readiness. |
+| `ponytail-debt` | The repository has `shortcut:` or legacy `ponytail:` comments, or the user requests a debt ledger. | A general TODO or issue tracker. |
+| `ponytail-gain` | The user asks about Ponytail's published benchmark results. | A source of per-project savings estimates or release evidence. |
+| `ponytail-help` | The user needs the Ponytail command, level, or companion-skill reference. | A mandatory release check. |
+
+For a code-bearing release, use `ponytail` during implementation and
+`ponytail-review` after the final code change. Add the audit and debt skills
+only when their stated scope applies. Never report upstream benchmark figures
+as measurements from the current project.
+
 ## Skill orchestration guidelines
 
 When productionizing a project, orchestrate all relevant skills in sequence:

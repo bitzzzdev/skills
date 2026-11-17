@@ -66,6 +66,8 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Integrated the six Ponytail skills into `production-ready` skill routing, with explicit triggers and boundaries for implementation, diff review, repository audits, shortcut debt, benchmark data, and help.
+
 - Integrated `agent-self-awareness` into `production-ready` orchestration, the
   pre-audit workflow, the refresh pass, the skill selection matrix, and the
   audit recommendations. Non-frontier and unknown models must research before
