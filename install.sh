@@ -25,7 +25,7 @@ Options:
   -h, --help    Show this help
 
 Agents:
-  opencode, codex, cursor, gemini, copilot, claude, kiro
+  opencode, codex, cursor, gemini, copilot, claude, kiro, shared, all
 USAGE
 }
 
@@ -105,7 +105,7 @@ done
 
 shopt -s nullglob
 SKILL_FILES=("$ROOT_DIR"/*/SKILL.md)
-if (("${#SKILL_FILES[@]}" == 0)); then
+if ((${#SKILL_FILES[@]} == 0)); then
     echo "No top-level skill folders containing SKILL.md were found in $ROOT_DIR" >&2
     exit 1
 fi
