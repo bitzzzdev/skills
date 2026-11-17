@@ -154,46 +154,45 @@ All agents must load `human-writing/SKILL.md` at the start of every task. Emoji 
 
 ## Installation
 
-### For openagents/skills (OpenCode)
+Clone the repository or update an existing checkout on `dev`, then run the
+installer from the repository root:
 
-This repository is the primary install location. Skills are accessed via:
-
-```json
-{
-  "skills": [
-    "token-optimizer",
-    "base-package-tracker",
-    "debug-and-fix",
-    "context-rich-commits",
-    ...
-  ]
-}
+```bash
+git clone --branch dev https://gitlab.com/bitzzdev/skills.git
+cd skills
+./install.sh --dry-run
+./install.sh
 ```
 
-### For Claude Code
+The installer finds every top-level directory containing `SKILL.md` and
+creates a symlink to that directory. It does not copy skill files, so a later
+`git pull` updates the linked content without reinstalling existing links.
 
-1. Make a copy of the skills folder:
-   ```bash
-   cp -r /home/dev/projects/skills ~/.claude/skills/
-   ```
+| Agents | User skill directory |
+|---|---|
+| OpenCode, Codex, Cursor, Gemini CLI, GitHub Copilot CLI | `~/.agents/skills/` |
+| Claude Code | `~/.claude/skills/` |
+| Kiro | `~/.kiro/skills/` |
 
-2. Load a skill in Claude Code:
-   ```bash
-   /skill token-optimizer
-   ```
+OpenCode, Codex, Cursor, Gemini CLI, and Copilot share the Agent Skills
+directory at `~/.agents/skills/`. Claude Code and Kiro use their own global
+skill directories.
 
-### For Copilot CLI
+Options:
 
-1. Copy skills to:
-   ```bash
-   cp -r /home/dev/projects/skills ~/.copilot/skills/
-   ```
+```bash
+./install.sh --dry-run
+./install.sh --list-agents
+./install.sh --agent shared
+./install.sh --agent claude
+./install.sh --agent kiro
+```
 
-2. Skills are loaded automatically by Copilot CLI via its configuration.
-
-### For GitHub Copilot Workspace
-
-The skills in `.agents/skills/` are picked up by Copilot Workspace in GitHub.
+Repeat `--agent` to select more than one target. The default installs all
+supported targets. Existing skill paths are never overwritten. A conflict is
+reported and makes the installer exit with a non-zero status, so inspect the
+existing path before deciding what to do. The installer does not remove stale
+links for skills that have since been deleted from the repository.
 
 ## Loading a Skill
 
