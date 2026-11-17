@@ -7,6 +7,7 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added the six MIT-licensed Ponytail skills: `ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, and `ponytail-help`. Recorded the upstream revision and retained its license in `ponytail/`.
 - Added `agent-self-awareness` skill with guide (`SKILL.md`), model tier
   reference (`references/model-tiers.md`), quality gate reference
   (`references/quality-gates.md`), and a detection script

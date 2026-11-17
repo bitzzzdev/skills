@@ -109,6 +109,45 @@ Mandatory for every task. Enforces natural, factual writing and prohibits emojis
 
 Records git history as long-term memory, maintaining context across sessions with detailed commit messages.
 
+
+### 15. Ponytail
+**ID:** `ponytail`
+**Level:** Coding approach
+
+Applies a minimal-change approach: understand the affected code first, reuse existing behavior, and implement the smallest complete solution without removing validation, error handling, security, or accessibility.
+
+### 16. Ponytail Review
+**ID:** `ponytail-review`
+**Level:** Change review
+
+Reviews a diff for correctness, security, load behavior, missing tests, performance, and unnecessary code. Reports findings without changing files.
+
+### 17. Ponytail Audit
+**ID:** `ponytail-audit`
+**Level:** Repository audit
+
+Audits a repository for bugs, security risks, scaling problems, missing tests, slow paths, and code that can be removed or simplified.
+
+### 18. Ponytail Debt
+**ID:** `ponytail-debt`
+**Level:** Deferred work tracking
+
+Collects `shortcut:` comments into a ledger with the stated limit and the condition for revisiting each shortcut.
+
+### 19. Ponytail Gain
+**ID:** `ponytail-gain`
+**Level:** Benchmark reference
+
+Displays the benchmark figures published by the upstream Ponytail project. It does not estimate savings for the current repository.
+
+### 20. Ponytail Help
+**ID:** `ponytail-help`
+**Level:** Quick reference
+
+Lists Ponytail levels, companion skills, commands, and configuration options.
+
+The six skills are imported from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) under MIT. See `ponytail/UPSTREAM.md` and `ponytail/LICENSE` for the source revision and license.
+
 ## Repository standards
 
 All agents must load `human-writing/SKILL.md` at the start of every task. Emoji and emoji-like symbols are prohibited throughout project files and communication. Public and production releases must follow `production-ready/SKILL.md`, including user documentation, help, FAQs, troubleshooting, known issues, terms of use, privacy, and third-party credits where applicable.
