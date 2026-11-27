@@ -37,7 +37,7 @@ Every worker needs an explicit task, file ownership, acceptance criteria, and re
 Start by detecting the current shell, TTY, and available multiplexer. Do not assume a package is installed.
 
 ```sh
-printf 'shell=%s\\n' "${SHELL:-unknown}"
+printf 'shell=%s\n' "${SHELL:-unknown}"
 printf 'tty='
 tty 2>/dev/null || true
 printf 'tmux='
@@ -70,7 +70,7 @@ session="agent-bento"
 project_dir="$(pwd -P)"
 
 if tmux has-session -t "$session" 2>/dev/null; then
-  printf 'Reusing tmux session: %s\\n' "$session"
+  printf 'Reusing tmux session: %s\n' "$session"
 else
   tmux new-session -d -s "$session" -n work -c "$project_dir"
   tmux split-window -h -t "$session:work" -c "$project_dir"
@@ -78,8 +78,7 @@ else
   tmux select-layout -t "$session:work" tiled
 fi
 
-tmux list-panes -t "$session:work" \\
-  -F 'pane=#{pane_index} id=#{pane_id} pid=#{pane_pid} size=#{pane_width}x#{pane_height} path=#{pane_current_path}'
+tmux list-panes -t "$session:work"   -F 'pane=#{pane_index} id=#{pane_id} pid=#{pane_pid} size=#{pane_width}x#{pane_height} path=#{pane_current_path}'
 tmux attach-session -t "$session"
 ```
 
