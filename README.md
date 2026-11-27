@@ -146,6 +146,12 @@ Displays the benchmark figures published by the upstream Ponytail project. It do
 
 Lists Ponytail levels, companion skills, commands, and configuration options.
 
+### 21. Parallel Agent Orchestration
+**ID:** `parallel-agent-orchestration`
+**Level:** Execution orchestration
+
+Splits independent work across subagents and background processes. Defines task ownership, safe concurrency, process tracking, integration, and final verification.
+
 The six skills are imported from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) under MIT. See `ponytail/UPSTREAM.md` and `ponytail/LICENSE` for the source revision and license.
 
 ## Repository standards
