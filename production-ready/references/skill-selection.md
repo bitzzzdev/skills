@@ -46,6 +46,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 |---|---|---|---|---|---|---|---|---|---|
 | changelog | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | context-search | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| parallel-agent-orchestration | when independent work exists | when independent work exists | when independent work exists | when independent work exists | when independent work exists | when independent work exists | when independent work exists | when independent work exists | when independent work exists |
 | agent-self-awareness | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | token-optimizer | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | README and docs | yes | yes | yes | yes | yes | yes | yes | yes | yes, plus API reference |
