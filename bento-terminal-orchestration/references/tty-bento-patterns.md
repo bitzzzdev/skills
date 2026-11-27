@@ -13,11 +13,11 @@ status_file=$(mktemp)
   set +e
   your_noninteractive_command
   command_status=$?
-  printf '%s\\n' "$command_status" > "$status_file"
+  printf '%s\n' "$command_status" > "$status_file"
   exit "$command_status"
 ) >"$log_file" 2>&1 &
 process_id=$!
-printf 'pid=%s log=%s status=%s\\n' "$process_id" "$log_file" "$status_file"
+printf 'pid=%s log=%s status=%s\n' "$process_id" "$log_file" "$status_file"
 
 # Continue independent work here.
 
@@ -25,11 +25,11 @@ wait "$process_id"
 wait_status=$?
 cat "$log_file"
 if test -f "$status_file"; then
-  printf 'command exit status: %s\\n' "$(cat "$status_file")"
+  printf 'command exit status: %s\n' "$(cat "$status_file")"
 else
-  printf 'No status file was written. Inspect the process and log.\\n'
+  printf 'No status file was written. Inspect the process and log.\n'
 fi
-printf 'wait status: %s\\n' "$wait_status"
+printf 'wait status: %s\n' "$wait_status"
 ```
 
 Do not start a duplicate command because a poll is slow. Check the original PID and log.
@@ -44,10 +44,10 @@ set status_file (mktemp)
 begin
     your_noninteractive_command
     set command_status $status
-    printf '%s\\n' $command_status > $status_file
+    printf '%s\n' $command_status > $status_file
 end > $log_file 2>&1 &
 set process_id $last_pid
-printf 'pid=%s log=%s status=%s\\n' $process_id $log_file $status_file
+printf 'pid=%s log=%s status=%s\n' $process_id $log_file $status_file
 
 # Continue independent work here.
 
@@ -55,11 +55,11 @@ wait $process_id
 set wait_status $status
 cat $log_file
 if test -f $status_file
-    printf 'command exit status: %s\\n' (cat $status_file)
+    printf 'command exit status: %s\n' (cat $status_file)
 else
-    printf 'No status file was written. Inspect the process and log.\\n'
+    printf 'No status file was written. Inspect the process and log.\n'
 end
-printf 'wait status: %s\\n' $wait_status
+printf 'wait status: %s\n' $wait_status
 ```
 
 Run `help wait` if the installed Fish version has different wait behavior. The status file records the wrapped command's exit status.
