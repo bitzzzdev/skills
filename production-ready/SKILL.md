@@ -1,6 +1,6 @@
 ---
 name: production-ready
-description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, token-optimizer, context-search, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, Ponytail review and audit skills, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped, and always runs with thinking turned off and a live todo list (token-optimizer).
+description: Orchestrates a complete production-level finish by directing the agent to use all other relevant skills in its toolkit (agent-self-awareness, token-optimizer, context-search, parallel-agent-orchestration, persistent-goal-execution, credential-safety, deep-research, debug-and-fix, error-docs-lookup, human-writing, context-rich-commits, Ponytail review and audit skills, google-seo-skill, and domain-specific skills), auditing the repository, updating changelogs, READMEs, documentation, legal files, and community standards. Use whenever the user asks to get a project production-ready, ship it, prepare a release, finish up, or review what is missing before launch. Always begins with a mandatory skill relevance check, so no relevant skill in the toolkit is skipped, and always runs with thinking turned off and a live todo list (token-optimizer).
 ---
 
 # Production Ready
@@ -66,6 +66,7 @@ When finishing a project, you act as the orchestrator across your entire skill e
 
 1. **agent-self-awareness**: Detect the active harness and model, classify its capability tier, and switch to a research-first protocol when it is not a frontier coding model. Unknown models are treated as non-frontier. The tier raises the evidence bar; it never lowers the requested outcome.
 2. **context-search**: On a new session in an existing codebase, discover installed agents, find project-matched session transcripts or databases, extract a bounded brief, and verify it against git and the live worktree. Prior transcripts are clues, never authority.
+2b. **parallel-agent-orchestration**: When two or more work streams are independent, delegate bounded tasks to available subagents and run safe long commands in the background. Track process handles and worker results, avoid shared-file write conflicts, and verify the integrated result.
 3. **persistent-goal-execution**: Keep the complete release objective, acceptance criteria, current plan, authoritative evidence, and completion state active across context compaction, retries, waits, and failures. Do not declare the release complete until every requirement is verified.
 4. **credential-safety**: Check worktree files, staged changes, pushed commit ranges, ignore rules, and available secret-scanner results before committing or pushing. Stop, rotate, and remediate any exposed credential without printing its value.
 5. **deep-research and third-party attribution**: When a release includes a feature copied, ported, or adapted from another repository, inspect the source and target context, verify licensing, trace behavior, and document intentional differences before implementation. Audit third-party packages, bundled code, fonts, and assets to provide licensing attribution in `CREDITS.md` or `NOTICE`.
@@ -104,6 +105,10 @@ python context-search/scripts/find_agent_sessions.py --project <project-root> --
 `agent-self-awareness` decides whether a research-first protocol is mandatory. If the model is capable, efficient, or unknown, read current official documentation and inspect the code before implementing. `context-search` recovers prior agent decisions and open work. Read `context-search/references/agent-stores.md` for session locations and `references/extraction.md` for the brief format.
 
 Check git status, git log, and the named files before trusting any transcript. Record the execution mode, recovered brief, and what you verified in the final report.
+
+### 0c. Parallelize independent work
+
+Apply `parallel-agent-orchestration` after context recovery and before the audit when the task has two or more independent work streams. Build a dependency graph, delegate bounded research or implementation tasks with exclusive file ownership, and start safe long-running checks in the background. Continue coordinator work while those tasks run. Track every worker and process to completion, integrate changes under coordinator control, then run the required checks against the integrated repository. Keep dependent work sequential and do not create extra workers when coordination costs more than it saves. Read the full skill and its `references/parallel-workflows.md` before delegating or backgrounding work.
 
 ### 1. Audit
 Run the audit script from the project root. It inspects the codebase, checks for missing, stale, or excluded files, verifies skill folder git status, and lists which skills to USE and which to SKIP:
