@@ -7,6 +7,8 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Added
 
+- Added `parallel-agent-orchestration` with delegation contracts, task dependency planning, isolated concurrent writes, and tracked background command workflows.
+
 - Added root `install.sh` to symlink every top-level skill into the shared `~/.agents/skills` directory for OpenCode, Codex, Cursor, Gemini CLI, and GitHub Copilot CLI, plus the Claude Code and Kiro skill directories. Added isolated installer tests and CI coverage.
 
 - Added the six MIT-licensed Ponytail skills: `ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, and `ponytail-help`. Recorded the upstream revision and retained its license in `ponytail/`.
