@@ -152,6 +152,12 @@ Lists Ponytail levels, companion skills, commands, and configuration options.
 
 Splits independent work across subagents and background processes. Defines task ownership, safe concurrency, process tracking, integration, and final verification.
 
+### 22. Bento Terminal Orchestration
+**ID:** `bento-terminal-orchestration`
+**Level:** Remote terminal execution
+
+Creates a persistent multi-agent workspace inside an SSH TTY using tmux, Zellij, or GNU Screen. Covers Bash and Fish background jobs, pane ownership, VPS resource limits, and plain-TTY fallbacks.
+
 The six skills are imported from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) under MIT. See `ponytail/UPSTREAM.md` and `ponytail/LICENSE` for the source revision and license.
 
 ## Repository standards
