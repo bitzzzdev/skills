@@ -209,11 +209,20 @@ Run the applicable skills in this sequence:
      without waiting for user confirmation, whether the implementation is
      incomplete or complete. Verify the remote state and report what remains
      unfinished when applicable.
-   - After the `dev` push succeeds, wait for the CI/CD workflow for that exact
-     commit. If the workflow passes, push that same verified commit to the
-     production branch without asking for confirmation. If CI/CD fails, is
-     unavailable, or does not cover the full change, do not push to production.
-     Report the failure or missing evidence and continue remediation.
+   - After every push, follow `references/ci-watch-loop.md` from
+     `context-rich-commits`. Watch every required CI/CD workflow for the exact
+     pushed SHA until it reaches a terminal state. A push is not complete while
+     checks are queued, running, waiting for runners, or unresolved.
+   - If any required check fails, inspect job logs, fix the root cause, run
+     relevant local checks, commit and push the fix to the same intended
+     branch, then watch the new SHA from the beginning. Repeat until all
+     required checks pass or a genuine external blocker prevents progress.
+   - If CI/CD is unavailable, never starts, is blocked, or does not cover the
+     full change, do not promote to production or claim success. Record the
+     exact blocker and required human action. A pipeline with no started jobs
+     means no CI tests ran.
+   - Only after the exact `dev` SHA has all required checks passing may that
+     same verified commit be promoted under the repository's branch policy.
    - If no `dev` branch exists, create it before waiting for CI/CD. A
      production push is never allowed without a successful `dev` check for
      the exact commit.
