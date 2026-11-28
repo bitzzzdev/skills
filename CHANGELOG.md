@@ -72,6 +72,9 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Added a mandatory post-push CI/CD watch loop to `context-rich-commits` and `production-ready`. Agents must monitor required checks for the exact pushed SHA, diagnose failures, push root-cause fixes, and rewatch each new commit until checks pass or an external blocker is documented.
+
+
 - Integrated the six Ponytail skills into `production-ready` skill routing, with explicit triggers and boundaries for implementation, diff review, repository audits, shortcut debt, benchmark data, and help.
 
 - Integrated `agent-self-awareness` into `production-ready` orchestration, the
