@@ -107,7 +107,7 @@ Mandatory for every task. Enforces natural, factual writing and prohibits emojis
 **ID:** `context-rich-commits`
 **Level:** Git
 
-Records git history as long-term memory, maintaining context across sessions with detailed commit messages.
+Records git history as long-term memory, maintains context across sessions, and requires monitoring every pushed commit's CI/CD runs through pass or a documented blocker.
 
 
 ### 15. Ponytail
