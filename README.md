@@ -179,6 +179,11 @@ cd skills
 The installer finds every top-level directory containing `SKILL.md` and
 creates a symlink to that directory. It does not copy skill files, so a later
 `git pull` updates the linked content without reinstalling existing links.
+When a destination already exists but is not the correct symlink, the installer
+moves it to a timestamped `.backup.*` path before creating the link. Existing
+files, directories, and stale symlinks are preserved in those backups. Review
+and remove backups manually after confirming the new links work. `--dry-run`
+shows the planned backups and links without changing anything.
 
 | Agents | User skill directory |
 |---|---|
@@ -201,10 +206,9 @@ Options:
 ```
 
 Repeat `--agent` to select more than one target. The default installs all
-supported targets. Existing skill paths are never overwritten. A conflict is
-reported and makes the installer exit with a non-zero status, so inspect the
-existing path before deciding what to do. The installer does not remove stale
-links for skills that have since been deleted from the repository.
+supported targets. Existing skill paths are backed up and replaced with links.
+The installer does not remove stale links for skills that have since been
+deleted from the repository.
 
 ## Loading a Skill
 
