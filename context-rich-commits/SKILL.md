@@ -143,7 +143,24 @@ If the clone is shallow, run `git fetch --unshallow` first, or the history will 
 3. Write the message with the format above.
 4. Check it: `python /path/to/context-rich-commits/scripts/lint_commit.py <message-file>`. Fix every reported problem.
 5. Commit with `git commit -F -` and a heredoc, so multi-line bodies survive intact.
-6. At the end of the session, add a checkpoint.
+6. After every push that triggers CI/CD, use
+   `references/ci-watch-loop.md` to monitor the exact pushed commit until all
+   required workflows reach a verified passing state or an external blocker is
+   documented. On failure, inspect logs, fix the root cause, commit and push
+   the repair, then watch the new commit's pipeline. Do not stop at "push
+   succeeded" or report a queued, skipped, canceled, or never-started pipeline
+   as passing.
+7. At the end of the session, add a checkpoint.
+
+## After every push: watch CI/CD to completion
+
+Read `references/ci-watch-loop.md` before pushing or monitoring CI/CD. Record
+the branch and full pushed SHA, locate runs for that exact SHA, and continue
+watching queued and running jobs. If required checks fail, inspect their logs,
+repair the root cause, run relevant local checks, push a repair commit, and
+repeat the watch loop for the new SHA. Stop only when all required checks pass
+or a genuine external blocker prevents further progress. A successful push is
+not evidence of passing CI.
 
 Enforce it for everyone by installing the linter as a hook in the repo:
 
