@@ -72,6 +72,8 @@ The format follows Keep a Changelog and the project uses Semantic Versioning.
 
 ### Changed
 
+- Changed `install.sh` to back up existing skill paths and replace them with symlinks. Added coverage for directory and stale-symlink replacement, backup preservation, dry-run safety, and repeat installation.
+
 - Added a mandatory post-push CI/CD watch loop to `context-rich-commits` and `production-ready`. Agents must monitor required checks for the exact pushed SHA, diagnose failures, push root-cause fixes, and rewatch each new commit until checks pass or an external blocker is documented.
 
 
