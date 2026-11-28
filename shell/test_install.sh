@@ -20,6 +20,12 @@ HOME="$TMP/dry" "$INSTALL" --dry-run > "$TMP/dry.log"
 [[ ! -e "$TMP/dry/.agents/skills" ]] || fail "dry run created a directory"
 grep -q 'would link' "$TMP/dry.log" || fail "dry run did not list links"
 
+first_skill="$(basename "$(dirname "${SKILL_FILES[0]}")")"
+mkdir -p "$TMP/all/.agents/skills/$first_skill"
+printf 'keep me\n' > "$TMP/all/.agents/skills/$first_skill/marker"
+mkdir -p "$TMP/all/.claude/skills"
+ln -s "$TMP/all/wrong-target" "$TMP/all/.claude/skills/$first_skill"
+
 HOME="$TMP/all" "$INSTALL" > "$TMP/install.log"
 for target in "$TMP/all/.agents/skills" "$TMP/all/.claude/skills" "$TMP/all/.kiro/skills"; do
     for skill_file in "${SKILL_FILES[@]}"; do
@@ -30,23 +36,30 @@ for target in "$TMP/all/.agents/skills" "$TMP/all/.claude/skills" "$TMP/all/.kir
     done
 done
 
+backup_dir=("$TMP/all/.agents/skills/$first_skill".backup.*)
+((${#backup_dir[@]} > 0)) || fail "existing directory was not backed up"
+[[ -d "${backup_dir[0]}" ]] || fail "directory backup is missing"
+[[ "$(cat "${backup_dir[0]}/marker")" == "keep me" ]] || fail "backup content was not preserved"
+
+backup_link=("$TMP/all/.claude/skills/$first_skill".backup.*)
+((${#backup_link[@]} > 0)) || fail "old symlink was not backed up"
+[[ -L "${backup_link[0]}" ]] || fail "old symlink backup is missing"
+
 HOME="$TMP/all" "$INSTALL" > "$TMP/repeat.log"
 grep -q 'Links created: 0' "$TMP/repeat.log" || fail "repeat install created links"
-expected_links=$((EXPECTED * 3))
-grep -q "Links already correct: $expected_links" "$TMP/repeat.log" || fail "repeat install was not idempotent"
+grep -q 'Existing paths backed up: 0' "$TMP/repeat.log" || fail "repeat install made unnecessary backups"
+
+mkdir -p "$TMP/dry-conflict/.agents/skills/$first_skill"
+printf 'preserve\n' > "$TMP/dry-conflict/.agents/skills/$first_skill/marker"
+HOME="$TMP/dry-conflict" "$INSTALL" --dry-run > "$TMP/dry-conflict.log"
+[[ -d "$TMP/dry-conflict/.agents/skills/$first_skill" ]] || fail "dry-run changed existing directory"
+[[ "$(cat "$TMP/dry-conflict/.agents/skills/$first_skill/marker")" == "preserve" ]] || fail "dry-run changed existing content"
+grep -q 'would back up' "$TMP/dry-conflict.log" || fail "dry-run did not describe backup"
 
 HOME="$TMP/shared" "$INSTALL" --agent opencode --agent codex > /dev/null
-[[ -d "$TMP/shared/.agents/skills" ]] || fail "shared agent path missing"
+[[ -L "$TMP/shared/.agents/skills/$first_skill" ]] || fail "shared agent path missing"
 [[ ! -e "$TMP/shared/.claude/skills" ]] || fail "unselected Claude path created"
 [[ ! -e "$TMP/shared/.kiro/skills" ]] || fail "unselected Kiro path created"
-
-first_skill="$(basename "$(dirname "${SKILL_FILES[0]}")")"
-mkdir -p "$TMP/conflict/.agents/skills/$first_skill"
-printf 'keep\n' > "$TMP/conflict/.agents/skills/$first_skill/marker"
-if HOME="$TMP/conflict" "$INSTALL" > /dev/null 2>&1; then
-    fail "existing path conflict did not return failure"
-fi
-[[ "$(cat "$TMP/conflict/.agents/skills/$first_skill/marker")" == "keep" ]] || fail "existing content was changed"
 
 if HOME="$TMP/invalid" "$INSTALL" --agent unknown > /dev/null 2>&1; then
     fail "unknown agent was accepted"
