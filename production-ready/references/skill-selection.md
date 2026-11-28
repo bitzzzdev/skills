@@ -60,6 +60,7 @@ Before evaluating SEO or ranking skills, determine if the site should be public 
 | error-docs-lookup | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | human-writing | yes | yes | yes | yes | yes | yes | yes | yes | yes |
 | context-rich-commits | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+| CI/CD watch loop (via context-rich-commits) | when CI runs | when CI runs | when CI runs | when CI runs | when CI runs | when CI runs | when CI runs | when CI runs | when CI runs |
 | project-specific skill | threejs-awwwards-site if 3D | threejs-awwwards-site if 3D | android-app-dev for Android | none | minecraft-fabric-mod | iris-shaderpack-dev | none | none | cloud skills if deployed |
 
 ## Ponytail skills
